@@ -1,0 +1,24 @@
+﻿Build started 9/19/2012 3:14:00 PM.
+     1>Project "C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Sun Magic.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Release\Sun Magic.unsuccessfulbuild".
+       ClCompile:
+         All outputs are up-to-date.
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Release\Sun Magic.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"SFML-1.6/lib/" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "sfml-system-d.lib" "sfml-main-d.lib" "sfml-graphics-d.lib" "sfml-audio-d.lib" "sfml-network-d.lib" "sfml-window-d.lib" libzinnia.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\Sun Magic.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Release\Sun Magic.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Release\Sun Magic.lib" /MACHINE:X86 Release\Game.obj
+         Release\stdafx.obj
+         "Release\Sun Magic.obj"
+         Generating code
+         Finished generating code
+         Sun Magic.vcxproj -> C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Release\Sun Magic.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Release\Sun Magic.exe;#1" /manifest "Release\Sun Magic.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         Deleting file "Release\Sun Magic.unsuccessfulbuild".
+         Touching "Release\Sun Magic.lastbuildstate".
+     1>Done Building Project "C:\Users\Public\Workspace - GCS\gcs-sun-magic\Sun Magic\Sun Magic.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.19
