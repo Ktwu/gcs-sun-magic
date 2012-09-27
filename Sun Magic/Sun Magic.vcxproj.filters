@@ -17,7 +17,16 @@
   <ItemGroup>
     <None Include="ReadMe.txt" />
     <None Include="zinnia\lib\libzinnia.dll">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="msmincho.ttc">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="jis_to_unicode_map.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="japanese_unicode.txt">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -28,10 +37,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Zinnia\zinnia.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="encoding.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

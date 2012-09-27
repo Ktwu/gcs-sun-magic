@@ -1,4 +1,4 @@
-// Sun Magic.cpp : Defines the entry point for the console application.
+﻿// Sun Magic.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -9,7 +9,7 @@
 void zinniaTest() {
 	zinnia::Recognizer *recognizer = zinnia::Recognizer::create();
 	if (!recognizer->open("zinnia/models/handwriting-ja.model")) {
-		std::cout << "ERROR: " << recognizer->what() << std::endl;
+		std::cerr << "ERROR: " << recognizer->what() << std::endl;
 		return;
 	}
 
@@ -39,7 +39,7 @@ void zinniaTest() {
 
 	zinnia::Result *result = recognizer->classify(*character, 10);
 	if (!result) {
-		std::cout << "ERROR: " << recognizer->what() << std::endl;
+		std::cerr << "ERROR: " << recognizer->what() << std::endl;
 		return;
 	}
 	for (size_t i = 0; i < result->size(); ++i) {
@@ -56,7 +56,9 @@ int main(int argc, char* argv[]) {
 	// First, check to make sure we can use Zinnia.
 	zinniaTest();
 
-	Game::Start();
+
+	SunMagic::Game *game = SunMagic::Game::GetInstance();
+	game->Run();
 	return 0;
 }
 
