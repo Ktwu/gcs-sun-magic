@@ -16,11 +16,8 @@ Game::Game() {
 
 	_strokeWidth = 7;
 	_strokeColor = sf::Color(200, 200, 200);
-
-	//convertJISModelToUnicodeModel("zinnia/models/handwriting-ja.model.txt",
-	// "zinnia/models/handwriting-ja-unicode.model.txt", "jis_to_unicode_map.txt");
-	jisToUnicodeMap = GetJISToUnicodeMap("jis_to_unicode_map.txt");
 	
+	// Load up list of unicode characters to use, then load it from the font
 	std::vector<sf::Uint16> *chars = GetUnicodeList("japanese_unicode.txt");
 	if (!_font.LoadFromFile("msmincho.ttc", 50, chars->data())) {
 		std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
@@ -58,10 +55,6 @@ void Game::Run() {
 	Close();
 }
 
-void AddNewStroke() {
-
-}
-
 void Game::HandleInput() {
 	static const int MIN_STROKE_DISPLACEMENT_SQUARED = 20 * 20;
 
@@ -77,12 +70,12 @@ void Game::HandleInput() {
 
 					case sf::Event::MouseButtonPressed:
 						if (currentEvent.MouseButton.Button == sf::Mouse::Left) {
-							std::cout << "Start Stroke" << std::endl;
 							writing = true;
 							int stroke = _character->strokes_size();
 							last_x = currentEvent.MouseButton.X;
 							last_y = currentEvent.MouseButton.Y;
 							_character->add(stroke, last_x, last_y);
+							std::cout << "Start Stroke (" << std::dec << last_x << "," << last_y << ")" << std::endl;
 						}
 						break;
 
@@ -115,36 +108,12 @@ void Game::HandleInput() {
 								_suggestedChars.clear();
 								int spacing = _mainWindow.GetWidth() / (result->size() + 1);
 								for (size_t i = 0; i < result->size(); ++i) {
-									std::hash_map<unsigned short, unsigned short>::iterator it;
-									std::vector<sf::Uint16> unicode;
-									const char *c = result->value(i);
-									int len = (strlen(c) + 1) / 2;
-									unsigned char a[] = { c[0], c[1], c[2], c[3], 0};
+									const char *utf8str = result->value(i);
+									std::basic_string<sf::Uint32> utf32str;
+									sf::Unicode::UTF8ToUTF32((unsigned char*)utf8str, (unsigned char*)utf8str + strlen(utf8str), back_inserter(utf32str));
+									std::cout << std::hex << *utf32str.data() << std::endl;
 
-									std::cout << c << " (";
-									for (int j = 0; j < len; j++) {
-										// The byte order is little endian
-										unsigned char d[] = { (2*j+1 == len) ? 0 : c[2*j+1], c[2*j] };
-										unsigned short *jis = reinterpret_cast<unsigned short*>(d);
-										std::cout << std::hex << *jis;
-										if (j < len - 1)
-											std::cout << ",";
-										it = jisToUnicodeMap->find(*jis);
-										if (it != jisToUnicodeMap->end())
-											unicode.push_back(it->second);
-									}
-									std::cout << ")->(";
-									for (int j = 0; j < unicode.size(); j++) {
-										std::cout << std::hex << unicode[j];
-										if (j < unicode.size() - 1)
-											std::cout << ",";
-									}
-									std::cout << ")\t" << result->score(i) << std::endl;
-									
-									unicode.push_back(0);
-									unicode.shrink_to_fit();
-
-									sf::String s = sf::String(unicode.data());
+									sf::String s = sf::String(utf32str);
 									s.SetFont(_font);
 									s.SetColor(_strokeColor);
 									s.SetPosition((float)(i + 1) * spacing , 700);

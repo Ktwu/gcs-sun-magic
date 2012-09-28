@@ -22,9 +22,6 @@
     <None Include="msmincho.ttc">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="jis_to_unicode_map.txt">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="japanese_unicode.txt">
       <Filter>Resource Files</Filter>
     </None>
@@ -37,9 +34,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Zinnia\zinnia.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="encoding.h">
