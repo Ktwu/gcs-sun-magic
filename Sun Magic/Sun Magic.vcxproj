@@ -86,24 +86,25 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="japanese_unicode.txt" />
     <None Include="msmincho.ttc" />
     <None Include="ReadMe.txt" />
     <None Include="zinnia\lib\libzinnia.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="character_tile.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="game_object.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="encoding.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="character_tile.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Sun Magic.cpp" />
+    <ClCompile Include="sun_magic.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

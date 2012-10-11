@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include <hash_map>
+#include "character_tile.h"
 #include <iostream>
 #include <fstream>
 
@@ -18,6 +18,7 @@ public:
 private:
 	Game();
 	~Game();
+	void UpdateText();
 	void HandleInput();
 	void Update(float elapsedSeconds);
 	void Draw();
@@ -36,16 +37,10 @@ private:
 	GameState _gameState;
 	sf::RenderWindow _mainWindow;
 
-	float _strokeWidth;
-	sf::Color _strokeColor;
-	std::vector<sf::Shape> _strokes;
-
 	sf::Font _font;
-	std::hash_map<unsigned short, unsigned short>* jisToUnicodeMap;
 	std::vector<sf::String> _suggestedChars;
 
-	zinnia::Recognizer *_recognizer;
-	zinnia::Character *_character;
+	CharacterTile *_tile;
 };
 
 }

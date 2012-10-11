@@ -1,40 +1,54 @@
 #include "stdafx.h"
-#include "Game.h"
+#include "game.h"
 
 #include <fstream>
 #include <iostream>
 
 #include "time.h"
 
-#include "encoding.h"
-
 namespace SunMagic {
 
 Game::Game() {
 	_gameState = Game::Playing;
 	_mainWindow.Create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
-
-	_strokeWidth = 7;
-	_strokeColor = sf::Color(200, 200, 200);
 	
 	// Load up list of unicode characters to use, then load it from the font
-	std::vector<sf::Uint16> *chars = GetUnicodeList("japanese_unicode.txt");
+	std::vector<unsigned short> *chars = new std::vector<unsigned short>();
+	// Ascii values
+	for (unsigned short i = 0x20; i <= 0x7E; i++) {
+			chars->push_back(i);
+	}
+	// Hiragana unicode values
+	for (unsigned short i = 0x3041; i <= 0x3096; i++) {
+			chars->push_back(i);
+	}
+	chars->shrink_to_fit();
 	if (!_font.LoadFromFile("msmincho.ttc", 50, chars->data())) {
 		std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
 	}
 	delete chars;
 
 	// Init zinnia
-	_recognizer = zinnia::Recognizer::create();
-	if (!_recognizer->open("zinnia/models/handwriting-ja.model")) {
-		std::cerr << "ERROR: " << _recognizer->what() << std::endl;
-		return;
-	}
+	CharacterTile::InitRecognizer("zinnia/models/hiragana.model");
 
-	_character = zinnia::Character::create();
-	_character->clear();
-	_character->set_width(1024);
-	_character->set_height(768);
+	_tile = new CharacterTile(_mainWindow.GetWidth() / 2 - 150, _mainWindow.GetHeight() / 2 - 150, 300, 300);
+	zinnia::Character *character = zinnia::Character::create();
+	character->parse("(character (value ‚¢) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
+	_tile->SetGuideCharacter(character, sf::Unicode::Text(L"‚¢"));
+	_tile->SetAnimationStroke(0);
+
+	unsigned int width = _mainWindow.GetWidth();
+	unsigned int y = _mainWindow.GetHeight() - 100;
+	sf::String s = sf::String();
+	s.SetFont(_font);
+	s.SetColor(sf::Color(200, 200, 200));
+	s.SetPosition(width / 10, y);
+	_suggestedChars.push_back(s);
+
+	s.SetX(width / 2);
+	_suggestedChars.push_back(s);
+
+	UpdateText();
 }
 
 Game::~Game() {
@@ -55,8 +69,19 @@ void Game::Run() {
 	Close();
 }
 
+void Game::UpdateText() {
+	sf::Unicode::UTF32String str;
+	str = sf::Unicode::Text("Current: ");
+	str.append(_tile->GetUnicode());
+	_suggestedChars[0].SetText(str);
+
+	str = sf::Unicode::Text("Target: ");
+	str.append(_tile->GetGuideUnicode());
+	_suggestedChars[1].SetText(str);
+}
+
 void Game::HandleInput() {
-	static const int MIN_STROKE_DISPLACEMENT_SQUARED = 20 * 20;
+	static const int MIN_STROKE_DISPLACEMENT_SQUARED = 10 * 10;
 
 	static sf::Event currentEvent;
 	static bool writing = false;
@@ -71,10 +96,10 @@ void Game::HandleInput() {
 					case sf::Event::MouseButtonPressed:
 						if (currentEvent.MouseButton.Button == sf::Mouse::Left) {
 							writing = true;
-							int stroke = _character->strokes_size();
+							int stroke = _tile->NumStrokes();
 							last_x = currentEvent.MouseButton.X;
 							last_y = currentEvent.MouseButton.Y;
-							_character->add(stroke, last_x, last_y);
+							_tile->AddStrokePoint(last_x, last_y);
 							std::cout << "Start Stroke (" << std::dec << last_x << "," << last_y << ")" << std::endl;
 						}
 						break;
@@ -87,9 +112,8 @@ void Game::HandleInput() {
 							if ((last_x - x) * (last_x - x) + (last_y - y) * (last_y - y) < MIN_STROKE_DISPLACEMENT_SQUARED)
 								break;
 							
-							int stroke = _character->strokes_size() - 1;
-							_character->add(stroke, x, y);
-							_strokes.push_back(sf::Shape::Line((float)last_x, (float)last_y, (float)x, (float)y, _strokeWidth, _strokeColor));
+							int stroke = _tile->NumStrokes() - 1;
+							_tile->AddStrokePoint(x, y);
 							last_x = x;
 							last_y = y;
 							//std::cout << "Add stroke segment " << _character->stroke_size(stroke) << std::endl;
@@ -100,30 +124,11 @@ void Game::HandleInput() {
 						if (currentEvent.MouseButton.Button == sf::Mouse::Left) {
 							if (!writing) break;
 							writing = false;
+							_tile->EndStroke();
+							_tile->SetAnimationStroke(_tile->NumStrokes());
 							std::cout << "End Stroke" << std::endl;
 
-							// Reclassify
-							zinnia::Result *result = _recognizer->classify(*_character, 5);
-							if (result) {
-								_suggestedChars.clear();
-								int spacing = _mainWindow.GetWidth() / (result->size() + 1);
-								for (size_t i = 0; i < result->size(); ++i) {
-									const char *utf8str = result->value(i);
-									std::basic_string<sf::Uint32> utf32str;
-									sf::Unicode::UTF8ToUTF32((unsigned char*)utf8str, (unsigned char*)utf8str + strlen(utf8str), back_inserter(utf32str));
-									std::cout << std::hex << *utf32str.data() << std::endl;
-
-									sf::String s = sf::String(utf32str);
-									s.SetFont(_font);
-									s.SetColor(_strokeColor);
-									s.SetPosition((float)(i + 1) * spacing , 700);
-									_suggestedChars.push_back(s);
-								}
-							} else {
-								std::cerr << "ERROR: " << _recognizer->what() << std::endl;
-								return;
-							}
-							delete result;
+							UpdateText();
 						}
 						break;
 
@@ -132,9 +137,19 @@ void Game::HandleInput() {
 							case sf::Key::C:
 								std::cout << "Clear Strokes" << std::endl;
 								writing = false;
-								_character->clear();
-								_strokes.clear();
-								_suggestedChars.clear();
+								_tile->Clear();
+								_tile->SetAnimationStroke(0);
+								UpdateText();
+								break;
+							case sf::Key::U:
+								std::cout << "Undo Stroke" << std::endl;
+								if (writing) {
+									writing = false;
+									_tile->EndStroke();
+								}
+								_tile->UndoStroke();
+								_tile->SetAnimationStroke(_tile->NumStrokes());
+								UpdateText();
 								break;
 							case sf::Key::Escape:
 								_gameState = Game::Exiting;
@@ -153,16 +168,14 @@ void Game::HandleInput() {
 }
 
 void Game::Update(float elapsedSeconds) {
+	_tile->Update(elapsedSeconds);
 }
 
 
 void Game::Draw() {
 	_mainWindow.Clear(sf::Color(0,0,0));
 
-	// Draw strokes of current character
-	for (size_t i = 0; i < _strokes.size(); i++) {
-		_mainWindow.Draw(_strokes[i]);
-	}
+	_tile->Draw(&_mainWindow);
 
 	// Draw suggested characters
 	for (size_t i = 0; i < _suggestedChars.size(); i++) {
