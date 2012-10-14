@@ -11,7 +11,7 @@ namespace SunMagic {
 class GameMachine {
 
 public:
-	GameMachine() : activeState(SunMagicContext::NONE) {};
+	GameMachine() : _activeState(SunMagicContext::NONE) {};
 	~GameMachine() {};
 
 	bool Init(SunMagicContext::STATE initialState, GameState* initialGameState);
@@ -38,8 +38,8 @@ public:
 	GameState* GetActiveState();
 
 protected:
-	std::map<SunMagicContext::STATE, GameState*> gameStates;
-	SunMagicContext::STATE activeState;
+	std::map<SunMagicContext::STATE, GameState*> _gameStates;
+	SunMagicContext::STATE _activeState;
 };
 
 }

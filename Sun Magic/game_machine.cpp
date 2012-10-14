@@ -8,37 +8,45 @@
 
 namespace SunMagic {
 	bool GameMachine::Init(SunMagicContext::STATE initialState, GameState* initialGameState) {
-		this->activeState = initialState;
+		this->_activeState = initialState;
 		return this->AddState(initialState, initialGameState);
 	}
+
 	SunMagicContext::STATE GameMachine::Update() {
 
-		if (this->activeState == SunMagicContext::NONE) {
-			return this->activeState;
+		if (this->_activeState == SunMagicContext::NONE) {
+			return this->_activeState;
 		}
 		
-		SunMagicContext::STATE newState = this->gameStates[this->activeState]->Update();
+		SunMagicContext::STATE newState = this->_gameStates[this->_activeState]->Update();
 		if (newState != SunMagicContext::NONE) {
-			this->activeState = newState;
+			this->_activeState = newState;
 		}
 
-		return this->activeState;
+		return this->_activeState;
 	}
+
 	GameState* GameMachine::AddState(SunMagicContext::STATE state, GameState* gameState) {
 		if (gameState == NULL) {
 			return NULL;
 		}
 
-		GameState* oldState = this->gameStates[state];
-		this->gameStates[state] = gameState;
+		GameState* oldState = this->_gameStates[state];
+		this->_gameStates[state] = gameState;
 		return oldState;
 	}
+
 	GameState* GameMachine::RemoveState(SunMagicContext::STATE state) {
-		GameState* removedState = this->gameStates[state];
-		this->gameStates[state] = NULL;
+		GameState* removedState = this->_gameStates[state];
+		this->_gameStates[state] = NULL;
 		return removedState;
 	}
 
-	SunMagicContext::STATE GetActiveStateKey();
-	GameState* GetActiveState();
+	SunMagicContext::STATE GameMachine::GetActiveStateKey() {
+		return this->_activeState;
+	}
+
+	GameState* GameMachine::GetActiveState() {
+		return this->_gameStates[this->_activeState];
+	}
 }
