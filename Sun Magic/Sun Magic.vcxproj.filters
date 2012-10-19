@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ReadMe.txt" />
     <None Include="zinnia\lib\libzinnia.dll">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="msmincho.ttc">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -37,9 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game_object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

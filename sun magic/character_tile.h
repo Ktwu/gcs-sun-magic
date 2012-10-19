@@ -28,6 +28,7 @@ public:
 	void UndoStroke();
 	void Clear();
 	void Resize(size_t width, size_t height);
+	float GetStrokeError(size_t stroke);
 
 	// The guide character is the character the user should be trying to write
 	zinnia::Character * GetGuideCharacter();

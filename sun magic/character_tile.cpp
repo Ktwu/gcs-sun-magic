@@ -6,6 +6,8 @@
 
 #include "time.h"
 
+#include "sfm.h"
+
 namespace SunMagic {
 	
 zinnia::Recognizer *CharacterTile::_recognizer = NULL;
@@ -62,9 +64,78 @@ size_t CharacterTile::NumStrokes() {
 	return _character->strokes_size();
 }
 void CharacterTile::AddStrokePoint(float x, float y) {
-	_character->add(_currentStroke, x - _position.x, y - _position.y);
+	_character->add(_currentStroke, (int)(x - _position.x), (int)(y - _position.y));
+}
+// Consider every two consecutive lines. If the angle between the lines is small enough remove the mid point.
+size_t SmoothPoints(std::vector<sf::Vector2f>& points1, std::vector<sf::Vector2f>& points2, size_t index) {
+	static const float THRESHOLD_ANGLE = cos(DEGTORAD(15));
+
+	size_t removed = 0;
+	size_t i;
+	for (i = 0; i < index; i++) {
+		points2.push_back(points1[i]);
+	}
+	for (; i + 2 < points1.size(); i += 2) {
+		sf::Vector2f p1 = points1[i];
+		sf::Vector2f p2 = points1[i+1];
+		sf::Vector2f p3 = points1[i+2];
+
+		sf::Vector2f diff1 = p2 - p1;
+		sf::Vector2f diff2 = p3 - p2;
+
+		float diffCosAngle = sfm::Dot(diff1, diff2) / (sfm::Length(diff1) * sfm::Length(diff2));
+
+		points2.push_back(p1);
+		if (diffCosAngle < THRESHOLD_ANGLE) {
+			points2.push_back(p2);
+		} else {
+			removed++;
+		}
+	}
+	for (; i < points1.size(); i++) {
+		points2.push_back(points1[i]);
+	}
+	return removed;
 }
 void CharacterTile::EndStroke() {
+	// Copy points except for last stroke
+	size_t strokes =_character->strokes_size();
+	zinnia::Character *character = zinnia::createCharacter();
+	character->set_width(_character->width());
+	character->set_height(_character->height());
+	for (size_t i = 0; i < strokes - 1; i++) {
+		size_t points = _character->stroke_size(i);
+		for (size_t j = 0; j < points; j++) {
+			character->add(i, _character->x(i, j), _character->y(i, j));
+		}
+	}
+
+	// Convert all points to Vector2f
+	size_t num_points = _character->stroke_size(_currentStroke);
+	std::vector<sf::Vector2f> points1(num_points);
+	std::vector<sf::Vector2f> points2;
+	for (size_t i = 0; i < num_points; i++) {
+		points1[i] = sf::Vector2f((float)_character->x(_currentStroke, i), (float)_character->y(_currentStroke, i));
+	}
+
+	// Iteratively smooth the points. The smoothing only runs on every two lines,
+	// so we do it twice with different indices to cover all points.
+	size_t removed;
+	do {
+		removed = SmoothPoints(points1, points2, 0);
+		points1.clear();
+		removed += SmoothPoints(points2, points1, 1);
+		points2.clear();
+	} while (removed > 0);
+
+	for (size_t i = 0; i < points1.size(); i++) {
+		sf::Vector2f p = points1[i];
+		character->add(_currentStroke, (int)p.x, (int)p.y);
+	}
+
+	delete _character;
+	_character = character;
+
 	_currentStroke++;
 	Reclassify();
 }
@@ -96,6 +167,30 @@ void CharacterTile::Clear() {
 	_character->clear();
 	_currentStroke = 0;
 	Reclassify();
+}
+float CharacterTile::GetStrokeError(size_t stroke) {
+	if (stroke >= _character->strokes_size() || _guideCharacter == NULL ||
+		stroke >= _guideCharacter->strokes_size()) {
+			throw "Invalid stroke";
+	}
+
+	size_t i = 0;
+	size_t j = 0;
+	size_t points = _character->stroke_size(stroke);
+	size_t guide_points = _guideCharacter->stroke_size(stroke);
+	if (points < 2 || guide_points < 2) {
+		// Not enough points to calculate error
+		return 0;
+	}
+
+	float error = 0;
+	sf::Vector2f p1 = sf::Vector2f(_character->x(stroke, 0), _character->y(stroke, 0));
+	sf::Vector2f p2 = sf::Vector2f(_character->x(stroke, 1), _character->y(stroke, 1));
+	sf::Vector2f gp1 = sf::Vector2f(_guideCharacter->x(stroke, 0), _guideCharacter->y(stroke, 0));
+	sf::Vector2f gp2 = sf::Vector2f(_guideCharacter->x(stroke, 1), _guideCharacter->y(stroke, 1));
+	while (i < points) {
+		// Find the distance from the 
+	}
 }
 void CharacterTile::Resize(size_t width, size_t height) {
 	size_t curr_width = _character->width();
