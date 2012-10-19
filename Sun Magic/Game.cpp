@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "game.h"
 
 #include <fstream>
@@ -10,42 +10,32 @@ namespace SunMagic {
 
 Game::Game() {
 	_gameState = Game::Playing;
-	_mainWindow.Create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
-	
-	// Load up list of unicode characters to use, then load it from the font
-	std::vector<unsigned short> *chars = new std::vector<unsigned short>();
-	// Ascii values
-	for (unsigned short i = 0x20; i <= 0x7E; i++) {
-			chars->push_back(i);
-	}
-	// Hiragana unicode values
-	for (unsigned short i = 0x3041; i <= 0x3096; i++) {
-			chars->push_back(i);
-	}
-	chars->shrink_to_fit();
-	if (!_font.LoadFromFile("msmincho.ttc", 50, chars->data())) {
+	_mainWindow.create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
+
+	// Load font
+	if (!_font.loadFromFile("msmincho.ttc")) {
 		std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
 	}
-	delete chars;
 
 	// Init zinnia
 	CharacterTile::InitRecognizer("zinnia/models/hiragana.model");
 
-	_tile = new CharacterTile(_mainWindow.GetWidth() / 2 - 150, _mainWindow.GetHeight() / 2 - 150, 300, 300);
+	sf::Vector2u size = _mainWindow.getSize();
+	_tile = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
 	zinnia::Character *character = zinnia::Character::create();
-	character->parse("(character (value ‚¢) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
-	_tile->SetGuideCharacter(character, sf::Unicode::Text(L"‚¢"));
+	character->parse("(character (value ã„) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
+	_tile->SetTraceCharacter(character, sf::String(L"ã„"));
 	_tile->SetAnimationStroke(0);
-
-	unsigned int width = _mainWindow.GetWidth();
-	unsigned int y = _mainWindow.GetHeight() - 100;
-	sf::String s = sf::String();
-	s.SetFont(_font);
-	s.SetColor(sf::Color(200, 200, 200));
-	s.SetPosition(width / 10, y);
+	
+	unsigned int width = size.x;
+	unsigned int y = size.y - 100;
+	sf::Text s = sf::Text();
+	s.setFont(_font);
+	s.setColor(sf::Color(200, 200, 200));
+	s.setPosition(width * 0.1f, (float)y);
 	_suggestedChars.push_back(s);
 
-	s.SetX(width / 2);
+	s.setPosition(width * 0.5f, (float)y);
 	_suggestedChars.push_back(s);
 
 	UpdateText();
@@ -70,50 +60,50 @@ void Game::Run() {
 }
 
 void Game::UpdateText() {
-	sf::Unicode::UTF32String str;
-	str = sf::Unicode::Text("Current: ");
-	str.append(_tile->GetUnicode());
-	_suggestedChars[0].SetText(str);
+	sf::String str;
+	str = sf::String("Current: ");
+	str += _tile->GetUnicode();
+	_suggestedChars[0].setString(str);
 
-	str = sf::Unicode::Text("Target: ");
-	str.append(_tile->GetGuideUnicode());
-	_suggestedChars[1].SetText(str);
+	str = sf::String("Target: ");
+	str += _tile->GetTraceUnicode();
+	_suggestedChars[1].setString(str);
 }
 
 void Game::HandleInput() {
-	static const int MIN_STROKE_DISPLACEMENT_SQUARED = 10 * 10;
+	static const int MIN_STROKE_DISPLACEMENT_SQUARED = 8 * 8;
 
 	static sf::Event currentEvent;
 	static bool writing = false;
-	static int last_x;
-	static int last_y;
+	static float last_x;
+	static float last_y;
 
-	while(_mainWindow.GetEvent(currentEvent)) {
+	while(_mainWindow.pollEvent(currentEvent)) {
 		switch(_gameState) {
 			case Game::Playing: {
-				switch (currentEvent.Type) {
+				switch (currentEvent.type) {
 
 					case sf::Event::MouseButtonPressed:
-						if (currentEvent.MouseButton.Button == sf::Mouse::Left) {
+						if (currentEvent.mouseButton.button == sf::Mouse::Left) {
 							writing = true;
 							int stroke = _tile->NumStrokes();
-							last_x = currentEvent.MouseButton.X;
-							last_y = currentEvent.MouseButton.Y;
-							_tile->AddStrokePoint(last_x, last_y);
+							last_x = (float)currentEvent.mouseButton.x;
+							last_y = (float)currentEvent.mouseButton.y;
+							_tile->AddStrokePoint(sf::Vector2f(last_x, last_y));
 							std::cout << "Start Stroke (" << std::dec << last_x << "," << last_y << ")" << std::endl;
 						}
 						break;
 
 					case sf::Event::MouseMoved:
 						if (writing) {							
-							int x = currentEvent.MouseMove.X;
-							int y = currentEvent.MouseMove.Y;
+							float x = (float)currentEvent.mouseMove.x;
+							float y = (float)currentEvent.mouseMove.y;
 							// Only register strokes every if displacement is greater than MIN_STROKE_DISPLACEMENT_SQUARED
 							if ((last_x - x) * (last_x - x) + (last_y - y) * (last_y - y) < MIN_STROKE_DISPLACEMENT_SQUARED)
 								break;
 							
 							int stroke = _tile->NumStrokes() - 1;
-							_tile->AddStrokePoint(x, y);
+							_tile->AddStrokePoint(sf::Vector2f(x, y));
 							last_x = x;
 							last_y = y;
 							//std::cout << "Add stroke segment " << _character->stroke_size(stroke) << std::endl;
@@ -121,7 +111,7 @@ void Game::HandleInput() {
 						break;
 
 					case sf::Event::MouseButtonReleased:
-						if (currentEvent.MouseButton.Button == sf::Mouse::Left) {
+						if (currentEvent.mouseButton.button == sf::Mouse::Left) {
 							if (!writing) break;
 							writing = false;
 							_tile->EndStroke();
@@ -133,15 +123,15 @@ void Game::HandleInput() {
 						break;
 
 					case sf::Event::KeyPressed:
-						switch(currentEvent.Key.Code) {
-							case sf::Key::C:
+						switch(currentEvent.key.code) {
+							case sf::Keyboard::C:
 								std::cout << "Clear Strokes" << std::endl;
 								writing = false;
 								_tile->Clear();
 								_tile->SetAnimationStroke(0);
 								UpdateText();
 								break;
-							case sf::Key::U:
+							case sf::Keyboard::U:
 								std::cout << "Undo Stroke" << std::endl;
 								if (writing) {
 									writing = false;
@@ -151,7 +141,7 @@ void Game::HandleInput() {
 								_tile->SetAnimationStroke(_tile->NumStrokes());
 								UpdateText();
 								break;
-							case sf::Key::Escape:
+							case sf::Keyboard::Escape:
 								_gameState = Game::Exiting;
 								break;
 						}
@@ -173,20 +163,20 @@ void Game::Update(float elapsedSeconds) {
 
 
 void Game::Draw() {
-	_mainWindow.Clear(sf::Color(0,0,0));
+	_mainWindow.clear(sf::Color(0,0,0));
 
 	_tile->Draw(&_mainWindow);
 
 	// Draw suggested characters
 	for (size_t i = 0; i < _suggestedChars.size(); i++) {
-		_mainWindow.Draw(_suggestedChars[i]);
+		_mainWindow.draw(_suggestedChars[i]);
 	}
 
-	_mainWindow.Display();
+	_mainWindow.display();
 }
 
 void Game::Close() {
-	_mainWindow.Close();
+	_mainWindow.close();
 }
 
 Game* Game::_game = new Game();

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "stdafx.h"
-#include "context.h"
 #include "game_machine.h"
+#include "context.h"
 
 #include <cstring>
 

@@ -2,11 +2,11 @@
 
 namespace SunMagic {
 
-static class SunMagicContext {
+class SunMagicContext {
 
 // All classes can use this context for information.
 public:
-	enum STATE {
+	static enum STATE {
 		NONE,
 		ONE,
 		TWO,

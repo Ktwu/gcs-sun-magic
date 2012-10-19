@@ -2,8 +2,6 @@
 
 #include "stdafx.h"
 #include "character_tile.h"
-#include <iostream>
-#include <fstream>
 
 namespace SunMagic {
 
@@ -38,7 +36,7 @@ private:
 	sf::RenderWindow _mainWindow;
 
 	sf::Font _font;
-	std::vector<sf::String> _suggestedChars;
+	std::vector<sf::Text> _suggestedChars;
 
 	CharacterTile *_tile;
 };

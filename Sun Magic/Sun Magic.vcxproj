@@ -52,17 +52,17 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>SFML-1.6/Include/;zinnia/Include/;utf8/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>SFML-2.0-rc/Include/;zinnia/Include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>SFML-1.6/lib/;zinnia/lib/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>SFML-2.0-rc/lib/;zinnia/lib/</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;sfml-system-d.lib;sfml-main-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-window-d.lib;libzinnia.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(ProjectDir)SFML-1.6\lib\*-d.dll" "$(OutDir)"
-xcopy /y "$(ProjectDir)SFML-1.6\lib\sfml-main-d.lib" "$(OutDir)"
+      <Command>xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\*-d-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-d.lib" "$(OutDir)"
 xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -88,7 +88,6 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <None Include="msmincho.ttc" />
     <None Include="ReadMe.txt" />
-    <None Include="zinnia\lib\libzinnia.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character_tile.h" />
@@ -97,8 +96,10 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClInclude Include="game_machine.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="game_state.h" />
+    <ClInclude Include="sfm.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character_tile.cpp" />

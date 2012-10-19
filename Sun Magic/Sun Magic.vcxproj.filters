@@ -16,9 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="zinnia\lib\libzinnia.dll">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="msmincho.ttc">
       <Filter>Resource Files</Filter>
     </None>
@@ -46,6 +43,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

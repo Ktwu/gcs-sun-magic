@@ -6,17 +6,22 @@
 #pragma once
 
 #include "targetver.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <stdio.h>
 #include <tchar.h>
 
-// Needed when linkign with dlls
-#define SFML_DYNAMIC 
+// Needed when linking with dlls
+#define SFML_DYNAMIC
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
+#include "sfm.h"
+#include "util.h"
 
 #include "zinnia.h"
 

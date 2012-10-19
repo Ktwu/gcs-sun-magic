@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstring>
+#include "stdafx.h"
 
 #include "context.h"
 #include "game_state.h"
