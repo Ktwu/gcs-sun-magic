@@ -105,11 +105,11 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClCompile Include="character_tile.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="game_machine.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="sun_magic.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

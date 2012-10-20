@@ -59,13 +59,13 @@
     <ClCompile Include="game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sun_magic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="character_tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="game_machine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
