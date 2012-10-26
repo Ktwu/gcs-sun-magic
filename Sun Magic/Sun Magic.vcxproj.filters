@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\states">
+      <UniqueIdentifier>{8e388f23-6f65-4647-ba5a-efd9141187bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\states">
+      <UniqueIdentifier>{c1eba5ed-c016-45ee-8470-a400f3dca286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\input">
+      <UniqueIdentifier>{00828ac3-2bca-4cd1-b4c9-0028b2188c93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -36,20 +45,26 @@
     <ClInclude Include="game_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_machine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game_state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="context.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sfm.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="blue.h">
+      <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="red.h">
+      <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="machine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="machine_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sm_mouse.h">
+      <Filter>Header Files\input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,11 +77,14 @@
     <ClCompile Include="character_tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_machine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="red.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="blue.cpp">
+      <Filter>Source Files\states</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

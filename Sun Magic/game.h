@@ -2,43 +2,44 @@
 
 #include "stdafx.h"
 #include "character_tile.h"
+#include "machine.h"
+#include "sm_mouse.h"
 
 namespace SunMagic {
 
-class Game {
+	class Game {
+	public:
+		Game() {}
+		~Game() {}
 
-public:
-	static Game* GetInstance() {
-		return Game::_game;
-	}
-	void Run();
+		void init();
+		void handleInput();
+		void run();
+		void destroy();
 
-private:
-	Game();
-	~Game();
-	void UpdateText();
-	void HandleInput();
-	void Update(float elapsedSeconds);
-	void Draw();
-	void Close();
+		static enum GameState {
+			ShowingSplash,
+			Paused, 
+			ShowingMenu,
+			Playing,
+			Exiting,
+			s_None,
+			s_Red,
+			s_Blue
+		};
 
-	enum GameState {
-		ShowingSplash,
-		Paused, 
-		ShowingMenu,
-		Playing,
-		Exiting
+		static SMMouse mouse;
+		static Machine<GameState> gameMachine;
+		static GameState gameState;
+		static sf::RenderWindow mainWindow;
+		static sf::Font font;
+		static std::vector<sf::Text> suggestedChars;
+		static CharacterTile* tile;
+
+	private:
+		void updateText();
+		void update(float elapsedSeconds);
+		void draw();
+		void close();
 	};
-
-	static Game* _game;
-  
-	GameState _gameState;
-	sf::RenderWindow _mainWindow;
-
-	sf::Font _font;
-	std::vector<sf::Text> _suggestedChars;
-
-	CharacterTile *_tile;
-};
-
 }

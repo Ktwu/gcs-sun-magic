@@ -13,4 +13,8 @@ namespace sf
 		rect.setOrigin(0.5f * size);
 		rect.setRotation(sfm::RADTODEG(atan2(diff.y, diff.x)));
 	}
+
+	inline float squaredDistance(sf::Vector2f v1, sf::Vector2f v2) {
+		return pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2);
+	}
 }

@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "character_tile.h"
-
-#include <iterator>
+#include "game.h"
+#include "sm_mouse.h"
 #include "time.h"
+#include "util.h"
+#include <iterator>
+
 
 namespace SunMagic {
 	
@@ -38,7 +41,8 @@ CharacterTile::CharacterTile(float x, float y, size_t width, size_t height) :
 	_traceColor(sf::Color(210, 210, 210)),
 	_animateColor(sf::Color(150, 150, 150)),
 	_secondsToWait(0),
-	_currentLineDistance(0)
+	_currentLineDistance(0),
+	_isWriting(false)
 {
 	_character->clear();
 	_character->set_width(width);
@@ -328,6 +332,9 @@ void CharacterTile::SetStrokeColor(sf::Color color) {
 }
 
 void CharacterTile::Update(float elapsedSeconds) {
+	// First thing's first, deal with input
+	HandleInput();
+
 	if (IsAnimating()) {
 		// We wait a short while after finishing each stroke
 		if (_secondsToWait > 0) {
@@ -375,11 +382,71 @@ void CharacterTile::Update(float elapsedSeconds) {
 	}
 }
 
+void CharacterTile::HandleInput() {
+	if (!_isWriting &&
+	Game::mouse.haveButtonPressEvent && 
+	Game::mouse.buttonPressEvent.button == sf::Mouse::Left) {
+		std::cout << "start\n";
+		_isWriting = true;
+		int stroke = NumStrokes();
+		
+		_lastMouse.x = Game::mouse.buttonPressEvent.x;
+		_lastMouse.y = Game::mouse.buttonPressEvent.y;
+		AddStrokePoint(_lastMouse);
+		std::cout << "Start Stroke (" << std::dec << _lastMouse.x << "," << _lastMouse.y << ")" << std::endl;
+		return;
+	}
+
+	if (_isWriting &&
+	Game::mouse.haveMoveEvent &&
+	sf::squaredDistance(sf::Vector2f(Game::mouse.moveEvent.x, Game::mouse.moveEvent.y), _lastMouse) > MIN_STROKE_DISPLACEMENT_SQUARED) {
+		std::cout << "stroke\n";
+		_lastMouse.x = Game::mouse.moveEvent.x;
+		_lastMouse.y = Game::mouse.moveEvent.y;	
+
+		int stroke = NumStrokes() - 1;
+		AddStrokePoint(_lastMouse);
+		//std::cout << "Add stroke segment " << _character->stroke_size(stroke) << std::endl;
+		return;	
+	}
+	
+	if (_isWriting &&
+	Game::mouse.haveButtonReleaseEvent &&
+	Game::mouse.buttonReleaseEvent.button == sf::Mouse::Left) {
+		std::cout << "release\n";
+		_isWriting = false;
+		EndStroke();
+		SetAnimationStroke(NumStrokes());
+		std::cout << "End Stroke" << std::endl;
+		return;
+		//updateText();
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+		std::cout << "Clear Strokes" << std::endl;
+		_isWriting = false;
+		Clear();
+		SetAnimationStroke(0);
+		//updateText();
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+		std::cout << "Undo Stroke" << std::endl;
+		if (_isWriting) {
+			_isWriting = false;
+			EndStroke();
+		}
+		UndoStroke();
+		SetAnimationStroke(NumStrokes());
+		//UpdateText();
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+		//_gameState = Game::Exiting;
+	}
+}
+
 void CharacterTile::Draw(sf::RenderWindow *mainWindow) {
 	sf::View view = mainWindow->getView();
 	sf::Vector2f center = view.getCenter();
 	mainWindow->setView(sf::View(center - _position, 2.f * center));
-	
+
 	float width = (float)_character->width();
 	float height = (float)_character->height();
 
