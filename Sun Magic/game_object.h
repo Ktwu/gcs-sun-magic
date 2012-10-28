@@ -2,10 +2,9 @@
 
 #include "stdafx.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	class GameObject {
-
 	public:
 		GameObject(float x, float y)
 			: _position(sf::Vector2f(x, y)) { }
@@ -14,6 +13,7 @@ namespace SunMagic {
 		sf::Vector2f GetPosition() {
 			return _position;
 		}
+
 		void SetPosition(sf::Vector2f pos) {
 			_position = pos;
 		}

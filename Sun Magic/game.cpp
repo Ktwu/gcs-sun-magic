@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "blue.h"
 #include "game.h"
+#include "game_states.h"
 #include "machine.h"
 #include "machine_state.h"
 #include "red.h"
@@ -10,25 +11,19 @@
 #include <fstream>
 #include <iostream>
 
-namespace SunMagic {
+namespace sun_magic {
 
-	SMMouse Game::mouse;
-	Machine<Game::GameState> Game::gameMachine;
-	Game::GameState Game::gameState;
-	sf::RenderWindow Game::mainWindow;
-	sf::Font Game::font;
-	std::vector<sf::Text> Game::uiStrings;
-	CharacterTile* Game::tile;
+	Game* Game::instance_ = NULL;
 
-	void Game::init() {
-		gameState = Game::Playing;
-		mainWindow.create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
+	void Game::Init() {
+		game_state_ = ref::PLAYING;
+		main_window_.create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
 
-		gameMachine.init(this->s_Blue, new BlueState());
-		gameMachine.addState(this->s_Red, new RedState());
+		game_machine_.Init(ref::BLUE, new BlueState());
+		game_machine_.AddState(ref::RED, new RedState());
 
 		// Load font data
-		if (!font.loadFromFile("msmincho.ttc")) {
+		if (!font_.loadFromFile("msmincho.ttc")) {
 			std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
 		}
 
@@ -36,134 +31,132 @@ namespace SunMagic {
 		CharacterTile::InitRecognizer("zinnia/models/hiragana.model");
 
 		// Some stuff could be moved into a class
-		sf::Vector2u size = mainWindow.getSize();
-		tile = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
+		sf::Vector2u size = main_window_.getSize();
+		tile_ = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
 		zinnia::Character *character = zinnia::Character::create();
 		character->parse("(character (value い) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
-		tile->SetTraceCharacter(character, sf::String(L"い"));
-		tile->SetAnimationStroke(0);
+		tile_->SetTraceCharacter(character, sf::String(L"い"));
+		tile_->SetAnimationStroke(0);
 	
 		unsigned int width = size.x;
 		unsigned int y = size.y - 100;
 		sf::Text s = sf::Text();
-		s.setFont(font);
+		s.setFont(font_);
 		s.setColor(sf::Color(200, 200, 200));
 		s.setPosition(width * 0.01f, (float)y);
-		uiStrings.push_back(s);
+		ui_strings_.push_back(s);
 
 		s.setPosition(width * 0.5f, (float)y);
-		uiStrings.push_back(s);
+		ui_strings_.push_back(s);
 		
 		y += 50;
 		s = sf::Text();
 		s.setColor(sf::Color(200, 0, 0));
 		s.setPosition(width * 0.01f, (float)y);
-		uiStrings.push_back(s);
+		ui_strings_.push_back(s);
 
 		s.setPosition(width * 0.5f, (float)y);
-		uiStrings.push_back(s);
+		ui_strings_.push_back(s);
 
-		updateText();
+		UpdateText();
 	}
 
-	void Game::handleInput() {
+	void Game::HandleInput() {
 		sf::Event event;
-		mouse.reset();
+		mouse_.reset();
 
-		while (mainWindow.pollEvent(event)) {
+		while (main_window_.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
-				gameState = Game::Exiting;
+				game_state_ = ref::EXITING;
 
-			if (!mouse.haveButtonPressEvent) {
-				mouse.haveButtonPressEvent = event.type == sf::Event::MouseButtonPressed;
-				mouse.buttonPressEvent = event.mouseButton;
+			if (!mouse_.haveButtonPressEvent) {
+				mouse_.haveButtonPressEvent = event.type == sf::Event::MouseButtonPressed;
+				mouse_.buttonPressEvent = event.mouseButton;
 			}
 
-			if (!mouse.haveButtonReleaseEvent) {
-				mouse.haveButtonReleaseEvent = event.type == sf::Event::MouseButtonReleased;
-				mouse.buttonReleaseEvent = event.mouseButton;
+			if (!mouse_.haveButtonReleaseEvent) {
+				mouse_.haveButtonReleaseEvent = event.type == sf::Event::MouseButtonReleased;
+				mouse_.buttonReleaseEvent = event.mouseButton;
 			}
 
-			if (!mouse.haveMoveEvent) {
-				mouse.haveMoveEvent = event.type == sf::Event::MouseMoved;
-				mouse.moveEvent = event.mouseMove;
+			if (!mouse_.haveMoveEvent) {
+				mouse_.haveMoveEvent = event.type == sf::Event::MouseMoved;
+				mouse_.moveEvent = event.mouseMove;
 			}
 
-			if (!mouse.haveWheelEvent) {
-				mouse.haveWheelEvent = event.type == sf::Event::MouseWheelMoved;
-				mouse.wheelEvent = event.mouseWheel;
+			if (!mouse_.haveWheelEvent) {
+				mouse_.haveWheelEvent = event.type == sf::Event::MouseWheelMoved;
+				mouse_.wheelEvent = event.mouseWheel;
 			}
 		}
 	}
 
-	void Game::run() {	
-		clock_t lastClock = clock();
-		while(gameState != Game::Exiting) {
-			clock_t newClock = clock();
-			float elapsedSeconds = (float)(newClock - lastClock) / CLOCKS_PER_SEC;
-			lastClock = newClock;
+	void Game::Run() {	
+		clock_t last_clock = clock();
+		while(game_state_ != ref::EXITING) {
+			clock_t new_clock = clock();
+			float elapsed_seconds = (float)(new_clock - last_clock) / CLOCKS_PER_SEC;
+			last_clock = new_clock;
 		
-			handleInput();
-			update(elapsedSeconds);
-			draw();
+			HandleInput();
+			Update(elapsed_seconds);
+			Draw();
 		}
 	}
 
-	void Game::destroy() {
-		close();
+	void Game::Destroy() {
+		Close();
 	}
 
-	void Game::updateText() {
+	void Game::UpdateText() {
 		sf::String str;
 		str = sf::String("Current: ");
-		str += tile->GetUnicode();
-		uiStrings[0].setString(str);
+		str += tile_->GetUnicode();
+		ui_strings_[0].setString(str);
 
 		str = sf::String("Target: ");
-		str += tile->GetTraceUnicode();
-		uiStrings[1].setString(str);
+		str += tile_->GetTraceUnicode();
+		ui_strings_[1].setString(str);
 
-		size_t strokes = tile->NumStrokes();
+		size_t strokes = tile_->NumStrokes();
 		if (strokes > 0) {
 			std::stringstream ss;
-			float error = tile->GetStrokeError(strokes - 1);
+			float error = tile_->GetStrokeError(strokes - 1);
 			ss << "Error: " << error;
-			uiStrings[2].setString(sf::String(ss.str()));
+			ui_strings_[2].setString(sf::String(ss.str()));
 
 			for (int i = strokes - 2; i >= 0; i--) {
-				error += tile->GetStrokeError(i);
+				error += tile_->GetStrokeError(i);
 			}
 			
 			ss.str("");
 			ss << "Total Error: " << error;
-			uiStrings[3].setString(sf::String(ss.str()));
+			ui_strings_[3].setString(sf::String(ss.str()));
 		} else {
-			uiStrings[2].setString("Error: ");
-			uiStrings[3].setString("Total Error: ");
+			ui_strings_[2].setString("Error: ");
+			ui_strings_[3].setString("Total Error: ");
 		}
 	}
 
-
-	void Game::update(float elapsedSeconds) {
-		tile->Update(elapsedSeconds);
+	void Game::Update(float elapsed_seconds) {
+		tile_->Update(elapsed_seconds);
 	}
 
-
-	void Game::draw() {
-		gameMachine.update();
-		tile->Draw(&mainWindow);
+	void Game::Draw() {
+		game_machine_.Update();
+		tile_->Draw(&main_window_);
 
 		// Draw ui strings
-		for (size_t i = 0; i < uiStrings.size(); i++) {
-			mainWindow.draw(uiStrings[i]);
+		for (size_t i = 0; i < ui_strings_.size(); i++) {
+			main_window_.draw(ui_strings_[i]);
 		}
 
-		updateText();
-		mainWindow.display();
+		UpdateText();
+		main_window_.display();
 	}
 
-	void Game::close() {
-		mainWindow.close();
+	void Game::Close() {
+		main_window_.close();
 	}
 
 }

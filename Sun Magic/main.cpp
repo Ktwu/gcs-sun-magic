@@ -5,10 +5,10 @@
 #include "game.h"
 
 int main(int argc, char* argv[]) {
-	SunMagic::Game* game = new SunMagic::Game();
-	game->init();
-	game->run();
-	game->destroy();
+	sun_magic::Game* game = sun_magic::Game::GetInstance();
+	game->Init();
+	game->Run();
+	game->Destroy();
 	return 0;
 }
 

@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	template <class T>
 	class MachineState {
@@ -10,9 +10,9 @@ namespace SunMagic {
 		MachineState() {}
 		~MachineState() {}
 
-		virtual void registerState(MachineState<T>* previousState) = 0;
-		virtual T update() = 0;
-		virtual void unregisterState(MachineState<T>* previousState) = 0;
+		virtual void RegisterState(MachineState<T>* previous_state) = 0;
+		virtual T Update() = 0;
+		virtual void UnregisterState(MachineState<T>* previous_state) = 0;
 	};
 
 }

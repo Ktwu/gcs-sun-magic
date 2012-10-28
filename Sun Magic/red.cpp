@@ -1,35 +1,35 @@
 #include "stdafx.h"
-#include "game.h"
 #include "machine_state.h"
 #include "red.h"
 #include "sm_mouse.h"
+#include "game.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	RedState::RedState() {}
 
 	RedState::~RedState() {}
 
-	void RedState::registerState(MachineState* previousState) {
+	void RedState::RegisterState(MachineState<ref::MachineStates>* previousState) {
 	}
 
-	Game::GameState RedState::update() {
-		Game::mainWindow.clear(sf::Color::Red);
-		return _handleInput();
+	ref::MachineStates RedState::Update() {
+		Game::GetInstance()->main_window_.clear(sf::Color::Blue);
+		return HandleInput();
 		// So long as I don't return an actual state, this'll keep running.
 	}
 
-	void RedState::unregisterState(MachineState* previousState) {
+	void RedState::UnregisterState(MachineState<ref::MachineStates>* previousState) {
 	}
 
-	Game::GameState RedState::_handleInput() {
-		if (Game::mouse.haveButtonPressEvent &&
-			Game::mouse.buttonPressEvent.button == sf::Mouse::Left) {
+	ref::MachineStates RedState::HandleInput() {
+		Game* game = Game::GetInstance();
+		if (game->mouse_.haveButtonPressEvent &&
+			game->mouse_.buttonPressEvent.button == sf::Mouse::Left) {
 			std::cout << "Mouse pressed!\n";
-			return  Game::s_Blue;
+			return  ref::BLUE;
 		}
 
-		return Game::s_None;
+		return ref::NONE;
 	}
-
 };

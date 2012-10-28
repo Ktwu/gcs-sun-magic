@@ -3,10 +3,9 @@
 #include "stdafx.h"
 #include "game_object.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	class CharacterTile : GameObject {
-
 	public:
 		// This must be called before using any Character Tiles
 		static void InitRecognizer(const char *modelFile);
