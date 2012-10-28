@@ -539,9 +539,10 @@ void CharacterTile::CalcStrokeError() {
 	size_t stroke = _character->strokes_size() - 1;
 	size_t points = _character->stroke_size(stroke);
 	size_t trace_points = _traceCharacter->stroke_size(stroke);
-	if (stroke >= _traceCharacter->stroke_size(stroke)) {
+	if (stroke >= _traceCharacter->strokes_size()) {
 		std::cout << "Not a stroke in trace character." << std::endl;
 		_strokeErrors.push_back(0);
+		return;
 	}
 	if (points < 2 || trace_points < 2) {
 		std::cout << "Not enough points to calculate stroke error." << std::endl;

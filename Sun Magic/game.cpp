@@ -71,8 +71,10 @@ namespace SunMagic {
 		mouse.reset();
 
 		while (mainWindow.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed &&
+					event.key.code == sf::Keyboard::Escape) {
 				gameState = Game::Exiting;
+			}
 
 			if (!mouse.haveButtonPressEvent) {
 				mouse.haveButtonPressEvent = event.type == sf::Event::MouseButtonPressed;
