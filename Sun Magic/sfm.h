@@ -34,6 +34,13 @@ namespace sfm
 	template <class T>
 	float Length(const sf::Vector2<T> &vec){	return sqrt(vec.x * vec.x + vec.y * vec.y);	}
 
+	//Get the length of a vector
+	template <class T>
+	float LengthSquared(const sf::Vector3<T> &vec){	return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;	}
+
+	template <class T>
+	float LengthSquared(const sf::Vector2<T> &vec){	return vec.x * vec.x + vec.y * vec.y;	}
+
 	//Normalize the length of a vector
 	template <class T>
 	void Normalize(sf::Vector3<T> &vec){ float len = Length(vec);	vec/=(len); }

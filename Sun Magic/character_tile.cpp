@@ -63,7 +63,8 @@ sf::String CharacterTile::GetUnicode() {
 }
 
 size_t CharacterTile::NumStrokes() {
-	return _character->strokes_size();
+	// If currently writing, don't count the stroke beign written
+	return _character->strokes_size() - ((_isWriting) ? 1 : 0);
 }
 void CharacterTile::AddStrokePoint(sf::Vector2f p) {
 	p -= _position;
@@ -80,7 +81,7 @@ void CharacterTile::AddStrokePoint(sf::Vector2f p) {
 }
 // Consider every two consecutive lines. If the angle between the lines is small enough remove the mid point.
 size_t SmoothPoints(std::vector<sf::Vector2f>& points1, std::vector<sf::Vector2f>& points2, size_t index) {
-	static const float THRESHOLD_ANGLE = cos(sfm::DEGTORAD(15));
+	static const float THRESHOLD_ANGLE = cos(sfm::DEGTORAD(13));
 
 	size_t i;
 	size_t removed = 0;
@@ -157,6 +158,9 @@ void CharacterTile::EndStroke() {
 
 	_currentStroke++;
 	Reclassify();
+	if (_traceCharacter != NULL) {
+		CalcStrokeError();
+	}
 }
 void CharacterTile::UndoStroke() {
 	if (_currentStroke < 0)
@@ -184,6 +188,7 @@ void CharacterTile::UndoStroke() {
 		_currentStroke--;
 		Reclassify();
 		_strokeLines.pop_back();
+		_strokeErrors.pop_back();
 	} else {
 	}
 	_strokeLines.back().clear();
@@ -193,32 +198,11 @@ void CharacterTile::Clear() {
 	_currentStroke = 0;
 	_strokeLines.clear();
 	_strokeLines.push_back(std::vector<sf::RectangleShape>());
+	_strokeErrors.clear();
 	Reclassify();
 }
 float CharacterTile::GetStrokeError(size_t stroke) {
-	if (stroke >= _character->strokes_size() || _traceCharacter == NULL ||
-		stroke >= _traceCharacter->strokes_size()) {
-			throw "Invalid stroke";
-	}
-
-	size_t i = 0;
-	size_t j = 0;
-	size_t points = _character->stroke_size(stroke);
-	size_t trace_points = _traceCharacter->stroke_size(stroke);
-	if (points < 2 || trace_points < 2) {
-		// Not enough points to calculate error
-		return 0;
-	}
-
-	float error = 0;
-	sf::Vector2i p1 = sf::Vector2i(_character->x(stroke, 0), _character->y(stroke, 0));
-	sf::Vector2i p2 = sf::Vector2i(_character->x(stroke, 1), _character->y(stroke, 1));
-	sf::Vector2i gp1 = sf::Vector2i(_traceCharacter->x(stroke, 0), _traceCharacter->y(stroke, 0));
-	sf::Vector2i gp2 = sf::Vector2i(_traceCharacter->x(stroke, 1), _traceCharacter->y(stroke, 1));
-	while (i < points) {
-		// Find the distance from the 
-	}
-	return 0;
+	return _strokeErrors[stroke];
 }
 void CharacterTile::Resize(size_t width, size_t height) {
 	size_t curr_width = _character->width();
@@ -428,7 +412,7 @@ void CharacterTile::HandleInput() {
 		Clear();
 		SetAnimationStroke(0);
 		//updateText();
-	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) {
 		std::cout << "Undo Stroke" << std::endl;
 		if (_isWriting) {
 			_isWriting = false;
@@ -437,8 +421,6 @@ void CharacterTile::HandleInput() {
 		UndoStroke();
 		SetAnimationStroke(NumStrokes());
 		//UpdateText();
-	} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-		//_gameState = Game::Exiting;
 	}
 }
 
@@ -551,6 +533,62 @@ void CharacterTile::CreateLines(std::vector<std::vector<sf::RectangleShape>>& li
 		}
 		lines.push_back(stroke);
 	}
+}
+
+void CharacterTile::CalcStrokeError() {
+	size_t stroke = _character->strokes_size() - 1;
+	size_t points = _character->stroke_size(stroke);
+	size_t trace_points = _traceCharacter->stroke_size(stroke);
+	if (stroke >= _traceCharacter->stroke_size(stroke)) {
+		std::cout << "Not a stroke in trace character." << std::endl;
+		_strokeErrors.push_back(0);
+	}
+	if (points < 2 || trace_points < 2) {
+		std::cout << "Not enough points to calculate stroke error." << std::endl;
+		_strokeErrors.push_back(0);
+		return;
+	}
+
+	// We calculate the error by finding the area of the polygon that is between the
+	// stroke lines and trace lines
+
+	// The signed area of a planar non-self-intersecting polygon is
+	// 1/2 the sum of the determinants of all neighboring vertices pairs
+	// A = 1/2 (|x1 x2| + |x2 x3| + ... + |xn x1|)
+	//          |y1 y2|   |y2 y3|         |yn y1|
+	// counterclockwise order of verices results in positive area
+
+	float area = 0;
+	float length = 0;
+	sf::Vector2f p1;
+	sf::Vector2f p2 = sf::Vector2f((float)_traceCharacter->x(stroke, 0), (float)_traceCharacter->y(stroke, 0));
+	for (int i = 1; i < trace_points; i++) {
+		p1 = p2;
+		p2 = sf::Vector2f((float)_traceCharacter->x(stroke, i), (float)_traceCharacter->y(stroke, i));
+		area += p1.x * p2.y - p2.x * p1.y;
+		length += sfm::Length(p1 - p2);
+	}
+
+	for (int i = points-1; i >= 0; i--) {
+		p1 = p2;
+		p2 = sf::Vector2f((float)_character->x(stroke, i), (float)_character->y(stroke, i));
+		area += p1.x * p2.y - p2.x * p1.y;
+	}
+
+	// Case for when stroke lines wraps back to start of trace lines
+	p1 = p2;
+	p2 = sf::Vector2f((float)_traceCharacter->x(stroke, 0), (float)_traceCharacter->y(stroke, 0));
+	area += p1.x * p2.y - p2.x * p1.y;
+
+	// We average the error by dividing by the total length of the strokes in the trace character
+	float error = abs(area) / length;
+	// We also add in the error for the difference in position of the start and end points
+	error += sfm::Length(p1 - p2);
+	p1 = sf::Vector2f((float)_character->x(stroke, points-1), (float)_character->y(stroke, points-1));
+	p2 = sf::Vector2f((float)_traceCharacter->x(stroke, trace_points-1), (float)_traceCharacter->y(stroke, trace_points-1));
+	error += sfm::Length(p1 - p2);
+
+	_strokeErrors.push_back(error);
 }
 
 }

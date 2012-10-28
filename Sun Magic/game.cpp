@@ -17,7 +17,7 @@ namespace SunMagic {
 	Game::GameState Game::gameState;
 	sf::RenderWindow Game::mainWindow;
 	sf::Font Game::font;
-	std::vector<sf::Text> Game::suggestedChars;
+	std::vector<sf::Text> Game::uiStrings;
 	CharacterTile* Game::tile;
 
 	void Game::init() {
@@ -48,11 +48,20 @@ namespace SunMagic {
 		sf::Text s = sf::Text();
 		s.setFont(font);
 		s.setColor(sf::Color(200, 200, 200));
-		s.setPosition(width * 0.1f, (float)y);
-		suggestedChars.push_back(s);
+		s.setPosition(width * 0.01f, (float)y);
+		uiStrings.push_back(s);
 
 		s.setPosition(width * 0.5f, (float)y);
-		suggestedChars.push_back(s);
+		uiStrings.push_back(s);
+		
+		y += 50;
+		s = sf::Text();
+		s.setColor(sf::Color(200, 0, 0));
+		s.setPosition(width * 0.01f, (float)y);
+		uiStrings.push_back(s);
+
+		s.setPosition(width * 0.5f, (float)y);
+		uiStrings.push_back(s);
 
 		updateText();
 	}
@@ -108,11 +117,30 @@ namespace SunMagic {
 		sf::String str;
 		str = sf::String("Current: ");
 		str += tile->GetUnicode();
-		suggestedChars[0].setString(str);
+		uiStrings[0].setString(str);
 
 		str = sf::String("Target: ");
 		str += tile->GetTraceUnicode();
-		suggestedChars[1].setString(str);
+		uiStrings[1].setString(str);
+
+		size_t strokes = tile->NumStrokes();
+		if (strokes > 0) {
+			std::stringstream ss;
+			float error = tile->GetStrokeError(strokes - 1);
+			ss << "Error: " << error;
+			uiStrings[2].setString(sf::String(ss.str()));
+
+			for (int i = strokes - 2; i >= 0; i--) {
+				error += tile->GetStrokeError(i);
+			}
+			
+			ss.str("");
+			ss << "Total Error: " << error;
+			uiStrings[3].setString(sf::String(ss.str()));
+		} else {
+			uiStrings[2].setString("Error: ");
+			uiStrings[3].setString("Total Error: ");
+		}
 	}
 
 
@@ -125,9 +153,9 @@ namespace SunMagic {
 		gameMachine.update();
 		tile->Draw(&mainWindow);
 
-		// Draw suggested characters
-		for (size_t i = 0; i < suggestedChars.size(); i++) {
-			mainWindow.draw(suggestedChars[i]);
+		// Draw ui strings
+		for (size_t i = 0; i < uiStrings.size(); i++) {
+			mainWindow.draw(uiStrings[i]);
 		}
 
 		updateText();

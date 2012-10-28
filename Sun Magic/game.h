@@ -33,7 +33,7 @@ namespace SunMagic {
 		static GameState gameState;
 		static sf::RenderWindow mainWindow;
 		static sf::Font font;
-		static std::vector<sf::Text> suggestedChars;
+		static std::vector<sf::Text> uiStrings;
 		static CharacterTile* tile;
 
 	private:
