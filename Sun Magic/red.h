@@ -17,6 +17,8 @@ namespace sun_magic {
 		void UnregisterState(MachineState<ref::MachineStates>* previous_state);
 
 	private:
+		sf::Sprite _background_;
+
 		ref::MachineStates HandleInput();
 	};
 

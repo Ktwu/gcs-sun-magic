@@ -22,6 +22,21 @@
     <Filter Include="Header Files\input">
       <UniqueIdentifier>{00828ac3-2bca-4cd1-b4c9-0028b2188c93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\references">
+      <UniqueIdentifier>{99b518b7-7e2a-4c66-a9fa-2aba55632da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\assets">
+      <UniqueIdentifier>{2c1d413e-b197-4a13-a23e-69803987c333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\assets">
+      <UniqueIdentifier>{a057999f-045b-4bd2-87f6-2d6bbd18417a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tools">
+      <UniqueIdentifier>{962bcae4-e994-43aa-ba76-d4c6d6062d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tools">
+      <UniqueIdentifier>{501a9297-1614-4093-ab0c-18faafd3e235}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -66,6 +81,24 @@
     <ClInclude Include="sm_mouse.h">
       <Filter>Header Files\input</Filter>
     </ClInclude>
+    <ClInclude Include="machine_states.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="game_states.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_refs.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="gameasset_manager.h">
+      <Filter>Header Files\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="gameasset.h">
+      <Filter>Header Files\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="tools_images.h">
+      <Filter>Header Files\tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -85,6 +118,15 @@
     </ClCompile>
     <ClCompile Include="blue.cpp">
       <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="machine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameasset_manager.cpp">
+      <Filter>Source Files\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="tools_images.cpp">
+      <Filter>Source Files\tools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
