@@ -12,7 +12,7 @@ namespace SunMagic {
 		static void InitRecognizer(const char *modelFile);
 		static sf::String UTF8ToUTF32(const char* utf8str);
 
-		CharacterTile(float x = 0, float y = 0, size_t width = 300, size_t height = 300);
+		CharacterTile(float x = 0, float y = 0, float width = 300, float height = 300);
 		~CharacterTile();
 
 		// Get the character that the user has written so far
@@ -24,7 +24,7 @@ namespace SunMagic {
 		void EndStroke();
 		void UndoStroke();
 		void Clear();
-		void Resize(size_t width, size_t height);
+		void Resize(float width, float height);
 		float GetStrokeError(size_t stroke);
 
 		// The trace character is the character the user should be trying to write

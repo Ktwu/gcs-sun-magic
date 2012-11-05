@@ -24,8 +24,8 @@ sf::String CharacterTile::UTF8ToUTF32(const char* utf8str) {
 	return sf::String(utf32str);
 }
 
-CharacterTile::CharacterTile(float x, float y, size_t width, size_t height) :
-	GameObject(x, y),
+CharacterTile::CharacterTile(float x, float y, float width, float height) :
+	GameObject(x, y, width, height),
 	_character(zinnia::Character::create()),
 	_unicode(),
 	_currentStroke(0),
@@ -45,8 +45,8 @@ CharacterTile::CharacterTile(float x, float y, size_t width, size_t height) :
 	_isWriting(false)
 {
 	_character->clear();
-	_character->set_width(width);
-	_character->set_height(height);
+	_character->set_width((size_t)width);
+	_character->set_height((size_t)height);
 	
 	_strokeLines.push_back(std::vector<sf::RectangleShape>());
 }
@@ -67,7 +67,7 @@ size_t CharacterTile::NumStrokes() {
 	return _character->strokes_size() - ((_isWriting) ? 1 : 0);
 }
 void CharacterTile::AddStrokePoint(sf::Vector2f p) {
-	p -= _position;
+	p -= GetPosition();
 	_character->add(_currentStroke, (int)p.x, (int)p.y);
 	size_t points = _character->stroke_size(_currentStroke);
 	if (points > 1) {
@@ -204,19 +204,21 @@ void CharacterTile::Clear() {
 float CharacterTile::GetStrokeError(size_t stroke) {
 	return _strokeErrors[stroke];
 }
-void CharacterTile::Resize(size_t width, size_t height) {
-	size_t curr_width = _character->width();
-	size_t curr_height = _character->height();
-	
+void CharacterTile::Resize(float width, float height) {	
 	zinnia::Character *character = zinnia::createCharacter();
-	character->set_width(width);
-	character->set_height(height);
+	character->set_width((size_t)width);
+	character->set_height((size_t)height);
+
+	float scale_x = width / _rect.width;
+	float scale_y = height / _rect.height;
 	for (int i = 0; i < _currentStroke; i++) {
 		size_t points = _character->stroke_size(i);
 		for (size_t j = 0; j < points; j++) {
-			character->add(i, _character->x(i, j) * width / curr_width, _character->y(i, j) * height / curr_height);
+			character->add(i, _character->x(i, j) * scale_x, _character->y(i, j) * scale_y);
 		}
 	}
+	_rect.width = width;
+	_rect.height = height;
 }
 
 zinnia::Character * CharacterTile::GetTraceCharacter() {
@@ -367,9 +369,8 @@ void CharacterTile::Update(float elapsedSeconds) {
 }
 
 void CharacterTile::HandleInput() {
-	if (!_isWriting &&
-	Game::mouse.haveButtonPressEvent && 
-	Game::mouse.buttonPressEvent.button == sf::Mouse::Left) {
+	if (!_isWriting && Game::mouse.haveButtonPressEvent && 
+			Game::mouse.buttonPressEvent.button == sf::Mouse::Left) {
 		std::cout << "start\n";
 		_isWriting = true;
 		int stroke = NumStrokes();
@@ -381,9 +382,8 @@ void CharacterTile::HandleInput() {
 		return;
 	}
 
-	if (_isWriting &&
-	Game::mouse.haveMoveEvent &&
-	sf::squaredDistance(sf::Vector2f(Game::mouse.moveEvent.x, Game::mouse.moveEvent.y), _lastMouse) > MIN_STROKE_DISPLACEMENT_SQUARED) {
+	if (_isWriting && Game::mouse.haveMoveEvent &&
+			sf::squaredDistance(sf::Vector2f(Game::mouse.moveEvent.x, Game::mouse.moveEvent.y), _lastMouse) > MIN_STROKE_DISPLACEMENT_SQUARED) {
 		std::cout << "stroke\n";
 		_lastMouse.x = Game::mouse.moveEvent.x;
 		_lastMouse.y = Game::mouse.moveEvent.y;	
@@ -395,8 +395,8 @@ void CharacterTile::HandleInput() {
 	}
 	
 	if (_isWriting &&
-	Game::mouse.haveButtonReleaseEvent &&
-	Game::mouse.buttonReleaseEvent.button == sf::Mouse::Left) {
+			Game::mouse.haveButtonReleaseEvent &&
+			Game::mouse.buttonReleaseEvent.button == sf::Mouse::Left) {
 		std::cout << "release\n";
 		_isWriting = false;
 		EndStroke();
@@ -427,7 +427,7 @@ void CharacterTile::HandleInput() {
 void CharacterTile::Draw(sf::RenderWindow *mainWindow) {
 	sf::View view = mainWindow->getView();
 	sf::Vector2f center = view.getCenter();
-	mainWindow->setView(sf::View(center - _position, 2.f * center));
+	mainWindow->setView(sf::View(center - GetPosition(), 2.f * center));
 
 	float width = (float)_character->width();
 	float height = (float)_character->height();
@@ -563,7 +563,7 @@ void CharacterTile::CalcStrokeError() {
 	float length = 0;
 	sf::Vector2f p1;
 	sf::Vector2f p2 = sf::Vector2f((float)_traceCharacter->x(stroke, 0), (float)_traceCharacter->y(stroke, 0));
-	for (int i = 1; i < trace_points; i++) {
+	for (size_t i = 1; i < trace_points; i++) {
 		p1 = p2;
 		p2 = sf::Vector2f((float)_traceCharacter->x(stroke, i), (float)_traceCharacter->y(stroke, i));
 		area += p1.x * p2.y - p2.x * p1.y;

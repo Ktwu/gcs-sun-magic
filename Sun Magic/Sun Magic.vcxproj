@@ -92,7 +92,10 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="blue.h" />
     <ClInclude Include="character_tile.h" />
+    <ClInclude Include="events.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="area.h" />
+    <ClInclude Include="event_manager.h" />
     <ClInclude Include="machine.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="machine_state.h" />
@@ -107,8 +110,10 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClCompile Include="blue.cpp" />
     <ClCompile Include="character_tile.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="event_manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="red.cpp" />
+    <ClCompile Include="area.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
