@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	class SMMouse {
 	public:

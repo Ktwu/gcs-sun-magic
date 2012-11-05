@@ -3,7 +3,7 @@
 #include "stdafx.h"
 #include "game_object.h"
 
-namespace SunMagic {
+namespace sun_magic {
 	
 	typedef sf::Mouse::Button MouseButton;
 	typedef sf::Keyboard::Key Key;

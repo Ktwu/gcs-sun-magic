@@ -2,10 +2,9 @@
 
 #include "stdafx.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
 	class GameObject {
-
 	public:
 		GameObject(float x, float y, float width, float height)
 			: _rect(x, y, width, height)

@@ -1,24 +1,25 @@
 #pragma once
 
 #include "stdafx.h"
-#include "game.h"
 #include "machine_state.h"
+#include "machine_states.h"
 
-namespace SunMagic {
+namespace sun_magic {
 
-	class BlueState : public MachineState<Game::GameState> {
+	class BlueState : public MachineState<ref::MachineStates> {
 	public:
 		BlueState();
 		~BlueState();
 
-		// Interface functions
-		void registerState(MachineState<Game::GameState>* previousState);
-		Game::GameState update();
-		void unregisterState(MachineState<Game::GameState>* previousState);
+		/* Interface functions */
+		void RegisterState(MachineState<ref::MachineStates>* previous_state);
+		ref::MachineStates Update();
+		void UnregisterState(MachineState<ref::MachineStates>* previous_state);
 
 	private:
+		sf::Sprite _background_;
 
-		Game::GameState _handleInput();
+		ref::MachineStates HandleInput();
 	};
 
 }

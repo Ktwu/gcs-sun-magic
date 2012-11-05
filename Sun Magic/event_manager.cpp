@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "event_manager.h"
 
-
-namespace SunMagic {
+namespace sun_magic {
 
 	EventManager::EventManager(sf::RenderWindow *window)
 		:_window(window)
@@ -129,7 +128,7 @@ namespace SunMagic {
 		}
 	}
 
-	void EventManager::Update(float time) {
+	void EventManager::Update() {
 		for (std::vector<Event>::iterator iter = _events.begin(); iter != _events.end(); iter++) {
 			Event event = *iter;
 
