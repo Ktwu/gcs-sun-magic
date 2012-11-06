@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -92,6 +92,8 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="blue.h" />
     <ClInclude Include="character_tile.h" />
+    <ClInclude Include="events.h" />
+    <ClInclude Include="event_manager.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="game_states.h" />
     <ClInclude Include="machine.h" />
@@ -100,7 +102,6 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClInclude Include="gameasset_manager.h" />
     <ClInclude Include="gameasset.h" />
     <ClInclude Include="save_writing.h" />
-    <ClInclude Include="sm_mouse.h" />
     <ClInclude Include="red.h" />
     <ClInclude Include="sfm.h" />
     <ClInclude Include="machine_states.h" />
@@ -113,6 +114,7 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="blue.cpp" />
     <ClCompile Include="character_tile.cpp" />
+    <ClCompile Include="event_manager.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="machine.cpp" />
     <ClCompile Include="main.cpp" />

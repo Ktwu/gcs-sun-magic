@@ -19,9 +19,6 @@
     <Filter Include="Header Files\states">
       <UniqueIdentifier>{c1eba5ed-c016-45ee-8470-a400f3dca286}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\input">
-      <UniqueIdentifier>{00828ac3-2bca-4cd1-b4c9-0028b2188c93}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\references">
       <UniqueIdentifier>{99b518b7-7e2a-4c66-a9fa-2aba55632da5}</UniqueIdentifier>
     </Filter>
@@ -78,9 +75,6 @@
     <ClInclude Include="machine_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sm_mouse.h">
-      <Filter>Header Files\input</Filter>
-    </ClInclude>
     <ClInclude Include="machine_states.h">
       <Filter>Header Files\references</Filter>
     </ClInclude>
@@ -101,6 +95,12 @@
     </ClInclude>
     <ClInclude Include="save_writing.h">
       <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="event_manager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="save_writing.cpp">
       <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="event_manager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

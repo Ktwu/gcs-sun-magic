@@ -8,9 +8,9 @@ namespace sun_magic {
 		namespace images {
 
 			void ScaleToWindowSize(sf::Sprite& sprite) {
-				sf::RenderWindow& window = Game::GetInstance()->main_window_;
+				sf::RenderWindow* window = Game::GetInstance()->GetWindow();
+				sf::Vector2u window_size = window->getSize();
 				sf::Vector2u sprite_size = sprite.getTexture()->getSize();
-				sf::Vector2u window_size = window.getSize();
 
 				sprite.setScale((float)window_size.x / sprite_size.x,
 							    (float)window_size.y / sprite_size.y);

@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 #include "character_tile.h"
+#include "events.h"
+#include "event_manager.h"
 #include "game.h"
 #include "save_writing.h";
 #include "machine_state.h"
@@ -10,22 +12,28 @@
 namespace sun_magic {
 
 	SaveWritingState::SaveWritingState() {
-		sf::Vector2u size = Game::GetInstance()->main_window_.getSize();
+		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 		_tile_ = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
+		Game::GetInstance()->GetEventManager()->AddGameObject(_tile_);
 
 		//zinnia::Character *character = zinnia::Character::create();
 		//character->parse("(character (value い) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
 		//_tile_->SetTraceCharacter(NULL, sf::String(L"い"));
+
+		target_index = 0;
+		target_hiragana = CharacterTile::GetRecognizer()->value(target_index);
 	
-		sf::Font& font = Game::GetInstance()->font_;
+		if (!_font_.loadFromFile("msmincho.ttc")) {
+			std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
+		}
 		unsigned int width = size.x;
 		unsigned int y = size.y - 200;
 
 		/* Set up the strings to display in the scene */
-		_prompt_.setFont(font);
+		_prompt_.setFont(_font_);
 		_prompt_.setColor(sf::Color(200, 200, 200));
 		_prompt_.setPosition(width * 0.30f, (float)y);
-		_current_.setFont(font);
+		_current_.setFont(_font_);
 		_current_.setColor(sf::Color(200, 200, 200));
 		_current_.setPosition(width * 0.30f, (float)y + 50);
 	}
@@ -35,15 +43,17 @@ namespace sun_magic {
 	}
 	
 	void SaveWritingState::RegisterState(MachineState<ref::MachineStates>* previous_state) {
+		_tile_->Register();
+		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_KEY_RELEASED, this);
 	}
 
-	ref::MachineStates SaveWritingState::Update() {
-		sf::RenderWindow* window = &Game::GetInstance()->main_window_;
+	ref::MachineStates SaveWritingState::Update(float elapsed_time) {
+		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 		window->clear(sf::Color::Black);
 
 		/* Draw and update the tile */
-		_tile_->Update();
-		window->draw(*(sf::Drawable*)_tile_);
+		_tile_->Update(elapsed_time);
+		_tile_->Draw(window);
 
 		/* Draw UI strings */
 		UpdateText();
@@ -54,37 +64,37 @@ namespace sun_magic {
 	}
 
 	void SaveWritingState::UnregisterState(MachineState<ref::MachineStates>* previous_state) {
+		_tile_->Unregister();
+		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_KEY_RELEASED, this);
+	}
+
+	void SaveWritingState::ProcessEvent(Event *event) {
+		switch (event->type) {
+		case Event::E_KEY_RELEASED:
+			{
+				KeyEvent *key_event = (KeyEvent*)event;
+				switch (key_event->key) {
+				case Keyboard::Space:
+					_tile_->Clear();
+					break;
+				case Keyboard::S:
+					target_index = (target_index + 1) % CharacterTile::GetRecognizer()->size();
+					std::cout << CharacterTile::GetRecognizer()->size() << "\n";
+					target_hiragana = _tile_->UTF8ToUTF32(CharacterTile::GetRecognizer()->value(target_index));
+					_tile_->Clear();
+					break;
+				}
+			}
+		}
 	}
 
 	void SaveWritingState::UpdateText() {
 		_current_.setString("Current: " + _tile_->GetUnicode());
-		_prompt_.setString("Please Draw: " + _tile_->GetTraceUnicode());
+		_prompt_.setString("Please Draw: " + target_hiragana);
 
-		char buff[256];
-		_tile_->GetCharacter()->toString(buff, 256);
-		std::cout << buff << "\n";
-		/*size_t strokes = _tile_->NumStrokes();
-		if (strokes > 0) {
-			std::stringstream ss;
-			float error = _tile_->GetStrokeError(strokes - 1);
-			ss << "Error: " << error;
-			ui_strings_[2].setString(sf::String(ss.str()));
-
-			for (int i = strokes - 2; i >= 0; i--) {
-				error += tile_->GetStrokeError(i);
-			}
-			
-			ss.str("");
-			ss << "Total Error: " << error;
-			ui_strings_[3].setString(sf::String(ss.str()));
-		} else {
-			ui_strings_[2].setString("Error: ");
-			ui_strings_[3].setString("Total Error: ");
-		}*/
-	}
-
-	ref::MachineStates SaveWritingState::HandleInput() {
-		return ref::MachineStates::NONE;
+		//char buff[256];
+		//_tile_->GetCharacter()->toString(buff, 256);
+		//std::cout << buff << "\n";
 	}
 
 }

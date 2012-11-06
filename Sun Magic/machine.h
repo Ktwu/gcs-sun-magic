@@ -17,7 +17,7 @@ namespace sun_magic {
 		MachineState<T>* RemoveState(T state);
 		MachineState<T>* GetActiveState();
 		T GetActiveStateKey();
-		T Update();
+		T Update(float elapsed_time);
 
 	protected:
 		std::map<T, MachineState<T>*> _game_states_;
@@ -62,14 +62,14 @@ namespace sun_magic {
 	}
 
 	template <class T>
-	T  Machine<T>::Update() {
+	T  Machine<T>::Update(float elapsed_time) {
 		MachineState<T>* active_m_state = this->_game_states_[this->_active_state_];
 		if (active_m_state == NULL) {
 			/* TODO report an error here */
 			return this->_active_state_;
 		}
 	
-		T new_state = this->_game_states_[this->_active_state_]->Update();
+		T new_state = this->_game_states_[this->_active_state_]->Update(elapsed_time);
 		MachineState<T>* new_m_state = this->_game_states_[new_state];
 		if (new_m_state != NULL) {
 			active_m_state->UnregisterState(new_m_state);

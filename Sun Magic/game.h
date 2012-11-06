@@ -2,17 +2,17 @@
 
 #include "stdafx.h"
 #include "character_tile.h"
+#include "event_manager.h"
 #include "game_states.h"
 #include "machine.h"
 #include "machine_states.h"
-#include "sm_mouse.h"
 
 namespace sun_magic {
 
-	class Game {
+	class Game : public EventListener {
 	public:
-		Game() {}
-		~Game() {}
+		Game();
+		~Game();
 
 		static Game* GetInstance() {
 			if (Game::instance_ == NULL) {
@@ -21,21 +21,30 @@ namespace sun_magic {
 			return Game::instance_;
 		}
 
+		sf::RenderWindow* GetWindow();
+		EventManager* GetEventManager();
+
 		void Init();
-		void HandleInput();
 		void Run();
 		void Destroy();
+		void ProcessEvent(Event *event);
 
-		float time_since_last_update;
-		SMMouse mouse_;
+	private:
+
+		void UpdateText();
+		void HandleInput();
+		void Update(float elapsed_seconds);
+		void Draw();
+		void Close();
+
+		static Game* instance_;
+
 		Machine<ref::MachineStates> game_machine_;
 		ref::GameStates game_state_;
+		EventManager event_manager_;
 		sf::RenderWindow main_window_;
 		sf::Font font_;
 		std::vector<sf::Text> ui_strings_;
 		CharacterTile* tile_;
-
-	private:
-		static Game* instance_;
 	};
 }
