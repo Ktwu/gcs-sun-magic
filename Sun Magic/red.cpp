@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "machine_state.h"
 #include "red.h"
-#include "sm_mouse.h"
+
 #include "game.h"
 #include "gameasset_manager.h"
+#include "machine_state.h"
 #include "texture_refs.h"
 #include "tools_images.h"
 
@@ -19,27 +19,34 @@ namespace sun_magic {
 
 		/* The image might be a little too big, so scale it so it fits in the window */
 		tools::images::ScaleToWindowSize(_background_);
-	}
 
-	ref::MachineStates RedState::Update() {
-		Game::GetInstance()->main_window_.draw(_background_);
-		return HandleInput();
-		// So long as I don't return an actual state, this'll keep running.
+		change_ = false;
+		RedState *self = static_cast<RedState*>(this);
+		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_RELEASED, this);
 	}
 
 	void RedState::UnregisterState(MachineState<ref::MachineStates>* previousState) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(texture_refs::tutorial::poster_close);
+		
+		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_MOUSE_RELEASED, this);
 	}
 
-	ref::MachineStates RedState::HandleInput() {
-		Game* game = Game::GetInstance();
-		if (game->mouse_.haveButtonPressEvent &&
-			game->mouse_.buttonPressEvent.button == sf::Mouse::Left) {
-			std::cout << "Mouse pressed!\n";
-			return  ref::BLUE;
-		}
+	ref::MachineStates RedState::Update() {
+		Game::GetInstance()->GetWindow()->draw(_background_);
 
+		if (change_) {
+			return ref::BLUE;
+		}
 		return ref::NONE;
 	}
+
+	void RedState::ProcessEvent(Event *event) {
+		switch(event->type) {
+		case Event::E_MOUSE_RELEASED:
+			change_ = true;
+			break;
+		}
+	}
+
 };

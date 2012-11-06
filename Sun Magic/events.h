@@ -5,8 +5,8 @@
 
 namespace sun_magic {
 	
-	typedef sf::Mouse::Button MouseButton;
-	typedef sf::Keyboard::Key Key;
+	typedef sf::Mouse Mouse;
+	typedef sf::Keyboard Keyboard;
 	
 	struct Event {
 		enum EventType {
@@ -33,15 +33,21 @@ namespace sun_magic {
 
 	struct MouseEvent : Event {
 		sf::Vector2i pos;
-		MouseButton button;
+		Mouse::Button button;
 	};
 
 	struct KeyEvent : Event {
-		Key key;
+		Keyboard::Key key;
 	};
 
 	struct TriggerEvent : Event {
 		GameObject *source;
 	};
 
+	
+	// Interface that all event listeners must implement
+	class EventListener {
+	public:
+		virtual void ProcessEvent(Event *event) = 0;
+	};
 }

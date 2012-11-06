@@ -3,125 +3,152 @@
 
 namespace sun_magic {
 
-	EventManager::EventManager(sf::RenderWindow *window)
-		:_window(window)
-	{}
+	EventManager::EventManager() {}
 	EventManager::~EventManager() {
-		ClearCallbacks();
+		ClearListeners();
 	}
 
-	void EventManager::RegisterCallback(Event::EventType type, void (*callback)(Event*), GameObject *focus) {
-		EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.find(type);
-		FocusToCallbackSetMap *focus_callback_map;
-		if (event_iter == _event_focus_callback_map.end()) {
-			focus_callback_map = new FocusToCallbackSetMap();
-			_event_focus_callback_map[type] = focus_callback_map;
-		} else {
-			focus_callback_map = event_iter->second;
-		}
-		
-		FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->find(focus);
-		CallbackSet* callback_set;
-		if (focus_iter == focus_callback_map->end()) {
-			callback_set = new CallbackSet();
-			focus_callback_map->insert(FocusToCallbackSetPair(focus, callback_set));
-		} else {
-			callback_set = focus_iter->second;
-		}
-
-		callback_set->insert(callback);
-		_focus_objects.insert(focus);
+	GameObject* EventManager::GetFocus() {
+		return focus_;
 	}
 
-	bool EventManager::RemoveCallback(Event::EventType type, void (*callback)(Event*), GameObject *focus) {
-		EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.find(type);
-		if (event_iter == _event_focus_callback_map.end()) {
-			return false;
-		}
-		FocusToCallbackSetMap *focus_callback_map = event_iter->second;
-		
-		FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->find(focus);
-		if (focus_iter == focus_callback_map->end()) {
-			return false;
-		}
-		CallbackSet* callback_set = focus_iter->second;
-		
-		CallbackSet::iterator callback_iter = callback_set->find(callback);
-		if (callback_iter == callback_set->end()) {
-			return false;
-		}
-
-		if (callback_set->size() == 1) {
-			std::hash_set<GameObject*>::iterator focus_object_iter = _focus_objects.find(focus);
-			if (focus_object_iter != _focus_objects.end()) {
-				_focus_objects.erase(focus_object_iter);
+	void EventManager::AddGameObject(GameObject *object) {
+		game_objects_.push_back(object);
+		object->Register();
+	}
+	
+	bool EventManager::RemoveGameObject(GameObject *object) {
+		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
+			if (*focus_iter == object) {
+				game_objects_.erase(focus_iter);
+				object->Unregister();
+				if (object == focus_) {
+					focus_ = NULL;
+				}
+				return true;
 			}
 		}
-		callback_set->erase(callback_iter);
+		return false;
+	}
+
+	std::vector<GameObject*>& EventManager::GetGameObjects() {
+		return game_objects_;
+	}
+
+	void EventManager::RegisterListener(Event::EventType type, EventListener *listener, GameObject *focus) {
+		EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(type);
+		FocusToListenerSetMap *focus_listener_map;
+		if (event_iter == eventfocus__listener_map_.end()) {
+			focus_listener_map = new FocusToListenerSetMap();
+			eventfocus__listener_map_[type] = focus_listener_map;
+		} else {
+			focus_listener_map = event_iter->second;
+		}
+		
+		FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(focus);
+		ListenerSet* listener_set;
+		if (focus_iter == focus_listener_map->end()) {
+			listener_set = new ListenerSet();
+			focus_listener_map->insert(FocusToListenerSetPair(focus, listener_set));
+		} else {
+			listener_set = focus_iter->second;
+		}
+
+		listener_set->insert(listener);
+	}
+
+	bool EventManager::UnregisterListener(Event::EventType type, EventListener *listener, GameObject *focus) {
+		EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(type);
+		if (event_iter == eventfocus__listener_map_.end()) {
+			return false;
+		}
+		FocusToListenerSetMap *focus_listener_map = event_iter->second;
+		
+		FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(focus);
+		if (focus_iter == focus_listener_map->end()) {
+			return false;
+		}
+		ListenerSet* listener_set = focus_iter->second;
+		
+		ListenerSet::iterator listener_iter = listener_set->find(listener);
+		if (listener_iter == listener_set->end()) {
+			return false;
+		}
+
+		listener_set->erase(listener_iter);
 		return true;
 	}
 
-	void EventManager::ClearCallbacks() {
-		for (EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.begin();
-				event_iter != _event_focus_callback_map.end(); event_iter++) {
-			FocusToCallbackSetMap *focus_callback_map = event_iter->second;
-			for (FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->begin();
-					focus_iter != focus_callback_map->end(); focus_iter++) {
-				CallbackSet* callback_set = focus_iter->second;
-				delete callback_set;
+	void EventManager::ClearListeners() {
+		for (EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.begin();
+				event_iter != eventfocus__listener_map_.end(); event_iter++) {
+			FocusToListenerSetMap *focus_listener_map = event_iter->second;
+			for (FocusToListenerSetMap::iterator focus_iter = focus_listener_map->begin();
+					focus_iter != focus_listener_map->end(); focus_iter++) {
+				ListenerSet* listener_set = focus_iter->second;
+				delete listener_set;
 			}
-			delete focus_callback_map;
+			delete focus_listener_map;
 		}
-		_event_focus_callback_map.clear();
+		eventfocus__listener_map_.clear();
 	}
 
-	void EventManager::AddEvent(Event event) {
-		_events.push_back(event);
+	void EventManager::AddEvent(Event *event) {
+		events_.push_back(event);
 	}
 
-	void EventManager::HandleInput() {
-		sf::Event sf_event;
-		Event event;
-		MouseEvent mouse_event;
-		KeyEvent key_event;
-		while (_window->pollEvent(sf_event)) {
-			switch (sf_event.type) {
+	void EventManager::AddEvent(sf::Event sf_event) {
+		switch (sf_event.type) {
 
-			case sf::Event::Closed:
-				event.type = Event::E_CLOSED;
+		case sf::Event::Closed:
+			{
+				Event *event = new Event();
+				event->type = Event::E_CLOSED;
 				AddEvent(event);
 				break;
+			}
 
-			case sf::Event::MouseButtonPressed:
-				mouse_event.type = Event::E_MOUSE_PRESSED;
-				mouse_event.pos = sf::Vector2i(sf_event.mouseButton.x, sf_event.mouseButton.y);
-				mouse_event.button = sf_event.mouseButton.button;
+		case sf::Event::MouseButtonPressed:
+		case sf::Event::MouseButtonReleased:
+			{
+				MouseEvent *mouse_event = new MouseEvent();
+				mouse_event->pos = sf::Vector2i(sf_event.mouseButton.x, sf_event.mouseButton.y);
+				mouse_event->button = sf_event.mouseButton.button;
+				switch (sf_event.type) {
+				case sf::Event::MouseButtonPressed:
+					mouse_event->type = Event::E_MOUSE_PRESSED;
+					break;
+				case sf::Event::MouseButtonReleased:
+					mouse_event->type = Event::E_MOUSE_RELEASED;
+					break;
+				}
 				AddEvent(mouse_event);
 				break;
-			case sf::Event::MouseButtonReleased:
-				mouse_event.type = Event::E_MOUSE_RELEASED;
-				mouse_event.pos = sf::Vector2i(sf_event.mouseButton.x, sf_event.mouseButton.y);
-				mouse_event.button = sf_event.mouseButton.button;
-				AddEvent(mouse_event);
-				break;
-			case sf::Event::MouseMoved:
-				mouse_event.type = Event::E_MOUSE_MOVED;
-				mouse_event.pos = sf::Vector2i(sf_event.mouseButton.x, sf_event.mouseButton.y);
-				mouse_event.button = MouseButton::ButtonCount;
+			}
+		case sf::Event::MouseMoved:
+			{
+				MouseEvent *mouse_event = new MouseEvent();
+				mouse_event->pos = sf::Vector2i(sf_event.mouseMove.x, sf_event.mouseMove.y);
+				mouse_event->type = Event::E_MOUSE_MOVED;
 				AddEvent(mouse_event);
 
 				// Update currently focused object
-				UpdateFocus(mouse_event.pos);				
+				UpdateFocus(mouse_event->pos);
 				break;
+			}
 
-			case sf::Event::KeyPressed:
-				key_event.type = Event::E_KEY_PRESSED;
-				key_event.key = sf_event.key.code;
-				AddEvent(key_event);
-				break;
-			case sf::Event::KeyReleased:
-				key_event.type = Event::E_KEY_RELEASED;
-				key_event.key = sf_event.key.code;
+		case sf::Event::KeyPressed:
+			{
+				KeyEvent *key_event = new KeyEvent();
+				key_event->key = sf_event.key.code;
+				switch (sf_event.type) {
+				case sf::Event::KeyPressed:
+					key_event->type = Event::E_KEY_PRESSED;
+					break;
+				case sf::Event::KeyReleased:
+					key_event->type = Event::E_KEY_RELEASED;
+					break;
+				}
 				AddEvent(key_event);
 				break;
 			}
@@ -129,39 +156,40 @@ namespace sun_magic {
 	}
 
 	void EventManager::Update() {
-		for (std::vector<Event>::iterator iter = _events.begin(); iter != _events.end(); iter++) {
-			Event event = *iter;
+		for (std::vector<Event*>::iterator iter = events_.begin(); iter != events_.end(); iter++) {
+			Event *event = *iter;
 
-			EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.find(event.type);
-			if (event_iter == _event_focus_callback_map.end()) {
+			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event->type);
+			if (event_iter == eventfocus__listener_map_.end()) {
 				continue;
 			}
-			FocusToCallbackSetMap *focus_callback_map = event_iter->second;
+			FocusToListenerSetMap *focus_listener_map = event_iter->second;
 
-			// Send event to all callbacks with NULL focus i.e. global focus
-			FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->find(NULL);
-			if (focus_iter != focus_callback_map->end()) {
-				CallbackSet* callback_set = focus_iter->second;
-				for (CallbackSet::iterator callback_iter = callback_set->begin();
-						callback_iter != callback_set->end(); callback_iter++) {
-					void (*callback)(Event*) = *callback_iter;
-					callback(&event);
+			// Send event to all listeners with NULL focus i.e. global focus
+			FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(NULL);
+			if (focus_iter != focus_listener_map->end()) {
+				ListenerSet* listener_set = focus_iter->second;
+				for (ListenerSet::iterator listener_iter = listener_set->begin();
+						listener_iter != listener_set->end(); listener_iter++) {
+					EventListener *listener = *listener_iter;
+					listener->ProcessEvent(event);
 				}
 			}
 
-			// Send event to all callbacks on the current focused object if any
-			if (_focus != NULL) {
-				focus_iter = focus_callback_map->find(_focus);
-				if (focus_iter != focus_callback_map->end()) {
-					CallbackSet* callback_set = focus_iter->second;
-					for (CallbackSet::iterator callback_iter = callback_set->begin();
-							callback_iter != callback_set->end(); callback_iter++) {
-						void (*callback)(Event*) = *callback_iter;
-						callback(&event);
+			// Send event to all listeners on the current focused object if any
+			if (focus_ != NULL) {
+				focus_iter = focus_listener_map->find(focus_);
+				if (focus_iter != focus_listener_map->end()) {
+					ListenerSet* listener_set = focus_iter->second;
+					for (ListenerSet::iterator listener_iter = listener_set->begin();
+							listener_iter != listener_set->end(); listener_iter++) {
+						EventListener *listener = *listener_iter;
+						listener->ProcessEvent(event);
 					}
 				}
 			}
 		}
+		events_.clear();
 	}
 
 	int ZSort(GameObject* a, GameObject* b) {
@@ -173,53 +201,53 @@ namespace sun_magic {
 
 		// Find all intersecting focus objects
 		std::vector<GameObject*> intersections;
-		for (std::hash_set<GameObject*>::iterator focus_iter = _focus_objects.begin(); focus_iter != _focus_objects.end(); focus_iter++) {
+		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
 			GameObject *object = *focus_iter;
 			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
 				intersections.push_back(object);
 			}
 		}
 		// Sort by z-order
-		GameObject *new_focus = NULL;
+		GameObject *newfocus_ = NULL;
 		if (intersections.size() > 0) {
 			std::sort(intersections.begin(), intersections.end(), ZSort);
-			new_focus = intersections.front();
+			newfocus_ = intersections.front();
 		}
 
 		// If new focus send enter and exit events
-		if (new_focus != _focus) {
+		if (newfocus_ != focus_) {
 			MouseEvent mouse_event;
-			if (_focus != NULL) {
+			if (focus_ != NULL) {
 				// Exit event
 				mouse_event.type = Event::E_MOUSE_EXITED;
 				mouse_event.pos = old_mouse;
-				EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.find(Event::E_MOUSE_EXITED);
-				if (event_iter != _event_focus_callback_map.end()) {
-					FocusToCallbackSetMap *focus_callback_map = event_iter->second;
-					FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->find(_focus);
-					if (focus_iter != focus_callback_map->end()) {
-						CallbackSet* callback_set = focus_iter->second;
-						for (CallbackSet::iterator callback_iter = callback_set->begin(); callback_iter != callback_set->end(); callback_iter++) {
-							void (*callback)(Event*) = *callback_iter;
-							callback(&mouse_event);
+				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_EXITED);
+				if (event_iter != eventfocus__listener_map_.end()) {
+					FocusToListenerSetMap *focus_listener_map = event_iter->second;
+					FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(focus_);
+					if (focus_iter != focus_listener_map->end()) {
+						ListenerSet* listener_set = focus_iter->second;
+						for (ListenerSet::iterator listener_iter = listener_set->begin(); listener_iter != listener_set->end(); listener_iter++) {
+							EventListener *listener = *listener_iter;
+							listener->ProcessEvent(&mouse_event);
 						}
 					}
 				}
 			}
-			_focus = new_focus;
-			if (_focus != NULL) {
+			focus_ = newfocus_;
+			if (focus_ != NULL) {
 				// Enter event
 				mouse_event.type = Event::E_MOUSE_ENTERED;
 				mouse_event.pos = mouse;
-				EventToFocusToCallbackSetMap::iterator event_iter = _event_focus_callback_map.find(Event::E_MOUSE_ENTERED);
-				if (event_iter != _event_focus_callback_map.end()) {
-					FocusToCallbackSetMap *focus_callback_map = event_iter->second;
-					FocusToCallbackSetMap::iterator focus_iter = focus_callback_map->find(_focus);
-					if (focus_iter != focus_callback_map->end()) {
-						CallbackSet* callback_set = focus_iter->second;
-						for (CallbackSet::iterator callback_iter = callback_set->begin(); callback_iter != callback_set->end(); callback_iter++) {
-							void (*callback)(Event*) = *callback_iter;
-							callback(&mouse_event);
+				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_ENTERED);
+				if (event_iter != eventfocus__listener_map_.end()) {
+					FocusToListenerSetMap *focus_listener_map = event_iter->second;
+					FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(focus_);
+					if (focus_iter != focus_listener_map->end()) {
+						ListenerSet* listener_set = focus_iter->second;
+						for (ListenerSet::iterator listener_iter = listener_set->begin(); listener_iter != listener_set->end(); listener_iter++) {
+							EventListener *listener = *listener_iter;
+							listener->ProcessEvent(&mouse_event);
 						}
 					}
 				}

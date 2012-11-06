@@ -28,12 +28,8 @@ namespace sun_magic {
 			_z = z;
 		}
 
-		// Shoul return whether the event was proccesed
-		// Unproccesed events are passed to the next gameobject
-		virtual bool ProcessEvent(sf::Event event) {
-			return true;
-		}
-
+		virtual void Register() = 0;
+		virtual void Unregister() = 0;
 		virtual void Update(float elapsedSeconds) = 0;
 		virtual void Draw(sf::RenderWindow *mainWindow) = 0;
 

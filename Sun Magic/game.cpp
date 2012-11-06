@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
-#include "blue.h"
 #include "game.h"
+
+#include "blue.h"
 #include "game_states.h"
 #include "machine.h"
 #include "machine_state.h"
 #include "red.h"
-#include "sm_mouse.h"
 #include "time.h"
 
 #include <fstream>
@@ -14,6 +14,18 @@
 namespace sun_magic {
 
 	Game* Game::instance_ = NULL;
+
+	Game::Game() {}
+
+	Game::~Game() {}
+
+	sf::RenderWindow* Game::GetWindow() {
+		return &main_window_;
+	}
+
+	EventManager* Game::GetEventManager() {
+		return &event_manager_;
+	}
 
 	void Game::Init() {
 		game_state_ = ref::PLAYING;
@@ -58,37 +70,20 @@ namespace sun_magic {
 		s.setPosition(width * 0.5f, (float)y);
 		ui_strings_.push_back(s);
 
+		event_manager_.AddGameObject(tile_);
+		
+		event_manager_.RegisterListener(Event::E_CLOSED, this);
+		event_manager_.RegisterListener(Event::E_KEY_RELEASED, this);
+		
 		UpdateText();
 	}
 
 	void Game::HandleInput() {
 		sf::Event event;
-		mouse_.reset();
-
 		while (main_window_.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-				game_state_ = ref::EXITING;
-
-			if (!mouse_.haveButtonPressEvent) {
-				mouse_.haveButtonPressEvent = event.type == sf::Event::MouseButtonPressed;
-				mouse_.buttonPressEvent = event.mouseButton;
-			}
-
-			if (!mouse_.haveButtonReleaseEvent) {
-				mouse_.haveButtonReleaseEvent = event.type == sf::Event::MouseButtonReleased;
-				mouse_.buttonReleaseEvent = event.mouseButton;
-			}
-
-			if (!mouse_.haveMoveEvent) {
-				mouse_.haveMoveEvent = event.type == sf::Event::MouseMoved;
-				mouse_.moveEvent = event.mouseMove;
-			}
-
-			if (!mouse_.haveWheelEvent) {
-				mouse_.haveWheelEvent = event.type == sf::Event::MouseWheelMoved;
-				mouse_.wheelEvent = event.mouseWheel;
-			}
+			event_manager_.AddEvent(event);
 		}
+		event_manager_.Update();
 	}
 
 	void Game::Run() {	
@@ -159,4 +154,20 @@ namespace sun_magic {
 		main_window_.close();
 	}
 
+	void Game::ProcessEvent(Event *event) {
+		switch (event->type) {
+		case Event::E_KEY_RELEASED:
+			{
+				KeyEvent *key_event = (KeyEvent*)event;
+				switch (key_event->key) {
+				case Keyboard::Escape:
+					game_state_ = ref::EXITING;
+					break;
+				}
+			}
+		case Event::E_CLOSED:
+			game_state_ = ref::EXITING;
+			break;
+		}
+	}
 }

@@ -2,10 +2,11 @@
 
 #include "stdafx.h"
 #include "game_object.h"
+#include "events.h"
 
 namespace sun_magic {
 
-	class CharacterTile : GameObject {
+	class CharacterTile : public GameObject, public EventListener {
 	public:
 		// This must be called before using any Character Tiles
 		static void InitRecognizer(const char *modelFile);
@@ -61,9 +62,12 @@ namespace sun_magic {
 		sf::Color GetStrokeColor();
 		void SetStrokeColor(sf::Color color);
 
+		void Register();
+		void Unregister();
 		void Update(float elapsedSeconds);
-		void HandleInput();
 		void Draw(sf::RenderWindow *mainWindow);
+		
+		void ProcessEvent(Event *event);
 
 	private:
 		static const int MIN_STROKE_DISPLACEMENT_SQUARED = 8 * 8;
@@ -73,34 +77,32 @@ namespace sun_magic {
 		void CreateLines(std::vector<std::vector<sf::RectangleShape>>& lines, zinnia::Character *character, sf::Color color, size_t startStroke, size_t endStroke);
 		void CalcStrokeError();
 
-		zinnia::Character *_character;
-		sf::String _unicode;
-		int _currentStroke;
+		zinnia::Character *character_;
+		sf::String unicode_;
+		int current_stroke_;
 
-		zinnia::Character *_traceCharacter;
-		sf::String _traceUnicode;
-		int _animatingStroke;
-		float _animationSpeed;
-		float _waitSeconds;
+		zinnia::Character *trace_character_;
+		sf::String trace_unicode_;
+		int animating_stroke_;
+		float animation_speed_;
+		float wait_seconds_;
 
-		float _strokeThickness;
-		sf::Color _borderColor;
-		sf::Color _guideColor;
-		sf::Color _traceColor;
-		sf::Color _animateColor;
-		sf::Color _strokeColor;
-
-		sf::Vector2f _lastMouse;
-		sf::Vector2f _currMouse;
+		float stroke_thickness_;
+		sf::Color border_color_;
+		sf::Color guide_color_;
+		sf::Color trace_color_;
+		sf::Color animate_color_;
+		sf::Color stroke_color_;
 
 		// Current animation variables
-		bool _isWriting;
-		float _secondsToWait;
-		float _currentLineDistance;
-		std::vector<std::vector<sf::RectangleShape>> _strokeLines;
-		std::vector<std::vector<sf::RectangleShape>> _traceLines;
-		std::vector<sf::RectangleShape> _animatingLines;
-		std::vector<float> _strokeErrors;
+		sf::Vector2f last_mouse_;
+		bool is_writing_;
+		float seconds_to_wait_;
+		float current_line_distance_;
+		std::vector<std::vector<sf::RectangleShape>> stroke_lines_;
+		std::vector<std::vector<sf::RectangleShape>> trace_lines_;
+		std::vector<sf::RectangleShape> animating_lines_;
+		std::vector<float> stroke_errors_;
 	};
 
 }
