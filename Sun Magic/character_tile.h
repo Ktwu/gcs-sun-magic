@@ -61,9 +61,9 @@ namespace sun_magic {
 		sf::Color GetStrokeColor();
 		void SetStrokeColor(sf::Color color);
 
-		void Update(float elapsedSeconds);
+		void Update();
 		void HandleInput();
-		void Draw(sf::RenderWindow *mainWindow);
+		void draw(sf::RenderTarget& target, sf::RenderStates state) const;
 
 	private:
 		static const int MIN_STROKE_DISPLACEMENT_SQUARED = 8 * 8;

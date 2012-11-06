@@ -4,7 +4,7 @@
 
 namespace sun_magic {
 
-	class GameObject {
+	class GameObject : sf::Drawable {
 	public:
 		GameObject(float x, float y)
 			: _position(sf::Vector2f(x, y)) { }
@@ -18,8 +18,8 @@ namespace sun_magic {
 			_position = pos;
 		}
 
-		virtual void Update(float elapsedSeconds) = 0;
-		virtual void Draw(sf::RenderWindow *mainWindow) = 0;
+		virtual void Update() = 0;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates state) const = 0;
 
 	protected:
 		sf::Vector2f _position;

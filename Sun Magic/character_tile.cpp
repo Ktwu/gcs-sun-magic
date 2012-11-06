@@ -243,12 +243,10 @@ namespace sun_magic {
 		return _animatingStroke;
 	}
 	void CharacterTile::SetAnimationStroke(int stroke) {
-		if (stroke == _animatingStroke)
+		if (stroke == _animatingStroke || _traceCharacter == NULL)
 			return;
 
 		if (stroke >= 0) {
-			if (_traceCharacter == NULL)
-				throw "Trace character is NULL";
 			if (stroke >= (int)_traceCharacter->strokes_size()) {
 				stroke = -1;
 			}
@@ -315,7 +313,8 @@ namespace sun_magic {
 		_strokeColor = color;
 	}
 
-	void CharacterTile::Update(float elapsedSeconds) {
+	void CharacterTile::Update() {
+		float elapsedSeconds = Game::GetInstance()->time_since_last_update;
 		// First thing's first, deal with input
 		HandleInput();
 
@@ -425,10 +424,11 @@ namespace sun_magic {
 		}
 	}
 
-	void CharacterTile::Draw(sf::RenderWindow *mainWindow) {
-		sf::View view = mainWindow->getView();
-		sf::Vector2f center = view.getCenter();
-		mainWindow->setView(sf::View(center - _position, 2.f * center));
+	void CharacterTile::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+		sf::View view = target.getView();
+		sf::Vector2u size = target.getSize();
+		sf::Vector2f center = sf::Vector2f((float)size.x/2, (float)size.y/2);
+		target.setView(sf::View(center - _position, 2.f * center));
 
 		float width = (float)_character->width();
 		float height = (float)_character->height();
@@ -436,29 +436,29 @@ namespace sun_magic {
 		// Draw background
 		sf::RectangleShape rect(sf::Vector2f(width, height));
 		rect.setFillColor(sf::Color::White);
-		mainWindow->draw(rect);
+		target.draw(rect);
 
 		// Draw border lines
 		rect.setFillColor(_borderColor);
 		rect.setSize(sf::Vector2f(width, _strokeThickness));
 		rect.setPosition(0, 0);
-		mainWindow->draw(rect);
+		target.draw(rect);
 		rect.setPosition(0, height - _strokeThickness);
-		mainWindow->draw(rect);
+		target.draw(rect);
 		rect.setSize(sf::Vector2f(_strokeThickness, height));
 		rect.setPosition(0, 0);
-		mainWindow->draw(rect);
+		target.draw(rect);
 		rect.setPosition(width - _strokeThickness, 0);
-		mainWindow->draw(rect);
+		target.draw(rect);
 
 		// Draw guide lines
 		rect.setFillColor(_guideColor);
 		rect.setPosition(_strokeThickness, (height-_strokeThickness)/2);
 		rect.setSize(sf::Vector2f(width - 2*_strokeThickness, _strokeThickness));
-		mainWindow->draw(rect);
+		target.draw(rect);
 		rect.setPosition((width-_strokeThickness)/2, _strokeThickness);
 		rect.setSize(sf::Vector2f(_strokeThickness, height - 2*_strokeThickness));
-		mainWindow->draw(rect);
+		target.draw(rect);
 
 		sf::CircleShape circle(0.5f * _strokeThickness);
 		circle.setOrigin(0.5f * _strokeThickness, 0.5f * _strokeThickness);
@@ -468,11 +468,11 @@ namespace sun_magic {
 			circle.setFillColor(_traceColor);
 			for (size_t i = 0; i < maxStroke; i++) {
 				circle.setPosition((float)_traceCharacter->x(i, 0), (float)_traceCharacter->y(i, 0));
-				mainWindow->draw(circle);
+				target.draw(circle);
 				for (size_t j = 0; j < _traceLines[i].size(); j++) {
-					mainWindow->draw(_traceLines[i][j]);
+					target.draw(_traceLines[i][j]);
 					circle.setPosition((float)_traceCharacter->x(i, j+1), (float)_traceCharacter->y(i, j+1));
-					mainWindow->draw(circle);
+					target.draw(circle);
 				}
 			}
 
@@ -480,9 +480,9 @@ namespace sun_magic {
 			circle.setFillColor(_animateColor);
 			if (_animatingLines.size() > 0) {
 				for (size_t j = 0; j < _animatingLines.size(); j++) {
-					mainWindow->draw(_animatingLines[j]);
+					target.draw(_animatingLines[j]);
 					circle.setPosition((float)_traceCharacter->x(_animatingStroke, j), (float)_traceCharacter->y(_animatingStroke, j));
-					mainWindow->draw(circle);
+					target.draw(circle);
 				}
 			}
 		}
@@ -491,15 +491,15 @@ namespace sun_magic {
 		circle.setFillColor(_strokeColor);
 		for (size_t i = 0; i < _strokeLines.size(); i++) {
 			circle.setPosition((float)_character->x(i, 0), (float)_character->y(i, 0));
-			mainWindow->draw(circle);
+			target.draw(circle);
 			for (size_t j = 0; j < _strokeLines[i].size(); j++) {
-				mainWindow->draw(_strokeLines[i][j]);
+				target.draw(_strokeLines[i][j]);
 				circle.setPosition((float)_character->x(i, j+1), (float)_character->y(i, j+1));
-				mainWindow->draw(circle);
+				target.draw(circle);
 			}
 		}
 	
-		mainWindow->setView(view);
+		target.setView(view);
 	}
 
 	void CharacterTile::Reclassify () {

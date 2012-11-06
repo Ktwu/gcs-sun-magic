@@ -65,6 +65,7 @@ namespace sun_magic {
 	T  Machine<T>::Update() {
 		MachineState<T>* active_m_state = this->_game_states_[this->_active_state_];
 		if (active_m_state == NULL) {
+			/* TODO report an error here */
 			return this->_active_state_;
 		}
 	

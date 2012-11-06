@@ -99,6 +99,7 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClInclude Include="machine_state.h" />
     <ClInclude Include="gameasset_manager.h" />
     <ClInclude Include="gameasset.h" />
+    <ClInclude Include="save_writing.h" />
     <ClInclude Include="sm_mouse.h" />
     <ClInclude Include="red.h" />
     <ClInclude Include="sfm.h" />
@@ -117,6 +118,7 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="red.cpp" />
     <ClCompile Include="gameasset_manager.cpp" />
+    <ClCompile Include="save_writing.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

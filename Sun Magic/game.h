@@ -26,6 +26,7 @@ namespace sun_magic {
 		void Run();
 		void Destroy();
 
+		float time_since_last_update;
 		SMMouse mouse_;
 		Machine<ref::MachineStates> game_machine_;
 		ref::GameStates game_state_;
@@ -36,10 +37,5 @@ namespace sun_magic {
 
 	private:
 		static Game* instance_;
-
-		void UpdateText();
-		void Update(float elapsed_seconds);
-		void Draw();
-		void Close();
 	};
 }
