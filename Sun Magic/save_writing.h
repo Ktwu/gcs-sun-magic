@@ -6,6 +6,8 @@
 #include "machine_state.h"
 #include "machine_states.h"
 
+#include <fstream>
+
 namespace sun_magic {
 
 	class SaveWritingState : public MachineState<ref::MachineStates>, public EventListener {
@@ -25,10 +27,16 @@ namespace sun_magic {
 		sf::String target_hiragana;
 		int target_index;
 
+		static const int size = 1024;
+		char buff[size];
+		bool _have_trace_;
+
+		std::ofstream _trace_output_;
 		CharacterTile* _tile_;
 		sf::Font _font_;
 		sf::Text _prompt_;
 		sf::Text _current_;
+		sf::Text _save_;
 	};
 
 }
