@@ -2,12 +2,30 @@
 
 #include "stdafx.h"
 #include "gameasset_manager.h"
+#include "file_refs.h"
+#include "hiragana_refs.h"
 
 namespace sun_magic {
 
 	GameAssetManager* GameAssetManager::instance_ = NULL;
 
-	void GameAssetManager::Init() {}
+	void GameAssetManager::Init() {
+		std::ifstream trace_characters;
+		trace_characters.open(file_refs::trace_hiragana.toAnsiString());
+
+		// We need to parse our trace characters out
+		zinnia::Character* character;
+		std::string parsed_line;
+		hiragana::id index = hiragana::A;
+		while (!trace_characters.eof()) {
+			parsed_line.clear();
+			std::getline(trace_characters, parsed_line);
+			character = zinnia::createCharacter();
+			character->parse(parsed_line.c_str());
+			index = (hiragana::id) atoi(character->value());
+			_trace_characters_[index] = character;
+		}
+	}
 
 	sf::Texture* GameAssetManager::GetTexture(sf::String texture_name) {
 		if (_textures_[texture_name] == NULL) {
@@ -46,5 +64,9 @@ namespace sun_magic {
 			if (texture != NULL)
 				delete texture;
 		}
+	}
+
+	zinnia::Character* GameAssetManager::GetTraceCharacter(hiragana::id id) {
+		return _trace_characters_[id];
 	}
 }

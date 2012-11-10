@@ -5,6 +5,9 @@
 #include "events.h"
 #include "event_manager.h"
 #include "game.h"
+#include "gameasset_manager.h"
+#include "file_refs.h"
+#include "hiragana_refs.h"
 #include "save_writing.h";
 #include "machine_state.h"
 #include "machine_states.h"
@@ -16,18 +19,14 @@ namespace sun_magic {
 		_tile_ = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
 		Game::GetInstance()->GetEventManager()->AddGameObject(_tile_);
 
-		_trace_output_.open("traced_hiragana.txt");
-		zinnia::Character *character = zinnia::Character::create();
-		character->parse("(character (value )(width 300)(height 300)(strokes ((178 46)(81 148)(81 156)(176 243)))");
-		//character->parse("(character (value い) (width 300) (height 300) (strokes ((56 63)(43 213)(67 259)(94 243)) ((213 66)(231 171)(208 217))))");
-		_tile_->SetTraceCharacter(character, sf::String(L"い"));
+		_trace_output_.open(file_refs::save_hiragana.toAnsiString());
+
+		target_index = 0;
+		_character_ = GameAssetManager::GetInstance()->GetTraceCharacter((hiragana::id) target_index);
+		_tile_->SetTraceCharacter(_character_, hiragana::refs[(hiragana::id) target_index]);
 		_tile_->SetAnimationSpeed(200.0f);
 		_tile_->SetAnimationStroke(0);
 
-		target_index = 0;
-		target_hiragana = _tile_->UTF8ToUTF32(CharacterTile::GetRecognizer()->value(target_index));
-		_have_trace_ = false;
-	
 		if (!_font_.loadFromFile("msmincho.ttc")) {
 			std::cerr << "ERROR: Unable to load font msmincho.ttc." << std::endl;
 		}
@@ -69,9 +68,7 @@ namespace sun_magic {
 		UpdateText();
 		window->draw(_prompt_);
 		window->draw(_current_);
-
-		if (_have_trace_)
-			window->draw(_save_);
+		window->draw(_save_);
 
 		return ref::MachineStates::NONE;
 	}
@@ -90,24 +87,31 @@ namespace sun_magic {
 
 				case Keyboard::Space:
 					_tile_->Clear();
+					_tile_->SetAnimationStroke(0);
 					break;
 
 				case Keyboard::S:
-					if (!_have_trace_)
-						break;
+					// Save our output
+					std::stringstream ss;
+					ss << target_index;
+					_tile_->GetCharacter()->set_value(ss.str().c_str());
+					_tile_->GetCharacter()->toString(buff, size);
+					std::string better_string = std::string(buff);
+
+					size_t replace_pos = better_string.find("stroeks");
+					better_string.replace(replace_pos, sizeof("stroeks"), "strokes");
+
+					_trace_output_ << better_string << "\n";
+					std::cout << better_string << "\n";
 
 					// Switch to the next character to draw
-					target_index = (target_index + 1) % CharacterTile::GetRecognizer()->size();
-					std::cout << CharacterTile::GetRecognizer()->size() << "\n";
-					target_hiragana = _tile_->UTF8ToUTF32(CharacterTile::GetRecognizer()->value(target_index));
-
-					// Save our output
-					_tile_->GetCharacter()->toString(buff, size);
-					_trace_output_ << buff << "\n";
-					std::cout << buff << "\n";
+					target_index = (target_index + 1) % hiragana::NUM_HIRAGANA;
+					_character_ = GameAssetManager::GetInstance()->GetTraceCharacter((hiragana::id) target_index);
+					_tile_->SetTraceCharacter(_character_, hiragana::refs[(hiragana::id) target_index]);
 
 					// Clear things up
 					_tile_->Clear();
+					_tile_->SetAnimationStroke(0);
 					break;
 
 				}
@@ -117,9 +121,7 @@ namespace sun_magic {
 
 	void SaveWritingState::UpdateText() {
 		_current_.setString("Current: " + _tile_->GetUnicode());
-		_prompt_.setString("Please Draw: " + target_hiragana);
-
-		_have_trace_ = _tile_->GetUnicode() == target_hiragana;
+		_prompt_.setString("Please Draw: " + hiragana::refs[(hiragana::id) target_index]);
 	}
 
 }

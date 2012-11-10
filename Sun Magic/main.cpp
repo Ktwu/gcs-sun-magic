@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 	sun_magic::Game* game = sun_magic::Game::GetInstance();
 	sun_magic::GameAssetManager* asset_manager = sun_magic::GameAssetManager::GetInstance();
 
-	//asset_manager->Init();
+	asset_manager->Init();
 	game->Init();
 
 	game->Run();
