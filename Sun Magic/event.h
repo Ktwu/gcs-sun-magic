@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "game_object.h"
+#include "game_state.h"
 
 namespace sun_magic {
 	
@@ -12,6 +13,7 @@ namespace sun_magic {
 		enum EventType {
 			// System
 			E_CLOSED,
+			E_GAME_STATE,
 
 			// Mouse
 			E_MOUSE_ENTERED,
@@ -29,6 +31,12 @@ namespace sun_magic {
 		};
 
 		EventType type;
+		void *source;
+		GameObject *focus;
+	};
+
+	struct GameStateEvent : Event {
+		ref::GameState state;
 	};
 
 	struct MouseEvent : Event {
@@ -38,10 +46,6 @@ namespace sun_magic {
 
 	struct KeyEvent : Event {
 		Keyboard::Key key;
-	};
-
-	struct TriggerEvent : Event {
-		GameObject *source;
 	};
 
 	

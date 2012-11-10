@@ -31,6 +31,14 @@ namespace sun_magic {
 		return false;
 	}
 
+	void EventManager::ClearGameObjects() {
+		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
+			GameObject * object = *focus_iter;
+			object->Unregister();
+		}
+		game_objects_.clear();
+	}
+
 	std::vector<GameObject*>& EventManager::GetGameObjects() {
 		return game_objects_;
 	}
@@ -159,6 +167,7 @@ namespace sun_magic {
 	void EventManager::Update() {
 		for (std::vector<Event*>::iterator iter = events_.begin(); iter != events_.end(); iter++) {
 			Event *event = *iter;
+			event->focus = NULL;
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event->type);
 			if (event_iter == eventfocus__listener_map_.end()) {
@@ -177,10 +186,11 @@ namespace sun_magic {
 				}
 			}
 
-			// Send event to all listeners on the current focused object if any
+			// Send event to all listeners on the currently focused object if any
 			if (focus_ != NULL) {
 				focus_iter = focus_listener_map->find(focus_);
 				if (focus_iter != focus_listener_map->end()) {
+					event->focus = focus_;
 					ListenerSet* listener_set = focus_iter->second;
 					for (ListenerSet::iterator listener_iter = listener_set->begin();
 							listener_iter != listener_set->end(); listener_iter++) {
@@ -191,6 +201,20 @@ namespace sun_magic {
 			}
 		}
 		events_.clear();
+	}
+
+	void EventManager::UpdateObjects(float elapsed_time) {
+		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
+			GameObject * object = *focus_iter;
+			object->Update(elapsed_time);
+		}
+	}
+
+	void EventManager::DrawObjects(sf::RenderTarget *target) {
+		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
+			GameObject * object = *focus_iter;
+			object->Draw(target);
+		}
 	}
 
 	int ZSort(GameObject* a, GameObject* b) {
@@ -221,6 +245,8 @@ namespace sun_magic {
 			if (focus_ != NULL) {
 				// Exit event
 				mouse_event.type = Event::E_MOUSE_EXITED;
+				mouse_event.source = this;
+				mouse_event.focus = focus_;
 				mouse_event.pos = old_mouse;
 				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_EXITED);
 				if (event_iter != eventfocus__listener_map_.end()) {
@@ -239,6 +265,8 @@ namespace sun_magic {
 			if (focus_ != NULL) {
 				// Enter event
 				mouse_event.type = Event::E_MOUSE_ENTERED;
+				mouse_event.source = this;
+				mouse_event.focus = focus_;
 				mouse_event.pos = mouse;
 				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_ENTERED);
 				if (event_iter != eventfocus__listener_map_.end()) {

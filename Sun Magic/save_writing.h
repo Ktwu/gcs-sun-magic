@@ -4,25 +4,28 @@
 #include "character_tile.h"
 #include "game.h"
 #include "machine_state.h"
-#include "machine_states.h"
 
 #include <fstream>
 
 namespace sun_magic {
 
-	class SaveWritingState : public MachineState<ref::MachineStates>, public EventListener {
+	class SaveWritingState : public MachineState<ref::GameState>, public EventListener {
 	public:
 		SaveWritingState();
 		~SaveWritingState();
 
 		/* Interface functions */
-		void RegisterState(MachineState<ref::MachineStates>* previous_state);
-		ref::MachineStates Update(float elapsed_time);
-		void UnregisterState(MachineState<ref::MachineStates>* previous_state);
+		void RegisterState(MachineState<ref::GameState>* previous_state);
+		void UnregisterState(MachineState<ref::GameState>* previous_state);
+
+		ref::GameState Update(float elapsed_time);
+		void PreDraw(sf::RenderTarget *target);
+		void PostDraw(sf::RenderTarget *target);
+
+		void ProcessEvent(Event *event);
 
 	private:
 		void UpdateText();
-		void ProcessEvent(Event *event);
 
 		sf::String target_hiragana;
 		int target_index;

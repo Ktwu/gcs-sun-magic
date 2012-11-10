@@ -1,20 +1,19 @@
 ﻿#pragma once
 
 #include "stdafx.h"
+#include "save_writing.h"
+
 #include "character_tile.h"
-#include "events.h"
+#include "event.h"
 #include "event_manager.h"
 #include "game.h"
-#include "save_writing.h";
-#include "machine_state.h"
-#include "machine_states.h"
+#include "game_state.h"
 
 namespace sun_magic {
 
 	SaveWritingState::SaveWritingState() {
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 		_tile_ = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
-		Game::GetInstance()->GetEventManager()->AddGameObject(_tile_);
 
 		_trace_output_.open("traced_hiragana.txt");
 		zinnia::Character *character = zinnia::Character::create();
@@ -52,33 +51,39 @@ namespace sun_magic {
 		delete _tile_;
 	}
 	
-	void SaveWritingState::RegisterState(MachineState<ref::MachineStates>* previous_state) {
+	void SaveWritingState::RegisterState(MachineState<ref::GameState>* previous_state) {
+		Game::GetInstance()->GetEventManager()->AddGameObject(_tile_);
 		_tile_->Register();
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_KEY_RELEASED, this);
 	}
 
-	ref::MachineStates SaveWritingState::Update(float elapsed_time) {
-		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
-		window->clear(sf::Color::Black);
-
-		/* Draw and update the tile */
-		_tile_->Update(elapsed_time);
-		_tile_->Draw(window);
-
-		/* Draw UI strings */
-		UpdateText();
-		window->draw(_prompt_);
-		window->draw(_current_);
-
-		if (_have_trace_)
-			window->draw(_save_);
-
-		return ref::MachineStates::NONE;
-	}
-
-	void SaveWritingState::UnregisterState(MachineState<ref::MachineStates>* previous_state) {
+	void SaveWritingState::UnregisterState(MachineState<ref::GameState>* previous_state) {
+		Game::GetInstance()->GetEventManager()->RemoveGameObject(_tile_);
 		_tile_->Unregister();
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_KEY_RELEASED, this);
+	}
+
+	ref::GameState SaveWritingState::Update(float elapsed_time) {
+		_tile_->Update(elapsed_time);
+		UpdateText();
+
+		return ref::RECORDING;
+	}
+	
+	void SaveWritingState::PreDraw(sf::RenderTarget *target) {
+		target->clear(sf::Color::Black);
+	}
+
+	void SaveWritingState::PostDraw(sf::RenderTarget *target) {
+		/* Draw tile */
+		_tile_->Draw(target);
+
+		/* Draw UI strings */
+		target->draw(_prompt_);
+		target->draw(_current_);
+
+		if (_have_trace_)
+			target->draw(_save_);
 	}
 
 	void SaveWritingState::ProcessEvent(Event *event) {

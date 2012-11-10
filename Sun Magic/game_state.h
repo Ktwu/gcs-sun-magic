@@ -5,11 +5,13 @@
 namespace sun_magic {
 	namespace ref {
 
-		enum GameStates {
-			SHOWING_SPLASH,
-			PAUSED, 
-			SHOWING_MENU,
+		enum GameState {
+			LOADING,
+			MAIN_MENU,
+			INGAME_MENU,
 			PLAYING,
+			WRITING,
+			RECORDING,
 			EXITING,
 		};
 

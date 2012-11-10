@@ -3,9 +3,8 @@
 #include "stdafx.h"
 #include "character_tile.h"
 #include "event_manager.h"
-#include "game_states.h"
+#include "game_state.h"
 #include "machine.h"
-#include "machine_states.h"
 
 namespace sun_magic {
 
@@ -39,8 +38,8 @@ namespace sun_magic {
 
 		static Game* instance_;
 
-		Machine<ref::MachineStates> game_machine_;
-		ref::GameStates game_state_;
+		Machine<ref::GameState> game_machine_;
+		ref::GameState game_state_;
 		EventManager event_manager_;
 		sf::RenderWindow main_window_;
 		sf::Font font_;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "character_tile.h"
 #include "game.h"
-#include "events.h"
+#include "event.h"
 #include "time.h"
 #include "util.h"
 #include <iterator>
@@ -219,8 +219,8 @@ namespace sun_magic {
 				character->add(i, (int)(character_->x(i, j) * width / size.x), (int)(character_->y(i, j) * height / size.y));
 			}
 		}
-		_rect.width = width;
-		_rect.height = height;
+		rect_.width = width;
+		rect_.height = height;
 	}
 
 	zinnia::Character * CharacterTile::GetTraceCharacter() {
@@ -380,41 +380,31 @@ namespace sun_magic {
 	}
 
 	void CharacterTile::Draw(sf::RenderTarget* target) {
+		// Translate view to position
 		sf::View view = target->getView();
-		sf::Vector2u size = target->getSize();
-		sf::Vector2f center = sf::Vector2f((float)size.x/2, (float)size.y/2);
+		sf::Vector2u window_size = target->getSize();
+		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
 		sf::Vector2f my_pos = GetPosition();
 		target->setView(sf::View(center - GetPosition(), 2.f * center));
 
-		float width = (float)character_->width();
-		float height = (float)character_->height();
+		sf::Vector2f size(rect_.width, rect_.height);
 
-		// Draw background
-		sf::RectangleShape rect(sf::Vector2f(width, height));
+		// Draw background and border
+		sf::RectangleShape rect(size);
 		rect.setFillColor(sf::Color::White);
-		target->draw(rect);
-
-		// Draw border lines
-		rect.setFillColor(border_color_);
-		rect.setSize(sf::Vector2f(width, stroke_thickness_));
+		rect.setOutlineColor(border_color_);
+		rect.setOutlineThickness(stroke_thickness_);
 		rect.setPosition(0, 0);
-
-		target->draw(rect);
-		rect.setPosition(0, height - stroke_thickness_);
-		target->draw(rect);
-		rect.setSize(sf::Vector2f(stroke_thickness_, height));
-		rect.setPosition(0, 0);
-		target->draw(rect);
-		rect.setPosition(width - stroke_thickness_, 0);
 		target->draw(rect);
 
 		// Draw guide lines
+		rect.setOutlineThickness(0);
 		rect.setFillColor(guide_color_);
-		rect.setPosition(stroke_thickness_, (height-stroke_thickness_)/2);
-		rect.setSize(sf::Vector2f(width - 2*stroke_thickness_, stroke_thickness_));
+		rect.setPosition(0, (size.y - stroke_thickness_)/2);
+		rect.setSize(sf::Vector2f(size.x, stroke_thickness_));
 		target->draw(rect);
-		rect.setPosition((width-stroke_thickness_)/2, stroke_thickness_);
-		rect.setSize(sf::Vector2f(stroke_thickness_, height - 2*stroke_thickness_));
+		rect.setPosition((size.x - stroke_thickness_)/2, 0);
+		rect.setSize(sf::Vector2f(stroke_thickness_, size.y));
 		target->draw(rect);
 
 		sf::CircleShape circle(0.5f * stroke_thickness_);
@@ -447,15 +437,19 @@ namespace sun_magic {
 		// Draw current character
 		circle.setFillColor(stroke_color_);
 		for (size_t i = 0; i < stroke_lines_.size(); i++) {
+			size_t stroke_size = stroke_lines_[i].size();
+			if (stroke_size == 0)
+				continue;
 			circle.setPosition((float)character_->x(i, 0), (float)character_->y(i, 0));
 			target->draw(circle);
-			for (size_t j = 0; j < stroke_lines_[i].size(); j++) {
+			for (size_t j = 0; j < stroke_size; j++) {
 				target->draw(stroke_lines_[i][j]);
 				circle.setPosition((float)character_->x(i, j+1), (float)character_->y(i, j+1));
 				target->draw(circle);
 			}
 		}
 	
+		// Reset translation
 		target->setView(view);
 	}
 

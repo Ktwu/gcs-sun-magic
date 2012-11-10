@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "events.h"
+#include "event.h"
 #include "game_object.h"
 
 #include <hash_map>
@@ -23,6 +23,8 @@ namespace sun_magic {
 		void AddGameObject(GameObject* object);
 
 		bool RemoveGameObject(GameObject* object);
+
+		void ClearGameObjects();
 
 		std::vector<GameObject*>& GetGameObjects();
 
@@ -46,6 +48,10 @@ namespace sun_magic {
 		void AddEvent(sf::Event event);
 
 		void Update(); // Propagate events to listeners
+
+		void UpdateObjects(float elapsed_time);
+
+		void DrawObjects(sf::RenderTarget *target);
 
 	protected:
 		void UpdateFocus(sf::Vector2i mouse);

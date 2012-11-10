@@ -7,25 +7,25 @@ namespace sun_magic {
 	class GameObject {
 	public:
 		GameObject(float x, float y, float width, float height)
-			: _rect(x, y, width, height)
+			: rect_(x, y, width, height)
 		{ }
 		~GameObject() {}
 
 		sf::Vector2f GetPosition() {
-			return sf::Vector2f(_rect.left, _rect.top);
+			return sf::Vector2f(rect_.left, rect_.top);
 		}
 		sf::Vector2f GetSize() {
-			return sf::Vector2f(_rect.width, _rect.height);
+			return sf::Vector2f(rect_.width, rect_.height);
 		}
 		sf::Rect<float>& GetRect() {
-			return _rect;
+			return rect_;
 		}
 
 		int GetZ() {
-			return _z;
+			return z_;
 		}
 		void SetZ(int z) {
-			_z = z;
+			z_ = z;
 		}
 
 		virtual void Update(float elapsed_time) = 0;
@@ -34,8 +34,9 @@ namespace sun_magic {
 		virtual void Unregister() = 0;
 
 	protected:
-		sf::Rect<float> _rect;
-		int _z;	// Determines front to back order. Higher z's are in the front
+		sf::Rect<float> rect_;
+		int z_;	// Determines front to back order. Higher z's are in the front
+		bool outlined_;
 	};
 
 }

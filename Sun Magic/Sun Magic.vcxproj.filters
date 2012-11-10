@@ -63,23 +63,11 @@
     <ClInclude Include="sfm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="blue.h">
-      <Filter>Header Files\states</Filter>
-    </ClInclude>
-    <ClInclude Include="red.h">
-      <Filter>Header Files\states</Filter>
-    </ClInclude>
     <ClInclude Include="machine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="machine_state.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="machine_states.h">
-      <Filter>Header Files\references</Filter>
-    </ClInclude>
-    <ClInclude Include="game_states.h">
-      <Filter>Header Files\references</Filter>
     </ClInclude>
     <ClInclude Include="texture_refs.h">
       <Filter>Header Files\references</Filter>
@@ -96,11 +84,26 @@
     <ClInclude Include="save_writing.h">
       <Filter>Header Files\states</Filter>
     </ClInclude>
-    <ClInclude Include="events.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="event_manager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_state.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="splash.h">
+      <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="main_menu.h">
+      <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="playing.h">
+      <Filter>Header Files\states</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -116,12 +119,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="red.cpp">
-      <Filter>Source Files\states</Filter>
-    </ClCompile>
-    <ClCompile Include="blue.cpp">
-      <Filter>Source Files\states</Filter>
-    </ClCompile>
     <ClCompile Include="machine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,6 +133,18 @@
     </ClCompile>
     <ClCompile Include="event_manager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="splash.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="main_menu.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playing.cpp">
+      <Filter>Source Files\states</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

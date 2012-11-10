@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -90,21 +90,22 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="blue.h" />
+    <ClInclude Include="button.h" />
+    <ClInclude Include="playing.h" />
+    <ClInclude Include="splash.h" />
     <ClInclude Include="character_tile.h" />
-    <ClInclude Include="events.h" />
+    <ClInclude Include="event.h" />
     <ClInclude Include="event_manager.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="game_states.h" />
+    <ClInclude Include="game_state.h" />
     <ClInclude Include="machine.h" />
     <ClInclude Include="game_object.h" />
     <ClInclude Include="machine_state.h" />
     <ClInclude Include="gameasset_manager.h" />
     <ClInclude Include="gameasset.h" />
     <ClInclude Include="save_writing.h" />
-    <ClInclude Include="red.h" />
+    <ClInclude Include="main_menu.h" />
     <ClInclude Include="sfm.h" />
-    <ClInclude Include="machine_states.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="texture_refs.h" />
@@ -112,13 +113,15 @@ xcopy /y "$(ProjectDir)zinnia\lib\libzinnia.dll" "$(OutDir)"</Command>
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="blue.cpp" />
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="playing.cpp" />
+    <ClCompile Include="splash.cpp" />
     <ClCompile Include="character_tile.cpp" />
     <ClCompile Include="event_manager.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="machine.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="red.cpp" />
+    <ClCompile Include="main_menu.cpp" />
     <ClCompile Include="gameasset_manager.cpp" />
     <ClCompile Include="save_writing.cpp" />
     <ClCompile Include="stdafx.cpp">

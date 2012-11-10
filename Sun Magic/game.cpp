@@ -1,13 +1,15 @@
 ﻿#include "stdafx.h"
 #include "game.h"
 
-#include "blue.h"
-#include "game_states.h"
+#include "game_state.h"
 #include "machine.h"
-#include "machine_state.h"
-#include "red.h"
-#include "save_writing.h"
 #include "time.h"
+
+// Game states
+#include "splash.h"
+#include "main_menu.h"
+#include "save_writing.h"
+#include "playing.h"
 
 #include <fstream>
 #include <iostream>
@@ -36,9 +38,10 @@ namespace sun_magic {
 		// TODO replace with a better dataset
 		CharacterTile::InitRecognizer("zinnia/models/hiragana.model");
 
-		//game_machine_.Init(ref::BLUE, new BlueState());
-		//game_machine_.AddState(ref::RED, new RedState());
-		game_machine_.Init(ref::MachineStates::RED, new SaveWritingState());
+		game_machine_.Init(ref::LOADING, new Splash());
+		game_machine_.AddState(ref::MAIN_MENU, new MainMenu());
+		game_machine_.AddState(ref::RECORDING, new SaveWritingState());
+		game_machine_.AddState(ref::PLAYING, new Playing());
 		
 		event_manager_.RegisterListener(Event::E_CLOSED, this);
 		event_manager_.RegisterListener(Event::E_KEY_RELEASED, this);
@@ -61,7 +64,16 @@ namespace sun_magic {
 			last_clock = new_clock;
 		
 			HandleInput();
+
+			// Update
 			game_machine_.Update(time_since_last_update);
+			event_manager_.UpdateObjects(time_since_last_update);
+
+			// Draw
+			MachineState<ref::GameState> *state = game_machine_.GetActiveState();
+			state->PreDraw(&main_window_);
+			event_manager_.DrawObjects(&main_window_);
+			state->PostDraw(&main_window_);
 			main_window_.display();
 		}
 	}

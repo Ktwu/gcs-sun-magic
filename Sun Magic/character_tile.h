@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "game_object.h"
-#include "events.h"
+#include "event.h"
 
 namespace sun_magic {
 
@@ -65,9 +65,9 @@ namespace sun_magic {
 
 		void Register();
 		void Unregister();
-		void Update(float elapsedSeconds);
+		void Update(float elapsed_time);
 		void ProcessEvent(Event *event);
-		virtual void Draw(sf::RenderTarget* target);		
+		void Draw(sf::RenderTarget* target);		
 
 	private:
 		static const int MIN_STROKE_DISPLACEMENT_SQUARED = 8 * 8;
