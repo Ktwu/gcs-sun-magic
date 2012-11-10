@@ -34,6 +34,9 @@
     <Filter Include="Source Files\tools">
       <UniqueIdentifier>{501a9297-1614-4093-ab0c-18faafd3e235}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\zinnia">
+      <UniqueIdentifier>{55bc2eb3-15d6-4f1f-bb2b-6181073c55be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -46,9 +49,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="character_tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
@@ -69,6 +69,12 @@
     <ClInclude Include="machine_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="machine_states.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="game_states.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
     <ClInclude Include="texture_refs.h">
       <Filter>Header Files\references</Filter>
     </ClInclude>
@@ -84,26 +90,38 @@
     <ClInclude Include="save_writing.h">
       <Filter>Header Files\states</Filter>
     </ClInclude>
+    <ClInclude Include="events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="event_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="event.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="character_tile.h">
+      <Filter>Header Files\zinnia</Filter>
     </ClInclude>
-    <ClInclude Include="game_state.h">
+    <ClInclude Include="file_refs.h">
       <Filter>Header Files\references</Filter>
     </ClInclude>
-    <ClInclude Include="splash.h">
-      <Filter>Header Files\states</Filter>
+    <ClInclude Include="hiragana_refs.h">
+      <Filter>Header Files\references</Filter>
+    </ClInclude>
+    <ClInclude Include="create_map.h">
+      <Filter>Header Files\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="dictionary.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="main_menu.h">
       <Filter>Header Files\states</Filter>
     </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="playing.h">
       <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="splash.h">
+      <Filter>Header Files\states</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,17 +152,20 @@
     <ClCompile Include="event_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="splash.cpp">
       <Filter>Source Files\states</Filter>
     </ClCompile>
     <ClCompile Include="main_menu.cpp">
       <Filter>Source Files\states</Filter>
     </ClCompile>
-    <ClCompile Include="button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="playing.cpp">
       <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -34,12 +34,13 @@ namespace sun_magic {
 		char buff[size];
 		bool _have_trace_;
 
-		std::ofstream _trace_output_;
 		CharacterTile* _tile_;
 		sf::Font _font_;
 		sf::Text _prompt_;
 		sf::Text _current_;
 		sf::Text _save_;
+		std::ofstream _trace_output_;
+		zinnia::Character *_character_;
 	};
 
 }

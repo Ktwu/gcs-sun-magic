@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "gameasset.h"
+#include "hiragana_refs.h"
 
 namespace sun_magic {
 
@@ -22,10 +23,14 @@ namespace sun_magic {
 		void ReturnTexture(sf::String textureName);
 		void CleanUnusedTextures();
 
+		zinnia::Character* GetTraceCharacter(hiragana::id id);
+
 	private:
 		static GameAssetManager* instance_;
 
 		std::map<sf::String, GameAsset<sf::Texture>*> _textures_;
+		std::map<hiragana::id, zinnia::Character*> _trace_characters_;
+
 		//sf::Music _music_;
 	};
 }

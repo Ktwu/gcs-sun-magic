@@ -45,6 +45,9 @@ namespace sun_magic {
 		
 		event_manager_.RegisterListener(Event::E_CLOSED, this);
 		event_manager_.RegisterListener(Event::E_KEY_RELEASED, this);
+    dict_ = new Dictionary(0,0,0,0);
+    words_.push_back("hello world");
+    words_.push_back("blah");
 	}
 
 	void Game::HandleInput() {
@@ -73,6 +76,8 @@ namespace sun_magic {
 			MachineState<ref::GameState> *state = game_machine_.GetActiveState();
 			state->PreDraw(&main_window_);
 			event_manager_.DrawObjects(&main_window_);
+			dict_->Draw(&main_window_); 
+		    dict_->DictWords(&main_window_, words_);
 			state->PostDraw(&main_window_);
 			main_window_.display();
 		}

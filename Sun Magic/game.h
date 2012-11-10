@@ -5,6 +5,7 @@
 #include "event_manager.h"
 #include "game_state.h"
 #include "machine.h"
+#include "dictionary.h"
 
 namespace sun_magic {
 
@@ -45,5 +46,7 @@ namespace sun_magic {
 		sf::Font font_;
 		std::vector<sf::Text> ui_strings_;
 		CharacterTile* tile_;
+    std::vector<std::string> words_;
+    Dictionary* dict_;
 	};
 }
