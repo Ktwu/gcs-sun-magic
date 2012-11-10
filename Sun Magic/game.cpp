@@ -42,6 +42,9 @@ namespace sun_magic {
 		
 		event_manager_.RegisterListener(Event::E_CLOSED, this);
 		event_manager_.RegisterListener(Event::E_KEY_RELEASED, this);
+    dict_ = new Dictionary(0,0,0,0);
+    words_.push_back("hello world");
+    words_.push_back("blah");
 	}
 
 	void Game::HandleInput() {
@@ -62,6 +65,9 @@ namespace sun_magic {
 		
 			HandleInput();
 			game_machine_.Update(time_since_last_update);
+      
+      dict_->Draw(&main_window_); 
+      dict_->DictWords(&main_window_, words_);
 			main_window_.display();
 		}
 	}
