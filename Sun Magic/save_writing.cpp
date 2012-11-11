@@ -65,7 +65,6 @@ namespace sun_magic {
 	}
 
 	ref::GameState SaveWritingState::Update(float elapsed_time) {
-		_tile_->Update(elapsed_time);
 		UpdateText();
 
 		return ref::RECORDING;

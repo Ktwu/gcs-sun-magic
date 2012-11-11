@@ -69,8 +69,8 @@ namespace sun_magic {
 			HandleInput();
 
 			// Update
-			game_machine_.Update(time_since_last_update);
 			event_manager_.UpdateObjects(time_since_last_update);
+			game_machine_.Update(time_since_last_update);
 
 			// Draw
 			MachineState<ref::GameState> *state = game_machine_.GetActiveState();
