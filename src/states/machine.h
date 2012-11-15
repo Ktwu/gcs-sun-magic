@@ -20,7 +20,7 @@ namespace sun_magic {
 		T Update(float elapsed_time);
 
 	protected:
-		std::map<T, MachineState<T>*> machine_states_;
+		std::hash_map<T, MachineState<T>*> machine_states_;
 		T current_state_;
 	};
 

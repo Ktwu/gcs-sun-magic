@@ -40,7 +40,7 @@ namespace sun_magic {
 		void ClearListeners();
 
 		// Use this to add custom events
-		void AddEvent(Event *event);
+		void AddEvent(Event event);
 
 		// This is used to add system events
 		void AddEvent(sf::Event event);
@@ -56,7 +56,7 @@ namespace sun_magic {
 
 		// Map of listeners registered for each focus object for each event type
 		EventToFocusToListenerSetMap eventfocus__listener_map_;
-		std::vector<Event*> events_;
+		std::vector<Event> events_;
 		std::vector<GameObject*> game_objects_;	// Set of all objects that can be focused
 		GameObject *focus_;						// Currently focused object
 	};

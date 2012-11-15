@@ -94,10 +94,15 @@ namespace sun_magic {
 		target->setView(view);
 	}
 
-	void Button::ProcessEvent(Event *event) {
-		switch (event->type) {
-		case Event::E_MOUSE_ENTERED:
+	void Button::ProcessEvent(Event event) {
+		switch (event.type) {
 		case Event::E_MOUSE_RELEASED:
+			if (state_ == PRESSED) {
+				// Send a click event to listeners
+				event.type = Event::E_CLICKED;
+				Game::GetInstance()->GetEventManager()->AddEvent(event);
+			}
+		case Event::E_MOUSE_ENTERED:
 			state_ = HOVERED;
 			break;
 		case Event::E_MOUSE_EXITED:

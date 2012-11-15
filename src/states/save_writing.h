@@ -17,13 +17,13 @@ namespace sun_magic {
 
 		/* Interface functions */
 		void RegisterState(MachineState<GameState>* previous_state);
-		void UnregisterState(MachineState<GameState>* previous_state);
+		void UnregisterState(MachineState<GameState>* next_state);
 
 		GameState Update(float elapsed_time);
 		void PreDraw(sf::RenderTarget *target);
 		void PostDraw(sf::RenderTarget *target);
 
-		void ProcessEvent(Event *event);
+		void ProcessEvent(Event event);
 
 	private:
 		void UpdateText();
@@ -40,7 +40,8 @@ namespace sun_magic {
 		sf::Text prompt_;
 		sf::Text current_;
 		sf::Text save_;
-		std::ofstream trace_output_;
+		FILE* trace_output_;
+		std::vector<sf::Uint32> traceable_characters_;
 		zinnia::Character *character_;
 	};
 

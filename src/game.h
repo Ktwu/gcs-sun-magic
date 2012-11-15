@@ -29,7 +29,7 @@ namespace sun_magic {
 		void Init();
 		void Run();
 		void Destroy();
-		void ProcessEvent(Event *event);
+		void ProcessEvent(Event event);
 
 	private:
 

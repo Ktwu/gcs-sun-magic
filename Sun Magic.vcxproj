@@ -27,6 +27,7 @@
     <ClCompile Include="src\events\event_manager.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects\key_object.cpp" />
     <ClCompile Include="src\states\main_menu.cpp" />
     <ClCompile Include="src\states\playing.cpp" />
     <ClCompile Include="src\states\save_writing.cpp" />
@@ -44,8 +45,8 @@
     <ClInclude Include="src\events\event_manager.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\objects\game_object.h" />
+    <ClInclude Include="src\objects\key_object.h" />
     <ClInclude Include="src\references\file_refs.h" />
-    <ClInclude Include="src\references\hiragana_refs.h" />
     <ClInclude Include="src\references\texture_refs.h" />
     <ClInclude Include="src\states\game_state.h" />
     <ClInclude Include="src\states\machine.h" />

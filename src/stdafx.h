@@ -7,6 +7,16 @@
 
 #include "targetver.h"
 
+// SFML
+#define SFML_DYNAMIC // Needed when linking with dlls
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Audio.hpp>
+
+// Zinnia
+#include <zinnia.h>
+
 // Data Structures
 #include <hash_map>
 #include <hash_set>
@@ -17,13 +27,3 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-// SFML
-#define SFML_DYNAMIC // Needed when linking with dlls
-#include <SFML/System.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
-
-// Zinnia
-#include <zinnia.h>

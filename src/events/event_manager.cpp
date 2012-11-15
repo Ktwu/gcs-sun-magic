@@ -103,7 +103,7 @@ namespace sun_magic {
 		eventfocus__listener_map_.clear();
 	}
 
-	void EventManager::AddEvent(Event *event) {
+	void EventManager::AddEvent(Event event) {
 		events_.push_back(event);
 	}
 
@@ -112,8 +112,8 @@ namespace sun_magic {
 
 		case sf::Event::Closed:
 			{
-				Event *event = new Event();
-				event->type = Event::E_CLOSED;
+				Event event;
+				event.type = Event::E_CLOSED;
 				AddEvent(event);
 				break;
 			}
@@ -121,57 +121,64 @@ namespace sun_magic {
 		case sf::Event::MouseButtonPressed:
 		case sf::Event::MouseButtonReleased:
 			{
-				MouseEvent *mouse_event = new MouseEvent();
-				mouse_event->pos = sf::Vector2i(sf_event.mouseButton.x, sf_event.mouseButton.y);
-				mouse_event->button = sf_event.mouseButton.button;
+				Event event;
 				switch (sf_event.type) {
 				case sf::Event::MouseButtonPressed:
-					mouse_event->type = Event::E_MOUSE_PRESSED;
+					event.type = Event::E_MOUSE_PRESSED;
 					break;
 				case sf::Event::MouseButtonReleased:
-					mouse_event->type = Event::E_MOUSE_RELEASED;
+					event.type = Event::E_MOUSE_RELEASED;
 					break;
 				}
-				AddEvent(mouse_event);
+				event.mouseButton = sf_event.mouseButton;
+				AddEvent(event);
 				break;
 			}
 		case sf::Event::MouseMoved:
 			{
-				MouseEvent *mouse_event = new MouseEvent();
-				mouse_event->pos = sf::Vector2i(sf_event.mouseMove.x, sf_event.mouseMove.y);
-				mouse_event->type = Event::E_MOUSE_MOVED;
-				AddEvent(mouse_event);
+				Event event;
+				event.type = Event::E_MOUSE_MOVED;
+				event.mouseMove = sf_event.mouseMove;
+				AddEvent(event);
 
 				// Update currently focused object
-				UpdateFocus(mouse_event->pos);
+				UpdateFocus(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 				break;
 			}
-
-		case sf::Event::KeyReleased:
+			
 		case sf::Event::KeyPressed:
+		case sf::Event::KeyReleased:
 			{
-				KeyEvent *key_event = new KeyEvent();
-				key_event->key = sf_event.key.code;
+				Event event;
 				switch (sf_event.type) {
 				case sf::Event::KeyPressed:
-					key_event->type = Event::E_KEY_PRESSED;
+					event.type = Event::E_KEY_PRESSED;
 					break;
 				case sf::Event::KeyReleased:
-					key_event->type = Event::E_KEY_RELEASED;
+					event.type = Event::E_KEY_RELEASED;
 					break;
 				}
-				AddEvent(key_event);
+				event.key = sf_event.key;
+				AddEvent(event);
+				break;
+			}
+		case sf::Event::TextEntered:
+			{
+				Event event;
+				event.type = Event::E_TEXT_ENTERED;
+				event.text = sf_event.text;
+				AddEvent(event);
 				break;
 			}
 		}
 	}
 
 	void EventManager::Update() {
-		for (std::vector<Event*>::iterator iter = events_.begin(); iter != events_.end(); iter++) {
-			Event *event = *iter;
-			event->focus = NULL;
+		for (std::vector<Event>::iterator iter = events_.begin(); iter != events_.end(); iter++) {
+			Event event = *iter;
+			event.focus = NULL;
 
-			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event->type);
+			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);
 			if (event_iter == eventfocus__listener_map_.end()) {
 				continue;
 			}
@@ -192,7 +199,7 @@ namespace sun_magic {
 			if (focus_ != NULL) {
 				focus_iter = focus_listener_map->find(focus_);
 				if (focus_iter != focus_listener_map->end()) {
-					event->focus = focus_;
+					event.focus = focus_;
 					ListenerSet* listener_set = focus_iter->second;
 					for (ListenerSet::iterator listener_iter = listener_set->begin();
 							listener_iter != listener_set->end(); listener_iter++) {
@@ -243,13 +250,13 @@ namespace sun_magic {
 
 		// If new focus send enter and exit events
 		if (newfocus_ != focus_) {
-			MouseEvent mouse_event;
 			if (focus_ != NULL) {
 				// Exit event
-				mouse_event.type = Event::E_MOUSE_EXITED;
-				mouse_event.source = this;
-				mouse_event.focus = focus_;
-				mouse_event.pos = old_mouse;
+				Event event;
+				event.type = Event::E_MOUSE_EXITED;
+				event.focus = focus_;
+				event.mouseMove.x = old_mouse.x;
+				event.mouseMove.y = old_mouse.y;
 				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_EXITED);
 				if (event_iter != eventfocus__listener_map_.end()) {
 					FocusToListenerSetMap *focus_listener_map = event_iter->second;
@@ -258,7 +265,7 @@ namespace sun_magic {
 						ListenerSet* listener_set = focus_iter->second;
 						for (ListenerSet::iterator listener_iter = listener_set->begin(); listener_iter != listener_set->end(); listener_iter++) {
 							EventListener *listener = *listener_iter;
-							listener->ProcessEvent(&mouse_event);
+							listener->ProcessEvent(event);
 						}
 					}
 				}
@@ -266,10 +273,11 @@ namespace sun_magic {
 			focus_ = newfocus_;
 			if (focus_ != NULL) {
 				// Enter event
-				mouse_event.type = Event::E_MOUSE_ENTERED;
-				mouse_event.source = this;
-				mouse_event.focus = focus_;
-				mouse_event.pos = mouse;
+				Event event;
+				event.type = Event::E_MOUSE_ENTERED;
+				event.focus = focus_;
+				event.mouseMove.x = mouse.x;
+				event.mouseMove.y = mouse.y;
 				EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(Event::E_MOUSE_ENTERED);
 				if (event_iter != eventfocus__listener_map_.end()) {
 					FocusToListenerSetMap *focus_listener_map = event_iter->second;
@@ -278,7 +286,7 @@ namespace sun_magic {
 						ListenerSet* listener_set = focus_iter->second;
 						for (ListenerSet::iterator listener_iter = listener_set->begin(); listener_iter != listener_set->end(); listener_iter++) {
 							EventListener *listener = *listener_iter;
-							listener->ProcessEvent(&mouse_event);
+							listener->ProcessEvent(event);
 						}
 					}
 				}

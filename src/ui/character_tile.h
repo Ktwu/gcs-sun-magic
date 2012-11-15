@@ -31,7 +31,7 @@ namespace sun_magic {
 		// The trace character is the character the user should be trying to write
 		zinnia::Character * GetTraceCharacter();
 		sf::String GetTraceUnicode();
-		void SetTraceCharacter(zinnia::Character *character, sf::String unicode);
+		void SetTraceCharacter(zinnia::Character *character);
 	
 		// Setting the animation stroke to a valid stroke number will make the tile
 		// continuously animate that stroke
@@ -66,7 +66,7 @@ namespace sun_magic {
 		void Register();
 		void Unregister();
 		void Update(float elapsed_time);
-		void ProcessEvent(Event *event);
+		void ProcessEvent(Event event);
 		void Draw(sf::RenderTarget* target);		
 
 	private:

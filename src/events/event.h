@@ -5,8 +5,15 @@
 
 namespace sun_magic {
 	
+	typedef sf::Event::KeyEvent KeyEvent;
+	typedef sf::Event::TextEvent TextEvent;
+	typedef sf::Event::MouseMoveEvent MouseMoveEvent;
+	typedef sf::Event::MouseButtonEvent MouseButtonEvent;
+	typedef sf::Event::MouseWheelEvent MouseWheelEvent;
+
 	typedef sf::Mouse Mouse;
 	typedef sf::Keyboard Keyboard;
+
 	class GameObject;
 	
 	struct Event {
@@ -18,41 +25,39 @@ namespace sun_magic {
 			// Mouse
 			E_MOUSE_ENTERED,
 			E_MOUSE_EXITED,
+			E_MOUSE_MOVED,
 			E_MOUSE_PRESSED,
 			E_MOUSE_RELEASED,
-			E_MOUSE_MOVED,
 
 			// Keyboard
 			E_KEY_PRESSED,
 			E_KEY_RELEASED,
+			E_TEXT_ENTERED,
 
 			// Trigger
 			E_TRIGGER,
+
+			// UI
+			E_CLICKED,
 		};
 
 		EventType type;
 		void *source;
 		GameObject *focus;
-	};
 
-	struct GameStateEvent : Event {
-		GameState state;
+		union
+		{
+			KeyEvent			key;			// E_KEY_PRESSED, E_KEY_RELEASED
+			TextEvent           text;			// E_TEXT_ENTERED
+			MouseMoveEvent      mouseMove;		// E_MOUSE_ENTERED, E_MOUSE_EXITED, E_MOUSE_MOVED
+			MouseButtonEvent    mouseButton;	// E_MOUSE_PRESSED, E_MOUSE_RELEASED, E_CLICKED
+		};
 	};
-
-	struct MouseEvent : Event {
-		sf::Vector2i pos;
-		Mouse::Button button;
-	};
-
-	struct KeyEvent : Event {
-		Keyboard::Key key;
-	};
-
 	
 	// Interface that all event listeners must implement
 	class EventListener {
 	public:
-		virtual void ProcessEvent(Event *event) = 0;
+		virtual void ProcessEvent(Event event) = 0;
 	};
 
 }

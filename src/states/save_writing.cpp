@@ -1,11 +1,12 @@
 ﻿#include "stdafx.h"
 #include "save_writing.h"
 
+#include <ctime>
+
 #include "game.h"
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
 #include "references/file_refs.h"
-#include "references/hiragana_refs.h"
 #include "ui/character_tile.h"
 
 namespace sun_magic {
@@ -14,11 +15,9 @@ namespace sun_magic {
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 		tile_ = new CharacterTile(size.x * 0.5f - 150, size.y * 0.5f - 150, 300, 300);
 
-		trace_output_.open(file_refs::HIRAGANA_OUTPUT);
-
 		target_index = 0;
-		character_ = GameAssetManager::GetInstance()->GetTraceCharacter((hiragana::id) target_index);
-		tile_->SetTraceCharacter(character_, hiragana::refs[(hiragana::id) target_index]);
+		GameAssetManager::GetInstance()->GetTraceableCharacters(traceable_characters_);
+		tile_->SetTraceCharacter(GameAssetManager::GetInstance()->GetTraceCharacter(traceable_characters_[target_index]));
 		tile_->SetAnimationSpeed(200.0f);
 		tile_->SetAnimationStroke(0);
 
@@ -42,20 +41,29 @@ namespace sun_magic {
 	}
 
 	SaveWritingState::~SaveWritingState() {
-		trace_output_.close();
 		delete tile_;
 	}
 	
 	void SaveWritingState::RegisterState(MachineState<GameState>* previous_state) {
 		Game::GetInstance()->GetEventManager()->AddGameObject(tile_);
-		tile_->Register();
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_KEY_RELEASED, this);
+		
+		// Create filename based on date
+		time_t t = time(0);
+		struct tm *now = localtime(&t);
+		std::stringstream ss;
+		ss << file_refs::HIRAGANA_OUTPUT_BASE << (now->tm_year + 1900) <<
+			'-' << (now->tm_mon + 1) << '-' <<  now->tm_mday << "_" <<
+			now->tm_hour << "-" << now->tm_min << "-" << now->tm_sec << ".txt";
+		std::cout << "Recording to " << ss.str() << std::endl;
+		trace_output_ = fopen(ss.str().c_str(), "w+,ccs=UTF-8");
 	}
 
-	void SaveWritingState::UnregisterState(MachineState<GameState>* previous_state) {
+	void SaveWritingState::UnregisterState(MachineState<GameState>* next_state) {
 		Game::GetInstance()->GetEventManager()->RemoveGameObject(tile_);
-		tile_->Unregister();
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_KEY_RELEASED, this);
+
+		fclose(trace_output_);
 	}
 
 	GameState SaveWritingState::Update(float elapsed_time) {
@@ -78,50 +86,57 @@ namespace sun_magic {
 		target->draw(save_);
 	}
 
-	void SaveWritingState::ProcessEvent(Event *event) {
-		switch (event->type) {
+	void SaveWritingState::ProcessEvent(Event event) {
+		switch (event.type) {
 		case Event::E_KEY_RELEASED:
-			{
-				KeyEvent *key_event = (KeyEvent*)event;
-				switch (key_event->key) {
+			switch (event.key.code) {
+			case Keyboard::Space:
+				tile_->Clear();
+				tile_->SetAnimationStroke(0);
+				break;
 
-				case Keyboard::Space:
-					tile_->Clear();
-					tile_->SetAnimationStroke(0);
-					break;
+			case Keyboard::S:
+				// Save our output
+				std::stringstream ss;
+				ss << target_index;
+				tile_->GetCharacter()->toString(buff, size);
+				std::string better_string = std::string(buff);
 
-				case Keyboard::S:
-					// Save our output
-					std::stringstream ss;
-					ss << target_index;
-					tile_->GetCharacter()->set_value(ss.str().c_str());
-					tile_->GetCharacter()->toString(buff, size);
-					std::string better_string = std::string(buff);
+				// Replace stroeks typo in the output
+				size_t replace_pos = better_string.find("stroeks");
+				better_string.replace(replace_pos, sizeof("stroeks"), "strokes");
 
-					size_t replace_pos = better_string.find("stroeks");
-					better_string.replace(replace_pos, sizeof("stroeks"), "strokes");
+				// Convert the string to wide char and also write the value
+				// for some reason value is not included in toString
+				size_t index = better_string.find("value") + 6;
+				std::wstring pre = sf::String(better_string.substr(0, index)).toWideString();
+				std::wstring value = tile_->GetUnicode().toWideString();
+				std::wstring post = sf::String(better_string.substr(index)).toWideString();
+				fwrite(pre.c_str(), pre.size() * sizeof(wchar_t), 1, trace_output_);
+				fwrite(value.c_str(), value.size() * sizeof(wchar_t), 1, trace_output_);
+				fwrite(post.c_str(), post.size() * sizeof(wchar_t), 1, trace_output_);
+				fwprintf(trace_output_, L"\n");
+				fflush(trace_output_);
+				std::cout << better_string << "\n";
 
-					trace_output_ << better_string << "\n";
-					std::cout << better_string << "\n";
+				// Switch to the next character to draw
+				target_index = (target_index + 1) % traceable_characters_.size();
+				character_ = GameAssetManager::GetInstance()->GetTraceCharacter(traceable_characters_[target_index]);
+				tile_->SetTraceCharacter(character_);
 
-					// Switch to the next character to draw
-					target_index = (target_index + 1) % hiragana::NUM_HIRAGANA;
-					character_ = GameAssetManager::GetInstance()->GetTraceCharacter((hiragana::id) target_index);
-					tile_->SetTraceCharacter(character_, hiragana::refs[(hiragana::id) target_index]);
+				// Clear things up
+				tile_->Clear();
+				tile_->SetAnimationStroke(0);
+				break;
 
-					// Clear things up
-					tile_->Clear();
-					tile_->SetAnimationStroke(0);
-					break;
-
-				}
 			}
+			break;
 		}
 	}
 
 	void SaveWritingState::UpdateText() {
 		current_.setString("Current: " + tile_->GetUnicode());
-		prompt_.setString("Please Draw: " + hiragana::refs[(hiragana::id) target_index]);
+		prompt_.setString("Please Draw: " + tile_->GetTraceUnicode());
 	}
 
 }

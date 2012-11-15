@@ -3,6 +3,7 @@
 
 #include "assets/gameasset.h"
 #include "references/file_refs.h"
+#include "tools/tools.h"
 
 namespace sun_magic {
 
@@ -15,14 +16,20 @@ namespace sun_magic {
 		// We need to parse our trace characters out
 		zinnia::Character* character;
 		std::string parsed_line;
-		hiragana::id index = hiragana::A;
+		int line = 1;
 		while (!trace_characters.eof()) {
 			parsed_line.clear();
 			std::getline(trace_characters, parsed_line);
 			character = zinnia::createCharacter();
 			character->parse(parsed_line.c_str());
-			index = (hiragana::id) atoi(character->value());
-			_trace_characters_[index] = character;
+			if (parsed_line.size() > 6) {
+				sf::String utf32_str = tools::UTF8ToUTF32(character->value());
+				if (utf32_str.getSize() > 0)
+					_trace_characters_[utf32_str[0]] = character;
+				else
+					std::cout << "Line " << line << " Error: " << parsed_line << std::endl;
+			}
+			line++;
 		}
 	}
 
@@ -51,7 +58,7 @@ namespace sun_magic {
 
 
 	void GameAssetManager::CleanUnusedTextures() {
-		std::map<sf::String, GameAsset<sf::Texture>*>::iterator it;
+		std::hash_map<std::string, GameAsset<sf::Texture>*>::iterator it;
 		GameAsset<sf::Texture>* resource;
 		sf::Texture* texture;
 
@@ -65,8 +72,15 @@ namespace sun_magic {
 		}
 	}
 
-	zinnia::Character* GameAssetManager::GetTraceCharacter(hiragana::id id) {
-		return _trace_characters_[id];
+	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {
+		for (std::hash_map<sf::Uint32, zinnia::Character*>::iterator iter =
+				_trace_characters_.begin(); iter != _trace_characters_.end(); iter++) {
+			characters.push_back(iter->first);
+		}
+	}
+
+	zinnia::Character* GameAssetManager::GetTraceCharacter(sf::Uint32 utf32_character) {
+		return _trace_characters_[utf32_character];
 	}
 
 }

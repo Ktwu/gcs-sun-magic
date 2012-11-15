@@ -29,7 +29,7 @@ namespace sun_magic {
 		void Update(float elapsed_time);
 		void Draw(sf::RenderTarget* target);
 
-		void ProcessEvent(Event *event);
+		void ProcessEvent(Event event);
 
 	private:
 		sf::String string_;

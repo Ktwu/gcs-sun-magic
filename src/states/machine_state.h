@@ -11,7 +11,7 @@ namespace sun_magic {
 		~MachineState() {}
 
 		virtual void RegisterState(MachineState<T>* previous_state) = 0;
-		virtual void UnregisterState(MachineState<T>* previous_state) = 0;
+		virtual void UnregisterState(MachineState<T>* next_state) = 0;
 
 		virtual T Update(float elapsed_time) = 0;
 		virtual void PreDraw(sf::RenderTarget *target) = 0;

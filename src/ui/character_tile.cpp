@@ -7,6 +7,7 @@
 #include "game.h"
 #include "events/event_manager.h"
 #include "tools/sfm.h"
+#include "tools/tools.h"
 
 namespace sun_magic {
 
@@ -23,12 +24,6 @@ namespace sun_magic {
 		return _recognizer;
 	}
 
-	sf::String CharacterTile::UTF8ToUTF32(const char* utf8str) {
-		sf::Uint32 utf32str[] = {0,0};
-		sf::Utf8::toUtf32((unsigned char*)utf8str, (unsigned char*)utf8str + strlen(utf8str), utf32str);
-		return sf::String(utf32str);
-	}
-
 	CharacterTile::CharacterTile(float x, float y, float width, float height) :
 		GameObject(x, y, width, height),
 		character_(zinnia::Character::create()),
@@ -37,7 +32,7 @@ namespace sun_magic {
 		trace_character_(NULL),
 		trace_unicode_(),
 		animating_stroke_(-1),
-		animation_speed_(140.0f),
+		animation_speed_(150.0f),
 		wait_seconds_(0.2f),
 		stroke_thickness_(4),
 		border_color_(sf::Color(80, 80, 80)),
@@ -86,7 +81,7 @@ namespace sun_magic {
 	}
 	// Consider every two consecutive lines. If the angle between the lines is small enough remove the mid point.
 	size_t SmoothPoints(std::vector<sf::Vector2f>& points1, std::vector<sf::Vector2f>& points2, size_t index) {
-		static const float THRESHOLD_ANGLE = cos(sfm::DEGTORAD(13));
+		static const float THRESHOLD_ANGLE = cos(sfm::DEGTORAD(11));
 
 		size_t i;
 		size_t removed = 0;
@@ -172,7 +167,7 @@ namespace sun_magic {
 			return;
 	
 		// There is no remove stroke, so we just create a copy up to the last stroke.
-		size_t strokes =character_->strokes_size();	
+		size_t strokes = character_->strokes_size();	
 		if (current_stroke_ == 0 && strokes == 0)
 			return;
 
@@ -194,7 +189,7 @@ namespace sun_magic {
 			Reclassify();
 			stroke_lines_.pop_back();
 			stroke_errors_.pop_back();
-		} else {
+			SetAnimationStroke(NumStrokes());
 		}
 		stroke_lines_.back().clear();
 	}
@@ -231,9 +226,9 @@ namespace sun_magic {
 	sf::String CharacterTile::GetTraceUnicode() {
 		return trace_unicode_;
 	}
-	void CharacterTile::SetTraceCharacter(zinnia::Character *character, sf::String value) {
+	void CharacterTile::SetTraceCharacter(zinnia::Character *character) {
 		trace_character_ = character;
-		trace_unicode_ = value;
+		trace_unicode_ = tools::UTF8ToUTF32(character->value());
 		animating_stroke_ = -1;
 	
 		trace_lines_.clear();
@@ -455,40 +450,25 @@ namespace sun_magic {
 		target->setView(view);
 	}
 
-	void CharacterTile::ProcessEvent(Event *event) {
-		switch(event->type) {
+	void CharacterTile::ProcessEvent(Event event) {
+		switch(event.type) {
 		case Event::E_MOUSE_PRESSED:
-			{
-				MouseEvent *mouse_event = (MouseEvent*)event;
-				switch (mouse_event->button) {
-				case Mouse::Left:
-					if (is_writing_) {
-						break;
-					}
-					std::cout << "start\n";
-					is_writing_ = true;
+			if (!is_writing_ && event.mouseButton.button == Mouse::Left) {
+				is_writing_ = true;
 
-					last_mouse_ = sf::Vector2f(mouse_event->pos);
-					AddStrokePoint(last_mouse_);
-					std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
-					break;
-				case Mouse::Right:
-					is_writing_ = false;
-					UndoStroke();
-					break;
-				}
-				break;
+				last_mouse_ = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+				AddStrokePoint(last_mouse_);
+				std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
 			}
+			break;
 			
 		case Event::E_MOUSE_MOVED:
 			if (is_writing_) {
-				MouseEvent *mouse_event = (MouseEvent*)event;
-				sf::Vector2f mouse_pos = sf::Vector2f(mouse_event->pos);
+				sf::Vector2f mouse_pos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
 				if (sfm::squaredDistance(mouse_pos, last_mouse_) < MIN_STROKE_DISPLACEMENT_SQUARED) {
 					break;
 				}
 
-				std::cout << "stroke\n";
 				last_mouse_ = mouse_pos;	
 				AddStrokePoint(last_mouse_);
 				//std::cout << "Add stroke segment " << character_->stroke_size(stroke) << std::endl;
@@ -496,9 +476,13 @@ namespace sun_magic {
 			break;
 
 		case Event::E_MOUSE_RELEASED:
+			if (event.mouseButton.button == Mouse::Right) {
+				is_writing_ = false;
+				UndoStroke();
+				break;
+			}
 		case Event::E_MOUSE_EXITED:
 			if (is_writing_) {
-				std::cout << "release\n";
 				is_writing_ = false;
 				EndStroke();
 				SetAnimationStroke(NumStrokes());
@@ -516,8 +500,7 @@ namespace sun_magic {
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
 		if (result) {
-			std::cout << result->size() << std::endl;
-			unicode_ = UTF8ToUTF32(result->value(0));
+			unicode_ = tools::UTF8ToUTF32(result->value(0));
 		} else {
 			throw "ERROR: " + std::string(_recognizer->what());
 		}

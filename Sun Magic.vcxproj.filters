@@ -113,6 +113,9 @@
     <ClCompile Include="src\tools\tools.cpp">
       <Filter>src\tools</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\key_object.cpp">
+      <Filter>src\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -134,9 +137,6 @@
       <Filter>src\ui</Filter>
     </ClInclude>
     <ClInclude Include="src\references\file_refs.h">
-      <Filter>src\references</Filter>
-    </ClInclude>
-    <ClInclude Include="src\references\hiragana_refs.h">
       <Filter>src\references</Filter>
     </ClInclude>
     <ClInclude Include="src\references\texture_refs.h">
@@ -183,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="src\tools\tools.h">
       <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\key_object.h">
+      <Filter>src\objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

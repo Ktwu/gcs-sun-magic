@@ -13,7 +13,7 @@ namespace sun_magic {
 
 		/* Interface functions */
 		void RegisterState(MachineState<GameState>* previous_state);
-		void UnregisterState(MachineState<GameState>* previous_state);
+		void UnregisterState(MachineState<GameState>* next_state);
 
 		GameState Update(float elapsed_time);
 		void PreDraw(sf::RenderTarget *target);

@@ -15,5 +15,11 @@ namespace sun_magic {
 							(float)window_size.y / sprite_size.y);
 			sprite.setPosition(0, 0);
 		}
+
+		sf::String UTF8ToUTF32(const char* utf8str) {
+			sf::Uint32 utf32str[] = {0,0};
+			sf::Utf8::toUtf32((unsigned char*)utf8str, (unsigned char*)utf8str + strlen(utf8str), utf32str);
+			return sf::String(utf32str);
+		}
 	}
 }

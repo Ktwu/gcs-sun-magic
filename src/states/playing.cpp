@@ -15,7 +15,7 @@ namespace sun_magic {
 
 	Playing::~Playing() {}
 
-	void Playing::RegisterState(MachineState<GameState>* previousState) {
+	void Playing::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = PLAYING;
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
@@ -24,7 +24,7 @@ namespace sun_magic {
 		tools::ScaleToWindowSize(background_);
 	}
 
-	void Playing::UnregisterState(MachineState<GameState>* previousState) {
+	void Playing::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(textures::backgrounds::WINDOW);
 	}
@@ -39,6 +39,6 @@ namespace sun_magic {
 
 	void Playing::PostDraw(sf::RenderTarget *target) { }
 
-	void Playing::ProcessEvent(Event *event) { }
+	void Playing::ProcessEvent(Event event) { }
 
 };

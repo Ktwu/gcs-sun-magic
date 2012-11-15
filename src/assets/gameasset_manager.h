@@ -1,7 +1,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include "references/hiragana_refs.h"
 
 namespace sun_magic {
 
@@ -25,13 +24,14 @@ namespace sun_magic {
 		void ReturnTexture(std::string textureName);
 		void CleanUnusedTextures();
 
-		zinnia::Character* GetTraceCharacter(hiragana::id id);
+		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
+		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
 
 	private:
 		static GameAssetManager* instance_;
 
-		std::map<sf::String, GameAsset<sf::Texture>*> _textures_;
-		std::map<hiragana::id, zinnia::Character*> _trace_characters_;
+		std::hash_map<std::string, GameAsset<sf::Texture>*> _textures_;
+		std::hash_map<sf::Uint32, zinnia::Character*> _trace_characters_;
 
 		//sf::Music _music_;
 	};

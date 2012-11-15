@@ -5,7 +5,6 @@
 
 #include <fstream>
 #include <iostream>
-#include "time.h"
 
 // Game states
 #include "assets/gameasset_manager.h"
@@ -70,18 +69,16 @@ namespace sun_magic {
 	}
 
 	void Game::Run() {	
-		clock_t last_clock = clock();
-		float time_since_last_update;
+		sf::Clock clock;
 		while(game_state_ != EXITING) {
-			clock_t new_clock = clock();
-			time_since_last_update = (float)(new_clock - last_clock) / CLOCKS_PER_SEC;
-			last_clock = new_clock;
+			float elapsed_time = clock.getElapsedTime().asSeconds();
+			clock.restart();
 		
 			HandleInput();
 
 			// Update
-			event_manager_->UpdateObjects(time_since_last_update);
-			game_machine_.Update(time_since_last_update);
+			event_manager_->UpdateObjects(elapsed_time);
+			game_machine_.Update(elapsed_time);
 
 			// Draw
 			MachineState<GameState> *state = game_machine_.GetActiveState();
@@ -92,18 +89,20 @@ namespace sun_magic {
 			state->PostDraw(&main_window_);
 			main_window_.display();
 		}
+
+		// Cleanup
+		game_machine_.GetActiveState()->UnregisterState(NULL);
 	}
 
 	void Game::Destroy() {
 		main_window_.close();
 	}
 
-	void Game::ProcessEvent(Event *event) {
-		switch (event->type) {
+	void Game::ProcessEvent(Event event) {
+		switch (event.type) {
 		case Event::E_KEY_RELEASED:
 			{
-				KeyEvent *key_event = (KeyEvent*)event;
-				switch (key_event->key) {
+				switch (event.key.code) {
 				case Keyboard::Escape:
 					game_state_ = EXITING;
 					break;

@@ -32,7 +32,7 @@ namespace sun_magic {
 		return 0; 
 	} 
 
-	void Splash::RegisterState(MachineState<GameState>* previousState) {
+	void Splash::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = LOADING;
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
@@ -44,7 +44,7 @@ namespace sun_magic {
 		CreateThread(NULL, 0, &MyThreadFunction, this, 0, 0);
 	}
 
-	void Splash::UnregisterState(MachineState<GameState>* previousState) {
+	void Splash::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(textures::backgrounds::POSTER_AWAY);
 	}
