@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\backgrounds\bg_dummy1.jpg" />
+    <None Include="assets\backgrounds\bg_dummy1_1.jpg" />
+    <None Include="assets\backgrounds\bg_dummy2.jpg" />
+    <None Include="assets\backgrounds\bg_dummy3.jpg" />
+    <None Include="assets\backgrounds\bg_dummy4.jpg" />
+    <None Include="assets\fonts\msmincho.ttc" />
+    <None Include="assets\models\hiragana.model" />
+    <None Include="assets\models\hiragana.model.txt" />
+    <None Include="assets\models\hiragana_learn.txt" />
+    <None Include="assets\objects\neko.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\assets\gameasset_manager.cpp" />
+    <ClCompile Include="src\events\event_manager.cpp" />
+    <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\states\main_menu.cpp" />
+    <ClCompile Include="src\states\playing.cpp" />
+    <ClCompile Include="src\states\save_writing.cpp" />
+    <ClCompile Include="src\states\splash.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\tools\tools.cpp" />
+    <ClCompile Include="src\ui\button.cpp" />
+    <ClCompile Include="src\ui\character_tile.cpp" />
+    <ClCompile Include="src\ui\dictionary.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\assets\gameasset.h" />
+    <ClInclude Include="src\assets\gameasset_manager.h" />
+    <ClInclude Include="src\events\event.h" />
+    <ClInclude Include="src\events\event_manager.h" />
+    <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\objects\game_object.h" />
+    <ClInclude Include="src\references\file_refs.h" />
+    <ClInclude Include="src\references\hiragana_refs.h" />
+    <ClInclude Include="src\references\texture_refs.h" />
+    <ClInclude Include="src\states\game_state.h" />
+    <ClInclude Include="src\states\machine.h" />
+    <ClInclude Include="src\states\machine_state.h" />
+    <ClInclude Include="src\states\main_menu.h" />
+    <ClInclude Include="src\states\playing.h" />
+    <ClInclude Include="src\states\save_writing.h" />
+    <ClInclude Include="src\states\splash.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="src\tools\sfm.h" />
+    <ClInclude Include="src\tools\tools.h" />
+    <ClInclude Include="src\ui\button.h" />
+    <ClInclude Include="src\ui\character_tile.h" />
+    <ClInclude Include="src\ui\dictionary.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{86CBD65F-1113-45AB-801E-18F2A5E55FD0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SunMagic</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(ProjectDir)\src</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>zinnia\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)zinnia\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>SFML-2.0-rc/Include/;zinnia-0.06/Include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>SFML-2.0-rc/lib/;zinnia-0.06/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;sfml-system-d.lib;sfml-main-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-window-d.lib;libzinnia.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\*-d-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-d-2.lib" "$(OutDir)"
+xcopy /y "$(ProjectDir)zinnia-0.06\lib\libzinnia.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>SFML-2.0-rc/include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>SFML-2.0-rc/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;sfml-system-d-2.lib;sfml-main-d-2.lib;sfml-graphics-d-2.lib;sfml-audio-d-2.lib;sfml-network-d-2.lib;sfml-window-d-2.lib;libzinnia.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

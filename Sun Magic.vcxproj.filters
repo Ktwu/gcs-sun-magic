@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{aaa08f1e-3aec-40b5-a54a-dae2c157764b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{9512eb6b-a3b2-450e-a842-fb56edc70b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\backgrounds">
+      <UniqueIdentifier>{1f07c654-6209-49da-9037-f6e758af4b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\fonts">
+      <UniqueIdentifier>{8a0fc823-e3be-459c-b99e-00ab0b85e79c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\objects">
+      <UniqueIdentifier>{0f4cc42b-23ab-4b48-918a-54137f223345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\models">
+      <UniqueIdentifier>{94748089-6b19-4fcb-8ca5-10e3f80893a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\assets">
+      <UniqueIdentifier>{9c5a7963-49c4-44b9-8e22-f6cc7cfb4691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\events">
+      <UniqueIdentifier>{8579a12e-4682-402a-b772-9f140820f413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\objects">
+      <UniqueIdentifier>{333897d4-0325-4565-8f03-de994c06830e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\references">
+      <UniqueIdentifier>{4fed5701-f48c-4f8c-90f6-b6a1b47b2f16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\states">
+      <UniqueIdentifier>{ae29d3e8-3f84-4e87-9c52-57112dc169c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tools">
+      <UniqueIdentifier>{537cf77c-d459-46cc-9493-7d9373fe8fbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{a3d9e34e-d662-44f6-b518-7fe979362cc3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\backgrounds\bg_dummy1.jpg">
+      <Filter>assets\backgrounds</Filter>
+    </None>
+    <None Include="assets\backgrounds\bg_dummy1_1.jpg">
+      <Filter>assets\backgrounds</Filter>
+    </None>
+    <None Include="assets\backgrounds\bg_dummy2.jpg">
+      <Filter>assets\backgrounds</Filter>
+    </None>
+    <None Include="assets\backgrounds\bg_dummy3.jpg">
+      <Filter>assets\backgrounds</Filter>
+    </None>
+    <None Include="assets\backgrounds\bg_dummy4.jpg">
+      <Filter>assets\backgrounds</Filter>
+    </None>
+    <None Include="assets\fonts\msmincho.ttc">
+      <Filter>assets\fonts</Filter>
+    </None>
+    <None Include="assets\objects\neko.png">
+      <Filter>assets\objects</Filter>
+    </None>
+    <None Include="assets\models\hiragana.model">
+      <Filter>assets\models</Filter>
+    </None>
+    <None Include="assets\models\hiragana.model.txt">
+      <Filter>assets\models</Filter>
+    </None>
+    <None Include="assets\models\hiragana_learn.txt">
+      <Filter>assets\models</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\button.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\character_tile.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\dictionary.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assets\gameasset_manager.cpp">
+      <Filter>src\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\events\event_manager.cpp">
+      <Filter>src\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\states\main_menu.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\states\playing.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\states\save_writing.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\states\splash.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\tools.cpp">
+      <Filter>src\tools</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\game.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\button.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\character_tile.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\dictionary.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\references\file_refs.h">
+      <Filter>src\references</Filter>
+    </ClInclude>
+    <ClInclude Include="src\references\hiragana_refs.h">
+      <Filter>src\references</Filter>
+    </ClInclude>
+    <ClInclude Include="src\references\texture_refs.h">
+      <Filter>src\references</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assets\gameasset.h">
+      <Filter>src\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assets\gameasset_manager.h">
+      <Filter>src\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\event.h">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\event_manager.h">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\game_state.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\machine.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\machine_state.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\main_menu.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\playing.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\save_writing.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\splash.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\game_object.h">
+      <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\sfm.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\tools.h">
+      <Filter>src\tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
