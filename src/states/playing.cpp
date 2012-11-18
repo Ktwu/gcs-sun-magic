@@ -9,7 +9,8 @@
 namespace sun_magic {
 
 	Playing::Playing() :
-		background_()
+		background_(),
+		tilelist_(0, 0, 1000, 200, 5)
 	{
 	}
 
@@ -22,19 +23,26 @@ namespace sun_magic {
 		background_.setTexture(*manager->GetTexture(textures::backgrounds::WINDOW));
 		/* The image might be a little too big, so scale it so it fits in the window */
 		tools::ScaleToWindowSize(background_);
+
+		tilelist_.Register();
 	}
 
 	void Playing::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(textures::backgrounds::WINDOW);
+
+		tilelist_.Unregister();
 	}
 
 	GameState Playing::Update(float elapsed_time) {
+		tilelist_.Update(elapsed_time);
 		return game_state_;
 	}
 	
 	void Playing::PreDraw(sf::RenderTarget *target) {
 		target->draw(background_);
+
+		tilelist_.Draw(target);
 	}
 
 	void Playing::PostDraw(sf::RenderTarget *target) { }

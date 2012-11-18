@@ -188,7 +188,10 @@ namespace sun_magic {
 			current_stroke_--;
 			Reclassify();
 			stroke_lines_.pop_back();
-			stroke_errors_.pop_back();
+
+			if (trace_character_ != NULL)
+				stroke_errors_.pop_back();
+
 			SetAnimationStroke(NumStrokes());
 		}
 		stroke_lines_.back().clear();
@@ -202,6 +205,9 @@ namespace sun_magic {
 		Reclassify();
 	}
 	float CharacterTile::GetStrokeError(size_t stroke) {
+		if (trace_character_ == NULL)
+			return 0.0f;
+
 		return stroke_errors_[stroke];
 	}
 	void CharacterTile::Resize(float width, float height) {

@@ -116,6 +116,9 @@
     <ClCompile Include="src\objects\key_object.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\character_tilelist.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -186,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="src\objects\key_object.h">
       <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\character_tilelist.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
