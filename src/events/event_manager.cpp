@@ -174,8 +174,8 @@ namespace sun_magic {
 	}
 
 	void EventManager::Update() {
-		for (std::vector<Event>::iterator iter = events_.begin(); iter != events_.end(); iter++) {
-			Event event = *iter;
+		for (int i = 0; i < events_.size(); ++i) {
+			Event event = events_[i];
 			event.focus = NULL;
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);
