@@ -506,7 +506,11 @@ namespace sun_magic {
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
 		if (result) {
-			unicode_ = tools::UTF8ToUTF32(result->value(0));
+			if (result->score(0) > 0.0f) {
+				unicode_ = tools::UTF8ToUTF32(result->value(0));
+			} else {
+				unicode_ = sf::String();
+			}
 		} else {
 			throw "ERROR: " + std::string(_recognizer->what());
 		}

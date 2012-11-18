@@ -226,8 +226,8 @@ namespace sun_magic {
 		}
 	}
 
-	int ZSort(GameObject* a, GameObject* b) {
-		return a->GetZ() - b->GetZ();
+	bool ZSort(GameObject* a, GameObject* b) {
+		return a->GetZ() < b->GetZ();
 	}
 
 	void EventManager::UpdateFocus(sf::Vector2i mouse) {

@@ -39,11 +39,15 @@ namespace sun_magic {
 
 			// UI
 			E_CLICKED,
+
+			// Hiragana
+			E_HIRAGANA_DRAWN
 		};
 
 		EventType type;
 		void *source;
 		GameObject *focus;
+		sf::String message;		// E_HIRAGANA_DRAWN, also C++ is stupid
 
 		union
 		{

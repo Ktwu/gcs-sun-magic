@@ -3,6 +3,7 @@
 
 #include "game.h"
 #include "assets/gameasset_manager.h"
+#include "events/event_manager.h"
 #include "references/texture_refs.h"
 #include "tools/tools.h"
 
@@ -24,14 +25,18 @@ namespace sun_magic {
 		/* The image might be a little too big, so scale it so it fits in the window */
 		tools::ScaleToWindowSize(background_);
 
-		tilelist_.Register();
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->AddGameObject(&tilelist_);
+		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this, &tilelist_);
 	}
 
 	void Playing::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(textures::backgrounds::WINDOW);
 
-		tilelist_.Unregister();
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->RemoveGameObject(&tilelist_);
+		event_manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this, &tilelist_);
 	}
 
 	GameState Playing::Update(float elapsed_time) {
@@ -47,6 +52,11 @@ namespace sun_magic {
 
 	void Playing::PostDraw(sf::RenderTarget *target) { }
 
-	void Playing::ProcessEvent(Event event) { }
+	void Playing::ProcessEvent(Event event) {
+		switch (event.type) {
+		case Event::E_HIRAGANA_DRAWN:
+			std::wcout << "Got string " << event.message.toWideString() << "\n";
+		}
+	}
 
 };
