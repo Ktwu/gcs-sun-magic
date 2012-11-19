@@ -7,6 +7,9 @@
 
 namespace sun_magic {
 
+	/* Widget to keep track of hiragana drawn in a list of words.  When a word is either being
+	   written or finished, this fires an event containing the word.  Any incomplete or unknown
+	   characters are replaced with "?" */
 	class CharacterTileList : public GameObject, public EventListener {
 	public:
 
@@ -14,6 +17,7 @@ namespace sun_magic {
 		~CharacterTileList();
 
 		void Clear();
+		sf::String GetWord();
 	
 		void Register();
 		void Unregister();
@@ -23,6 +27,7 @@ namespace sun_magic {
 
 	private:
 		std::vector<CharacterTile*> tiles_;
+		sf::String word_;
 	};
 
 }

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "playing.h"
 
 #include "game.h"
@@ -46,7 +46,6 @@ namespace sun_magic {
 	
 	void Playing::PreDraw(sf::RenderTarget *target) {
 		target->draw(background_);
-
 		tilelist_.Draw(target);
 	}
 
@@ -55,7 +54,8 @@ namespace sun_magic {
 	void Playing::ProcessEvent(Event event) {
 		switch (event.type) {
 		case Event::E_HIRAGANA_DRAWN:
-			std::wcout << "Got string " << event.message.toWideString() << "\n";
+			if (event.message.toWideString().compare(L"いい") == 0)
+				std::cout << ":)\n";
 		}
 	}
 

@@ -27,11 +27,15 @@ namespace sun_magic {
 		}
 	}
 
+	sf::String CharacterTileList::GetWord() {
+		return word_;
+	}
+
 	void CharacterTileList::Register() {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (int i = 0; i < tiles_.size(); ++i) {
 			manager->AddGameObject(tiles_[i]);
-			manager->RegisterListener(Event::E_MOUSE_RELEASED, this, tiles_[i]);
+			manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
 	}
 
@@ -39,7 +43,7 @@ namespace sun_magic {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (int i = 0; i < tiles_.size(); ++i) {
 			manager->AddGameObject(tiles_[i]);
-			manager->UnregisterListener(Event::E_MOUSE_RELEASED, this, tiles_[i]);
+			manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
 	}
 
@@ -47,27 +51,34 @@ namespace sun_magic {
 	}
 
 	void CharacterTileList::ProcessEvent(Event event) {
-		// Go through all of our tiles and process their characters
-		Event hiragana_event;
+		// Go through all of our tiles and process their characters into a message
 		sf::String unicode;
+		event.message.clear();
+		word_.clear();
+
 		for (int i = 0; i < tiles_.size(); ++i) {
-			unicode = tiles_[i]->GetUnicode();
-			if (unicode.isEmpty())
+			// Do we have anything drawn into the tile?
+			// If not then we're not actively working in it.
+			if (tiles_[i]->GetCharacter()->strokes_size() == 0)
 				break;
 
-			hiragana_event.message += unicode;
+			unicode = tiles_[i]->GetUnicode();
+			if (unicode.isEmpty())
+				unicode = "?";
+
+			event.message += unicode;
 		}
 
 		// Only launch an event if we have a word to even report
-		if (hiragana_event.message.isEmpty()) {
+		if (event.message.isEmpty())
 			return;
-		}
 
-		hiragana_event.focus = this;
-		hiragana_event.type = Event::E_HIRAGANA_DRAWN;
+		word_ = event.message;
+		event.focus = this;
+		event.type = Event::E_HIRAGANA_DRAWN;
 
 		EventManager* manager = Game::GetInstance()->GetEventManager();
-		manager->AddEvent(hiragana_event);
+		manager->AddEvent(event);
 	}
 
 	void CharacterTileList::Draw(sf::RenderTarget* target) {

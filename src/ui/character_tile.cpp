@@ -499,6 +499,12 @@ namespace sun_magic {
 	}
 
 	void CharacterTile::Reclassify () {
+		EventManager* manager = Game::GetInstance()->GetEventManager();
+		Event event;
+		event.type = Event::E_HIRAGANA_DRAWN;
+		event.focus = this;
+		manager->AddEvent(event);
+
 		if (current_stroke_ == 0) {
 			unicode_ = sf::String();
 			return;
