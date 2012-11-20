@@ -188,7 +188,10 @@ namespace sun_magic {
 			current_stroke_--;
 			Reclassify();
 			stroke_lines_.pop_back();
-			stroke_errors_.pop_back();
+
+			if (trace_character_ != NULL)
+				stroke_errors_.pop_back();
+
 			SetAnimationStroke(NumStrokes());
 		}
 		stroke_lines_.back().clear();
@@ -202,6 +205,9 @@ namespace sun_magic {
 		Reclassify();
 	}
 	float CharacterTile::GetStrokeError(size_t stroke) {
+		if (trace_character_ == NULL)
+			return 0.0f;
+
 		return stroke_errors_[stroke];
 	}
 	void CharacterTile::Resize(float width, float height) {
@@ -483,6 +489,12 @@ namespace sun_magic {
 	}
 
 	void CharacterTile::Reclassify () {
+		EventManager* manager = Game::GetInstance()->GetEventManager();
+		Event event;
+		event.type = Event::E_HIRAGANA_DRAWN;
+		event.focus = this;
+		manager->AddEvent(event);
+
 		if (current_stroke_ == 0) {
 			unicode_ = sf::String();
 			return;
@@ -490,7 +502,11 @@ namespace sun_magic {
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
 		if (result) {
-			unicode_ = tools::UTF8ToUTF32(result->value(0));
+			if (result->score(0) > 0.0f) {
+				unicode_ = tools::UTF8ToUTF32(result->value(0));
+			} else {
+				unicode_ = sf::String();
+			}
 		} else {
 			throw "ERROR: " + std::string(_recognizer->what());
 		}

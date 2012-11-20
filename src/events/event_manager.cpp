@@ -108,11 +108,13 @@ namespace sun_magic {
 	}
 
 	void EventManager::AddEvent(sf::Event sf_event) {
+		Event event;
+		event.focus = NULL;
+
 		switch (sf_event.type) {
 
 		case sf::Event::Closed:
 			{
-				Event event;
 				event.type = Event::E_CLOSED;
 				AddEvent(event);
 				break;
@@ -121,7 +123,6 @@ namespace sun_magic {
 		case sf::Event::MouseButtonPressed:
 		case sf::Event::MouseButtonReleased:
 			{
-				Event event;
 				switch (sf_event.type) {
 				case sf::Event::MouseButtonPressed:
 					event.type = Event::E_MOUSE_PRESSED;
@@ -136,7 +137,6 @@ namespace sun_magic {
 			}
 		case sf::Event::MouseMoved:
 			{
-				Event event;
 				event.type = Event::E_MOUSE_MOVED;
 				event.mouseMove = sf_event.mouseMove;
 				AddEvent(event);
@@ -149,7 +149,6 @@ namespace sun_magic {
 		case sf::Event::KeyPressed:
 		case sf::Event::KeyReleased:
 			{
-				Event event;
 				switch (sf_event.type) {
 				case sf::Event::KeyPressed:
 					event.type = Event::E_KEY_PRESSED;
@@ -164,7 +163,6 @@ namespace sun_magic {
 			}
 		case sf::Event::TextEntered:
 			{
-				Event event;
 				event.type = Event::E_TEXT_ENTERED;
 				event.text = sf_event.text;
 				AddEvent(event);
@@ -176,7 +174,7 @@ namespace sun_magic {
 	void EventManager::Update() {
 		for (int i = 0; i < events_.size(); ++i) {
 			Event event = events_[i];
-			event.focus = NULL;
+			GameObject* event_focus = event.focus;
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);
 			if (event_iter == eventfocus__listener_map_.end()) {
@@ -185,6 +183,7 @@ namespace sun_magic {
 			FocusToListenerSetMap *focus_listener_map = event_iter->second;
 
 			// Send event to all listeners with NULL focus i.e. global focus
+			event.focus = NULL;
 			FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(NULL);
 			if (focus_iter != focus_listener_map->end()) {
 				ListenerSet* listener_set = focus_iter->second;
@@ -196,10 +195,10 @@ namespace sun_magic {
 			}
 
 			// Send event to all listeners on the currently focused object if any
-			if (focus_ != NULL) {
-				focus_iter = focus_listener_map->find(focus_);
+			event.focus = (event_focus != NULL) ? event_focus : focus_;
+			if (event.focus != NULL) {
+				focus_iter = focus_listener_map->find(event.focus);
 				if (focus_iter != focus_listener_map->end()) {
-					event.focus = focus_;
 					ListenerSet* listener_set = focus_iter->second;
 					for (ListenerSet::iterator listener_iter = listener_set->begin();
 							listener_iter != listener_set->end(); listener_iter++) {
@@ -238,8 +237,8 @@ namespace sun_magic {
 		target->setView(view);
 	}
 
-	int ZSort(GameObject* a, GameObject* b) {
-		return a->GetZ() - b->GetZ();
+	bool ZSort(GameObject* a, GameObject* b) {
+		return a->GetZ() < b->GetZ();
 	}
 
 	void EventManager::UpdateFocus(sf::Vector2i mouse) {
