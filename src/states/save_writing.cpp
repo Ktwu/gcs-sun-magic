@@ -77,9 +77,6 @@ namespace sun_magic {
 	}
 
 	void SaveWritingState::PostDraw(sf::RenderTarget *target) {
-		/* Draw tile */
-		tile_->Draw(target);
-
 		/* Draw UI strings */
 		target->draw(prompt_);
 		target->draw(current_);
