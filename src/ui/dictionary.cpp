@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "dictionary.h"
 
+#include "assets/gameasset_manager.h"
 #include "game.h"
 #include "events/event_manager.h"
 #include "tools/sfm.h"
@@ -69,8 +70,9 @@ namespace sun_magic {
 
 			sf::String a = iter->first;
 			sf::Text text(sf::String(L"ねこ"));
+			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
 			text.setColor(iter->second.outline);
-			text.setCharacterSize(15);
+			text.setCharacterSize(50);
 			text.setPosition(2.f * padding + sprite_bounds.width, y);
 			target->draw(text);
 			y += std::max(sprite_bounds.height, text.getLocalBounds().height);

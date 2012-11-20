@@ -27,12 +27,14 @@ namespace sun_magic {
 		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
 		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
 
+		const sf::Font& GetMsminchoFont();
+
 	private:
 		static GameAssetManager* instance_;
 
-		std::hash_map<std::string, GameAsset<sf::Texture>*> _textures_;
-		std::hash_map<sf::Uint32, zinnia::Character*> _trace_characters_;
-
+		std::hash_map<std::string, GameAsset<sf::Texture>*> textures_;
+		std::hash_map<sf::Uint32, zinnia::Character*> trace_characters_;
+		sf::Font msmincho_;
 		//sf::Music _music_;
 	};
 

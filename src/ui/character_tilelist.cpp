@@ -82,8 +82,5 @@ namespace sun_magic {
 	}
 
 	void CharacterTileList::Draw(sf::RenderTarget* target) {
-		for (int i = 0; i < tiles_.size(); ++i) {
-			tiles_[i]->Draw(target);
-		}
 	}
 }

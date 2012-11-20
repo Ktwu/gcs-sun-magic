@@ -49,7 +49,7 @@ namespace sun_magic {
 
 		// Init zinnia data
 		// TODO replace with a better dataset
-		CharacterTile::InitRecognizer(file_refs::ZINNIA_MODEL);
+		CharacterTile::InitRecognizer(file_refs::ZINNIA_MODEL.c_str());
 
 		game_machine_.Init(LOADING, new Splash());
 		game_machine_.AddState(MAIN_MENU, new MainMenu());

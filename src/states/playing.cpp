@@ -11,7 +11,7 @@ namespace sun_magic {
 
 	Playing::Playing() :
 		background_(),
-		tilelist_(0, 0, 1000, 200, 5)
+		tilelist_(0, 0, 750, 150, 5)
 	{
 	}
 
@@ -40,13 +40,11 @@ namespace sun_magic {
 	}
 
 	GameState Playing::Update(float elapsed_time) {
-		tilelist_.Update(elapsed_time);
 		return game_state_;
 	}
 	
 	void Playing::PreDraw(sf::RenderTarget *target) {
 		target->draw(background_);
-		tilelist_.Draw(target);
 	}
 
 	void Playing::PostDraw(sf::RenderTarget *target) { }
