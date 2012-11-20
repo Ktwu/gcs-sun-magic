@@ -220,10 +220,22 @@ namespace sun_magic {
 	}
 
 	void EventManager::DrawObjects(sf::RenderTarget *target) {
+		// Save the window default view
+		sf::View view = target->getView();
+		sf::Vector2u window_size = target->getSize();
+		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
+
 		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
 			GameObject * object = *focus_iter;
+
+			// Translate view to object position
+			sf::Vector2f pos = object->GetPosition();
+			target->setView(sf::View(center - pos, 2.f * center));
 			object->Draw(target);
 		}
+
+		// Reset window view
+		target->setView(view);
 	}
 
 	int ZSort(GameObject* a, GameObject* b) {

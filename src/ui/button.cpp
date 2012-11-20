@@ -51,13 +51,6 @@ namespace sun_magic {
 
 	void Button::Update(float elapsed_time) {}
 	void Button::Draw(sf::RenderTarget* target) {
-		// Translate view to position
-		sf::View view = target->getView();
-		sf::Vector2u window_size = target->getSize();
-		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
-		sf::Vector2f my_pos = GetPosition();
-		target->setView(sf::View(center - GetPosition(), 2.f * center));
-
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::RectangleShape rect(size);
 		rect.setOutlineThickness(2);
@@ -89,9 +82,6 @@ namespace sun_magic {
 		sf::FloatRect text_size = text.getLocalBounds();
 		text.setPosition((size - sf::Vector2f(text_size.width, text_size.height)) * 0.5f);
 		target->draw(text);
-
-		// Reset translation
-		target->setView(view);
 	}
 
 	void Button::ProcessEvent(Event event) {

@@ -66,13 +66,6 @@ namespace sun_magic {
 	void KeyObject::Update(float elapsed_time) {
 	}
 	void KeyObject::Draw(sf::RenderTarget* target) {
-		// Translate view to position
-		sf::View view = target->getView();
-		sf::Vector2u window_size = target->getSize();
-		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
-		sf::Vector2f my_pos = GetPosition();
-		target->setView(sf::View(center - GetPosition(), 2.f * center));
-
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::Vector2f texture_size = sf::Vector2f(sprite_.getTexture()->getSize());
 		sprite_.setPosition((size - texture_size) * 0.5f);
@@ -86,9 +79,6 @@ namespace sun_magic {
 			sprite_.setColor(sf::Color::White);
 		}
 		target->draw(sprite_);
-
-		// Reset translation
-		target->setView(view);
 	}
 
 	void KeyObject::ProcessEvent(Event event) {

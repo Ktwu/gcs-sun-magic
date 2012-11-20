@@ -377,13 +377,6 @@ namespace sun_magic {
 	}
 
 	void CharacterTile::Draw(sf::RenderTarget* target) {
-		// Translate view to position
-		sf::View view = target->getView();
-		sf::Vector2u window_size = target->getSize();
-		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
-		sf::Vector2f my_pos = GetPosition();
-		target->setView(sf::View(center - GetPosition(), 2.f * center));
-
 		sf::Vector2f size(rect_.width, rect_.height);
 
 		// Draw background and border
@@ -445,9 +438,6 @@ namespace sun_magic {
 				target->draw(circle);
 			}
 		}
-	
-		// Reset translation
-		target->setView(view);
 	}
 
 	void CharacterTile::ProcessEvent(Event event) {

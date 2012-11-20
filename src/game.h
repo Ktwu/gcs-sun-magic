@@ -25,6 +25,7 @@ namespace sun_magic {
 
 		sf::RenderWindow* GetWindow();
 		EventManager* GetEventManager();
+		Dictionary* GetDictionary();
 
 		void Init();
 		void Run();
@@ -48,7 +49,6 @@ namespace sun_magic {
 		sf::Font font_;
 		std::vector<sf::Text> ui_strings_;
 		CharacterTile* tile_;
-		std::vector<std::string> words_;
 		Dictionary* dict_;
 	};
 }

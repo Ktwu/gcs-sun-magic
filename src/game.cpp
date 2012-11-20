@@ -10,6 +10,7 @@
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
 #include "references/file_refs.h"
+#include "references/texture_refs.h"
 #include "states/splash.h"
 #include "states/main_menu.h"
 #include "states/save_writing.h"
@@ -35,6 +36,10 @@ namespace sun_magic {
 		return event_manager_;
 	}
 
+	Dictionary* Game::GetDictionary() {
+		return dict_;
+	}
+
 	void Game::Init() {
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		asset_manager->Init();
@@ -55,9 +60,9 @@ namespace sun_magic {
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
 		event_manager_->RegisterListener(Event::E_KEY_RELEASED, this);
 
-		dict_ = new Dictionary(0,0,0,0);
-		words_.push_back("hello world");
-		words_.push_back("blah");
+		dict_ = new Dictionary();
+		dict_->AddWord(sf::String(L"ねこ"), GameAssetManager::GetInstance()->GetTexture(textures::objects::NEKO));
+		event_manager_->AddGameObject(dict_);
 	}
 
 	void Game::HandleInput() {
@@ -84,8 +89,6 @@ namespace sun_magic {
 			MachineState<GameState> *state = game_machine_.GetActiveState();
 			state->PreDraw(&main_window_);
 			event_manager_->DrawObjects(&main_window_);
-			dict_->Draw(&main_window_); 
-		    dict_->DictWords(&main_window_, words_);
 			state->PostDraw(&main_window_);
 			main_window_.display();
 		}

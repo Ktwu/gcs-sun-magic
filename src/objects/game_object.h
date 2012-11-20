@@ -17,7 +17,7 @@ namespace sun_magic {
 		sf::Vector2f GetSize() {
 			return sf::Vector2f(rect_.width, rect_.height);
 		}
-		sf::Rect<float>& GetRect() {
+		sf::FloatRect& GetRect() {
 			return rect_;
 		}
 
@@ -34,7 +34,7 @@ namespace sun_magic {
 		virtual void Unregister() = 0;
 
 	protected:
-		sf::Rect<float> rect_;
+		sf::FloatRect rect_;
 		int z_;	// Determines front to back order. Higher z's are in the front
 		bool outlined_;
 	};
