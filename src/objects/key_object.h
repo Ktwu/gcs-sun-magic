@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "events/event.h"
+#include "events/gameevent.h"
 #include "objects/game_object.h"
 
 namespace sun_magic {
@@ -9,13 +10,15 @@ namespace sun_magic {
 	class KeyObject : public GameObject, public EventListener
 	{
 	public:
+		typedef void(*key_callback_t)(KeyObject*, Event);
 		enum KeyState {
 			DEFAULT,
 			OUTLINED,
 			ACTIVE
 		};
 
-		KeyObject(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, bool active = true);
+		KeyObject(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
+		KeyObject(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
 		~KeyObject();
 
 		void SetTexture(const sf::Texture& texture);
@@ -29,6 +32,12 @@ namespace sun_magic {
 
 		void SetActive(bool active);
 		bool IsActive();
+
+		void SetVisible(bool visible);
+		bool IsVisible();
+
+		void EventCallback(Event event);
+		void SetEventCallback(key_callback_t callback);
 
 		void Register();
 		void Unregister();
@@ -48,10 +57,9 @@ namespace sun_magic {
 		sf::String word_;
 		bool active_;
 		bool registered_;
+		bool visible_;
 		KeyState state_;
+		key_callback_t callback_;
 	};
 	
-	const sf::Color KeyObject::OUTLINE_COLORS[16] = {
-		sf::Color::Black
-	};
 }

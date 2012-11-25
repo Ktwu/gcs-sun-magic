@@ -25,6 +25,7 @@
   <ItemGroup>
     <ClCompile Include="src\assets\gameasset_manager.cpp" />
     <ClCompile Include="src\events\event_manager.cpp" />
+    <ClCompile Include="src\events\gameevent_manager.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\objects\key_object.cpp" />
@@ -44,6 +45,8 @@
     <ClInclude Include="src\assets\gameasset_manager.h" />
     <ClInclude Include="src\events\event.h" />
     <ClInclude Include="src\events\event_manager.h" />
+    <ClInclude Include="src\events\gameevent.h" />
+    <ClInclude Include="src\events\gameevent_manager.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\objects\game_object.h" />
     <ClInclude Include="src\objects\key_object.h" />

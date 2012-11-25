@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "events/gameevent.h"
 #include "states/game_state.h"
 
 namespace sun_magic {
@@ -20,7 +21,11 @@ namespace sun_magic {
 		enum EventType {
 			// System
 			E_CLOSED,
+			E_LOAD_STATE,
 			E_GAME_STATE,
+
+			// Game
+			E_GAME_EVENT,
 
 			// Mouse
 			E_MOUSE_ENTERED,
@@ -55,6 +60,7 @@ namespace sun_magic {
 			TextEvent           text;			// E_TEXT_ENTERED
 			MouseMoveEvent      mouseMove;		// E_MOUSE_ENTERED, E_MOUSE_EXITED, E_MOUSE_MOVED
 			MouseButtonEvent    mouseButton;	// E_MOUSE_PRESSED, E_MOUSE_RELEASED, E_CLICKED
+			GameEvent			gameEvent;		// E_GAME_EVENT
 		};
 	};
 	

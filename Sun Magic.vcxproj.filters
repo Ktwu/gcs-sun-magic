@@ -119,6 +119,9 @@
     <ClCompile Include="src\ui\character_tilelist.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\events\gameevent_manager.cpp">
+      <Filter>src\events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -192,6 +195,12 @@
     </ClInclude>
     <ClInclude Include="src\ui\character_tilelist.h">
       <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\gameevent.h">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\gameevent_manager.h">
+      <Filter>src\events</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

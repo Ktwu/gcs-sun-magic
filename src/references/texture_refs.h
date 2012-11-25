@@ -15,6 +15,8 @@ namespace sun_magic {
 
 		namespace objects {
 			static const std::string NEKO = "assets/objects/neko.png";
+			static const std::string NEKO_HAPPY = "assets/objects/neko-happy.png";
+			static const std::string STUPID_LOVE = "assets/objects/stupid-love.png";
 		}
 
 	}

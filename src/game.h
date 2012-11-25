@@ -42,13 +42,15 @@ namespace sun_magic {
 
 		static Game* instance_;
 
-		Machine<GameState> game_machine_;
-		GameState game_state_;
-		EventManager *event_manager_;
-		sf::RenderWindow main_window_;
-		sf::Font font_;
-		std::vector<sf::Text> ui_strings_;
 		CharacterTile* tile_;
 		Dictionary* dict_;
+		EventManager *event_manager_;
+		GameState game_state_;
+		Machine<GameState> game_machine_;
+
+		sf::RenderWindow main_window_;
+		sf::Font font_;
+
+		std::vector<sf::Text> ui_strings_;
 	};
 }
