@@ -76,8 +76,7 @@ namespace sun_magic {
 			target->draw(sprite);
 			sf::FloatRect sprite_bounds = sprite.getLocalBounds();
 
-			sf::String a = iter->first;
-			sf::Text text(sf::String(L"ねこ"));
+			sf::Text text(iter->first);
 			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
 			text.setColor(iter->second.outline);
 			text.setCharacterSize(50);

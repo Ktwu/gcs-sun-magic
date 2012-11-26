@@ -17,8 +17,8 @@ namespace sun_magic {
 		GameEventManager* manager = GameEventManager::GetInstance();
 		std::set<KeyObject*>& keys = manager->GetKeyObjectsFor(this);
 
-		keys.insert(new KeyObject(0, 150, textures::objects::NEKO, sf::Color::Black, L"ねこ", event_callbacks::Cat));
-		//keys.insert(new KeyObject(200, 150, textures::objects::STUPID_LOVE, sf::Color::Red, L"あい", event_callbacks::Love, true, false));
+		keys.insert(new KeyObject(0, 150, textures::objects::NEKO, sf::Color::White, L"ねこ", event_callbacks::Cat));
+		keys.insert(new KeyObject(200, 150, textures::objects::STUPID_LOVE, sf::Color::White, L"あい", event_callbacks::Love, true, false));
 	}
 
 	Playing::~Playing() {}

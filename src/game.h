@@ -6,6 +6,7 @@
 #include "states/machine.h"
 #include "ui/character_tilelist.h"
 #include "ui/dictionary.h"
+#include "ui/label.h"
 
 namespace sun_magic {
 	
@@ -51,6 +52,7 @@ namespace sun_magic {
 		/* UI elements shared by everyone */
 		CharacterTileList* tilelist_;
 		Dictionary* dict_;
+		Label* listlabel_;
 		
 		EventManager *event_manager_;
 		GameState game_state_;

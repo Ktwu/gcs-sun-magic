@@ -39,11 +39,13 @@ namespace sun_magic {
 	void Game::AddUIElements() {
 		event_manager_->AddGameObject(tilelist_);
 		event_manager_->AddGameObject(dict_);
+		event_manager_->AddGameObject(listlabel_);
 	}
 
 	void Game::RemoveUIElements() {
 		event_manager_->RemoveGameObject(tilelist_);
 		event_manager_->RemoveGameObject(dict_);
+		event_manager_->RemoveGameObject(listlabel_);
 	}
 
 	Dictionary* Game::GetDictionary() {
@@ -59,7 +61,7 @@ namespace sun_magic {
 		asset_manager->Init();
 
 		game_state_ = PLAYING;
-		main_window_.create(sf::VideoMode(1024, 650, 32), "Sun Magic!");
+		main_window_.create(sf::VideoMode(1024, 725, 32), "Sun Magic!");
 
 		// Init zinnia data
 		// TODO replace with a better dataset
@@ -73,12 +75,14 @@ namespace sun_magic {
 		event_manager_ = new EventManager();
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
 		event_manager_->RegisterListener(Event::E_KEY_RELEASED, this);
+		event_manager_->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 
 		sf::Vector2u size = main_window_.getSize();
 		int height = 150;
 		tilelist_ = new CharacterTileList(0, size.y - height, 750, height, 5);
 
 		dict_ = new Dictionary(750, size.y - height - 40, 750, 0, size.x - 750, size.y);
+		listlabel_ = new Label(750, size.y - height, size.x - 750, height);
 	}
 
 	void Game::HandleInput() {
@@ -120,17 +124,19 @@ namespace sun_magic {
 	void Game::ProcessEvent(Event event) {
 		switch (event.type) {
 		case Event::E_KEY_RELEASED:
-			{
 				switch (event.key.code) {
 				case Keyboard::Escape:
 					game_state_ = EXITING;
 					break;
 				}
 				break;
-			}
 
 		case Event::E_CLOSED:
 			game_state_ = EXITING;
+			break;
+
+		case Event::E_HIRAGANA_DRAWN:
+			listlabel_->SetString(event.message);
 			break;
 		}
 	}

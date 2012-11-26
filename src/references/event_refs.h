@@ -15,7 +15,7 @@ namespace sun_magic {
 				return;
 
 			Game::GetInstance()->GetDictionary()->AddWord(
-				sf::String(L"ねこ"),
+				cat->GetWord(),
 				GameAssetManager::GetInstance()->GetTexture(textures::objects::NEKO));
 
 			GameAssetManager* manager = GameAssetManager::GetInstance();
@@ -27,7 +27,10 @@ namespace sun_magic {
 		void Love(KeyObject* love, Event event) {
 			if (event.message != love->GetWord())
 				return;
-			std::cout << "LOVE\n";
+
+			Game::GetInstance()->GetDictionary()->AddWord(
+				love->GetWord(),
+				GameAssetManager::GetInstance()->GetTexture(textures::objects::STUPID_LOVE));
 			love->SetVisible(true);
 			love->SetEventCallback(NULL);
 		}

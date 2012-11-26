@@ -39,6 +39,7 @@
     <ClCompile Include="src\ui\character_tile.cpp" />
     <ClCompile Include="src\ui\character_tilelist.cpp" />
     <ClCompile Include="src\ui\dictionary.cpp" />
+    <ClCompile Include="src\ui\label.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assets\gameasset.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="src\ui\character_tile.h" />
     <ClInclude Include="src\ui\character_tilelist.h" />
     <ClInclude Include="src\ui\dictionary.h" />
+    <ClInclude Include="src\ui\label.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{86CBD65F-1113-45AB-801E-18F2A5E55FD0}</ProjectGuid>
