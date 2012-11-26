@@ -5,36 +5,20 @@
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
 #include "events/gameevent_manager.h"
+#include "references/event_refs.h"
 #include "references/texture_refs.h"
 #include "tools/tools.h"
 
 namespace sun_magic {
 
-	void EventCallback_Cat(KeyObject* cat, Event event) {
-		if (event.message != cat->GetWord())
-			return;
-		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(textures::objects::NEKO);
-		cat->SetTexture(*manager->GetTexture(textures::objects::NEKO_HAPPY));
-		cat->SetEventCallback(NULL);
-	}
-
-	void EventCallback_Love(KeyObject* love, Event event) {
-		if (event.message != love->GetWord())
-			return;
-		love->SetVisible(true);
-		love->SetEventCallback(NULL);
-	}
-
 	Playing::Playing() :
-		background_(),
-		tilelist_(0, 0, 750, 150, 5)
+		background_()
 	{
 		GameEventManager* manager = GameEventManager::GetInstance();
 		std::set<KeyObject*>& keys = manager->GetKeyObjectsFor(this);
 
-		keys.insert(new KeyObject(0, 150, textures::objects::NEKO, sf::Color::Black, L"ねこ", EventCallback_Cat));
-		keys.insert(new KeyObject(200, 150, textures::objects::STUPID_LOVE, sf::Color::Red, L"あい", EventCallback_Love, true, false));
+		keys.insert(new KeyObject(0, 150, textures::objects::NEKO, sf::Color::Black, L"ねこ", event_callbacks::Cat));
+		//keys.insert(new KeyObject(200, 150, textures::objects::STUPID_LOVE, sf::Color::Red, L"あい", event_callbacks::Love, true, false));
 	}
 
 	Playing::~Playing() {}
@@ -44,12 +28,13 @@ namespace sun_magic {
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		background_.setTexture(*manager->GetTexture(textures::backgrounds::WINDOW));
-		/* The image might be a little too big, so scale it so it fits in the window */
+		// The image might be a little too big, so scale it so it fits in the window
 		tools::ScaleToWindowSize(background_);
 
-		EventManager* event_manager = Game::GetInstance()->GetEventManager();
-		event_manager->AddGameObject(&tilelist_);
+		// Load our game's UI
+		Game::GetInstance()->AddUIElements();
 
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		GameEventManager* game_event_manager = GameEventManager::GetInstance();
 		std::set<KeyObject*> keys = game_event_manager->GetKeyObjectsFor(this);
 		for (std::set<KeyObject*>::iterator i = keys.begin(); i != keys.end(); ++i)
@@ -64,9 +49,9 @@ namespace sun_magic {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTexture(textures::backgrounds::WINDOW);
 
-		EventManager* event_manager = Game::GetInstance()->GetEventManager();
-		event_manager->RemoveGameObject(&tilelist_);
+		Game::GetInstance()->RemoveUIElements();
 
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		GameEventManager* game_event_manager = GameEventManager::GetInstance();
 		std::set<KeyObject*>& keys = game_event_manager->GetKeyObjectsFor(this);
 		for (std::set<KeyObject*>::iterator i = keys.begin(); i != keys.end(); ++i)

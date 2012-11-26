@@ -50,6 +50,7 @@
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\objects\game_object.h" />
     <ClInclude Include="src\objects\key_object.h" />
+    <ClInclude Include="src\references\event_refs.h" />
     <ClInclude Include="src\references\file_refs.h" />
     <ClInclude Include="src\references\texture_refs.h" />
     <ClInclude Include="src\states\game_state.h" />

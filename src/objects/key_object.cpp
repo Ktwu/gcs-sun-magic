@@ -13,13 +13,13 @@ namespace sun_magic {
 
 	KeyObject::KeyObject(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, key_callback_t callback, bool active, bool visible) :
 		GameObject(x, y, (float)texture.getSize().x, (float)texture.getSize().y),
-		sprite_(texture),
 		outline_(outline),
 		word_(word),
 		active_(active),
 		visible_(visible),
 		callback_(callback)
 	{
+		SetTexture(texture);
 	}
 
 	KeyObject::KeyObject(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, key_callback_t callback, bool active, bool visible) :
@@ -35,7 +35,8 @@ namespace sun_magic {
 
 		this->rect_.width = texture->getSize().x;
 		this->rect_.height = texture->getSize().y;
-		this->sprite_.setTexture(*texture, true);
+
+		SetTexture(*texture);
 	}
 
 	KeyObject::~KeyObject()
@@ -44,13 +45,47 @@ namespace sun_magic {
 
 	void KeyObject::SetTexture(const sf::Texture& texture) {
 		sprite_.setTexture(texture);
+
+		sf::Image outline_image = texture.copyToImage();
+		sf::Vector2u size = outline_image.getSize();
+
+		sf::Image new_image;
+		new_image.create(size.x, size.y, sf::Color::Transparent);
+
+		int i, j, min_i, max_i, min_j, max_j, local_i, local_j;
+		int radius = 3;
+		for (i = 0; i < size.x; ++i) {
+			for (j = 0; j < size.y; ++j) {
+
+				min_i = std::max(0, i - radius);
+				max_i = std::min(size.x, (unsigned) i + radius);
+				min_j = std::max(0, j - radius);
+				max_j = std::min(size.y, (unsigned) j + radius);
+
+				for (local_i = min_i; local_i < max_i; ++local_i) {
+					for (local_j = min_j; local_j < max_j; ++local_j) {
+						if (outline_image.getPixel(local_i, local_j).a > 50) {
+							new_image.setPixel(i, j, outline_);
+							local_i = max_i;
+							local_j = max_j;
+						}
+					}
+				}
+			}
+		}
+
+		texture_outline_.loadFromImage(new_image);
+		sprite_outline_.setTexture(texture_outline_, true);
 	}
 	const sf::Texture& KeyObject::GetTexture() {
 		return *sprite_.getTexture();
 	}
 
 	void KeyObject::SetOutlineColor(sf::Color outline) {
+		if (outline_ == outline)
+			return;
 		outline_ = outline;
+		SetTexture(*sprite_.getTexture());
 	}
 	sf::Color KeyObject::GetOutlineColor() {
 		return outline_;
@@ -118,11 +153,12 @@ namespace sun_magic {
 		sprite_.setOrigin(sf::Vector2f());
 		if (state_ != DEFAULT && active_) {
 			// Draw outline
-			sprite_.setColor(outline_);
-			sprite_.setScale((texture_size.x + OUTLINE_WIDTH) / texture_size.x, (texture_size.y + OUTLINE_WIDTH) / texture_size.y);
-			target->draw(sprite_);
-			sprite_.setScale(1,1);
-			sprite_.setColor(sf::Color::White);
+			target->draw(sprite_outline_);
+			//sprite_.setColor(outline_);
+			//sprite_.setScale((texture_size.x + OUTLINE_WIDTH) / texture_size.x, (texture_size.y + OUTLINE_WIDTH) / texture_size.y);
+			//target->draw(sprite_);
+			//sprite_.setScale(1,1);
+			//sprite_.setColor(sf::Color::White);
 		}
 		target->draw(sprite_);
 	}

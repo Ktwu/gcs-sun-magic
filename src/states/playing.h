@@ -24,7 +24,6 @@ namespace sun_magic {
 		void ProcessEvent(Event event);
 
 	private:
-		CharacterTileList tilelist_;
 		sf::Sprite background_;
 		GameState game_state_;
 	};

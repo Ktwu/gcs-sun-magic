@@ -4,6 +4,8 @@
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine.h"
+#include "ui/character_tilelist.h"
+#include "ui/dictionary.h"
 
 namespace sun_magic {
 	
@@ -25,6 +27,10 @@ namespace sun_magic {
 
 		sf::RenderWindow* GetWindow();
 		EventManager* GetEventManager();
+
+		void AddUIElements();
+		void RemoveUIElements();
+		CharacterTileList* GetTileList();
 		Dictionary* GetDictionary();
 
 		void Init();
@@ -42,15 +48,15 @@ namespace sun_magic {
 
 		static Game* instance_;
 
-		CharacterTile* tile_;
+		/* UI elements shared by everyone */
+		CharacterTileList* tilelist_;
 		Dictionary* dict_;
+		
 		EventManager *event_manager_;
 		GameState game_state_;
 		Machine<GameState> game_machine_;
 
 		sf::RenderWindow main_window_;
 		sf::Font font_;
-
-		std::vector<sf::Text> ui_strings_;
 	};
 }

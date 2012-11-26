@@ -53,7 +53,11 @@ namespace sun_magic {
 		static const KeyObject* REGISTERED_KEY_OBJECTS[16];
 
 		sf::Sprite sprite_;
+
+		sf::Sprite sprite_outline_;
 		sf::Color outline_;
+		sf::Texture texture_outline_;
+
 		sf::String word_;
 		bool active_;
 		bool registered_;

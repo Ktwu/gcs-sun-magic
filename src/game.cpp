@@ -36,8 +36,22 @@ namespace sun_magic {
 		return event_manager_;
 	}
 
+	void Game::AddUIElements() {
+		event_manager_->AddGameObject(tilelist_);
+		event_manager_->AddGameObject(dict_);
+	}
+
+	void Game::RemoveUIElements() {
+		event_manager_->RemoveGameObject(tilelist_);
+		event_manager_->RemoveGameObject(dict_);
+	}
+
 	Dictionary* Game::GetDictionary() {
 		return dict_;
+	}
+
+	CharacterTileList* Game::GetTileList() {
+		return tilelist_;
 	}
 
 	void Game::Init() {
@@ -45,7 +59,7 @@ namespace sun_magic {
 		asset_manager->Init();
 
 		game_state_ = PLAYING;
-		main_window_.create(sf::VideoMode(1024, 768, 32), "Sun Magic!");
+		main_window_.create(sf::VideoMode(1024, 650, 32), "Sun Magic!");
 
 		// Init zinnia data
 		// TODO replace with a better dataset
@@ -60,9 +74,11 @@ namespace sun_magic {
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
 		event_manager_->RegisterListener(Event::E_KEY_RELEASED, this);
 
-		dict_ = new Dictionary();
-		dict_->AddWord(sf::String(L"ねこ"), GameAssetManager::GetInstance()->GetTexture(textures::objects::NEKO));
-		event_manager_->AddGameObject(dict_);
+		sf::Vector2u size = main_window_.getSize();
+		int height = 150;
+		tilelist_ = new CharacterTileList(0, size.y - height, 750, height, 5);
+
+		dict_ = new Dictionary(750, size.y - height - 40, 750, 0, size.x - 750, size.y);
 	}
 
 	void Game::HandleInput() {

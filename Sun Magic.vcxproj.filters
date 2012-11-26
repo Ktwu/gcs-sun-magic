@@ -202,5 +202,8 @@
     <ClInclude Include="src\events\gameevent_manager.h">
       <Filter>src\events</Filter>
     </ClInclude>
+    <ClInclude Include="src\references\event_refs.h">
+      <Filter>src\references</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

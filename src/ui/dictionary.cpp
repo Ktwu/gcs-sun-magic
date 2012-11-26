@@ -8,10 +8,15 @@
 
 namespace sun_magic {
 
-	Dictionary::Dictionary() : 
+	Dictionary::Dictionary(int hide_x, int hide_y, int show_x, int show_y, int width, int height) : 
 		GameObject(0,0,0,0)
 	{
-		animate_speed_ = 300;
+		animate_speed_ = 600;
+		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
+		hide_pos_ = sf::Vector2f(hide_x, hide_y);
+		show_pos_ = sf::Vector2f(show_x, show_y);
+		target_pos_ = hide_pos_;
+		rect_ = sf::FloatRect(hide_pos_, sf::Vector2f(width, height));
 	}
 	Dictionary::~Dictionary() {}
 
@@ -23,12 +28,6 @@ namespace sun_magic {
 	}
 
 	void Dictionary::Register() {
-		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
-		hide_pos_ = sf::Vector2f(size.x - 30, 0);
-		show_pos_ = sf::Vector2f(size.x * 0.75, 0);
-		target_pos_ = hide_pos_;
-		rect_ = sf::FloatRect(hide_pos_, sf::Vector2f(size.x * 0.25f, size.y));
-
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->RegisterListener(Event::E_MOUSE_EXITED, this, this);
@@ -61,6 +60,15 @@ namespace sun_magic {
 
 		const float padding = 10;
 		float y = padding;
+
+		sf::Text text(sf::String("DICTIONARY"));
+			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
+			text.setColor(sf::Color::Blue);
+			text.setCharacterSize(25);
+			text.setPosition(2.f * padding, y);
+			target->draw(text);
+			y += text.getLocalBounds().height + padding;
+
 		for (std::map<sf::String, DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
 			sf::Sprite sprite;
 			sprite.setTexture(*iter->second.texture);
@@ -73,9 +81,9 @@ namespace sun_magic {
 			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
 			text.setColor(iter->second.outline);
 			text.setCharacterSize(50);
-			text.setPosition(2.f * padding + sprite_bounds.width, y);
+			text.setPosition(2.f * padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
 			target->draw(text);
-			y += std::max(sprite_bounds.height, text.getLocalBounds().height);
+			y += std::max(sprite_bounds.height, text.getLocalBounds().height) + padding;
 		}
 	}
 

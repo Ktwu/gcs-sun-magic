@@ -13,7 +13,7 @@ namespace sun_magic {
 			sf::Texture *texture;	// Picture of object
 		};
 
-		Dictionary();
+		Dictionary(int hide_x, int hide_y, int show_x, int show_y, int width, int height);
 		~Dictionary();
 
 		void AddWord(sf::String word, sf::Texture *texture);
