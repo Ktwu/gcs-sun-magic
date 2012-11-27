@@ -53,7 +53,7 @@ namespace sun_magic {
 		new_image.create(size.x, size.y, sf::Color::Transparent);
 
 		int i, j, min_i, max_i, min_j, max_j, local_i, local_j;
-		int radius = 3;
+		int radius = 7;
 		for (i = 0; i < size.x; ++i) {
 			for (j = 0; j < size.y; ++j) {
 
@@ -62,14 +62,19 @@ namespace sun_magic {
 				min_j = std::max(0, j - radius);
 				max_j = std::min(size.y, (unsigned) j + radius);
 
+				float strength = 0;
 				for (local_i = min_i; local_i < max_i; ++local_i) {
 					for (local_j = min_j; local_j < max_j; ++local_j) {
-						if (outline_image.getPixel(local_i, local_j).a > 50) {
-							new_image.setPixel(i, j, outline_);
-							local_i = max_i;
-							local_j = max_j;
+						if (outline_image.getPixel(local_i, local_j).a > 50)  {
+							float distSquared = std::pow(i - local_i, 2.f) + std::pow(j - local_j, 2.f);
+							strength += 1.f / std::pow(distSquared, 1.5f);
 						}
 					}
+				}
+				
+				if (strength > 0) {
+					outline_.a = std::min(255.f, 255.f * 1.5f * strength);
+					new_image.setPixel(i, j, outline_);
 				}
 			}
 		}
