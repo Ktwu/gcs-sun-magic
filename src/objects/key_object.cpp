@@ -16,8 +16,10 @@ namespace sun_magic {
 		outline_(outline),
 		word_(word),
 		active_(active),
+		focused_(false),
 		visible_(visible),
-		callback_(callback)
+		callback_(callback),
+		state_(DEFAULT)
 	{
 		SetTexture(texture);
 	}
@@ -27,8 +29,10 @@ namespace sun_magic {
 		outline_(outline),
 		word_(word),
 		active_(active),
+		focused_(false),
 		visible_(visible),
-		callback_(callback)
+		callback_(callback),
+		state_(DEFAULT)
 	{
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		sf::Texture* texture = manager->GetTexture(texture_name);
@@ -103,6 +107,13 @@ namespace sun_magic {
 		return word_;
 	}
 
+	void KeyObject::SetFocused(bool focused) {
+		focused_ = focused;
+	}
+	bool KeyObject::IsFocused() {
+		return focused_;
+	}
+
 	void KeyObject::SetActive(bool active) {
 		active_ = active;
 	}
@@ -129,8 +140,9 @@ namespace sun_magic {
 		EventManager *event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->RegisterListener(Event::E_MOUSE_EXITED, this, this);
+
 		event_manager->RegisterListener(Event::E_MOUSE_PRESSED, this, this);
-		event_manager->RegisterListener(Event::E_MOUSE_RELEASED, this, this);
+		event_manager->RegisterListener(Event::E_MOUSE_RELEASED, this, NULL);
 
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->RegisterListener(Event::E_LOAD_STATE, this);
@@ -139,8 +151,9 @@ namespace sun_magic {
 		EventManager *event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->UnregisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->UnregisterListener(Event::E_MOUSE_EXITED, this, this);
+
 		event_manager->UnregisterListener(Event::E_MOUSE_PRESSED, this, this);
-		event_manager->UnregisterListener(Event::E_MOUSE_RELEASED, this, this);
+		event_manager->UnregisterListener(Event::E_MOUSE_RELEASED, this, NULL);
 
 		event_manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->UnregisterListener(Event::E_LOAD_STATE, this);
@@ -156,14 +169,8 @@ namespace sun_magic {
 		sf::Vector2f texture_size = sf::Vector2f(sprite_.getTexture()->getSize());
 		sprite_.setPosition((size - texture_size) * 0.5f);
 		sprite_.setOrigin(sf::Vector2f());
-		if (state_ != DEFAULT && active_) {
-			// Draw outline
+		if ((state_ != DEFAULT && active_) || focused_) {
 			target->draw(sprite_outline_);
-			//sprite_.setColor(outline_);
-			//sprite_.setScale((texture_size.x + OUTLINE_WIDTH) / texture_size.x, (texture_size.y + OUTLINE_WIDTH) / texture_size.y);
-			//target->draw(sprite_);
-			//sprite_.setScale(1,1);
-			//sprite_.setColor(sf::Color::White);
 		}
 		target->draw(sprite_);
 	}
@@ -171,15 +178,22 @@ namespace sun_magic {
 	void KeyObject::ProcessEvent(Event event) {
 		switch (event.type) {
 		case Event::E_MOUSE_ENTERED:
-			state_ = OUTLINED;
+				state_ = OUTLINED;
 			break;
 		case Event::E_MOUSE_EXITED:
-			state_ = DEFAULT;
+				state_ = DEFAULT;
 			break;
 		case Event::E_MOUSE_PRESSED:
-			if (active_) {
-				state_ = ACTIVE;
+			state_ = ACTIVE;
+			break;
+		case Event::E_MOUSE_RELEASED:
+			if (state_ == ACTIVE && event.focus == this) {
+				event.focus = this;
+				event.type = Event::E_GAME_EVENT;
+				event.gameEvent = GameEvent::KEY_CLICK;
+				Game::GetInstance()->GetEventManager()->AddEvent(event);
 			}
+			state_ == OUTLINED;
 			break;
 		case Event::E_HIRAGANA_DRAWN:
 		case Event::E_LOAD_STATE:

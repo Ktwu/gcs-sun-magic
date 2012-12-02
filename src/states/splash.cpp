@@ -5,7 +5,7 @@
 
 #include "game.h"
 #include "assets/gameasset_manager.h"
-#include "references/texture_refs.h"
+#include "references/refs.h"
 #include "tools/tools.h"
 
 namespace sun_magic {
@@ -36,7 +36,7 @@ namespace sun_magic {
 		game_state_ = LOADING;
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(textures::backgrounds::POSTER_AWAY));
+		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::POSTER_AWAY));
 		/* The image might be a little too big, so scale it so it fits in the window */
 		tools::ScaleToWindowSize(background_);
 
@@ -46,7 +46,7 @@ namespace sun_magic {
 
 	void Splash::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(textures::backgrounds::POSTER_AWAY);
+		manager->ReturnTexture(refs::textures::backgrounds::POSTER_AWAY);
 	}
 
 	GameState Splash::Update(float elapsed_time) {

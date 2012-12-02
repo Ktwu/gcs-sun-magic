@@ -2,7 +2,7 @@
 #include "gameasset_manager.h"
 
 #include "assets/gameasset.h"
-#include "references/file_refs.h"
+#include "references/refs.h"
 #include "tools/tools.h"
 
 namespace sun_magic {
@@ -11,7 +11,7 @@ namespace sun_magic {
 
 	void GameAssetManager::Init() {
 		std::ifstream trace_characters;
-		trace_characters.open(file_refs::HIRAGANA_TRACE);
+		trace_characters.open(refs::tracer::HIRAGANA_TRACE);
 
 		// We need to parse our trace characters out
 		zinnia::Character* character;
@@ -31,10 +31,6 @@ namespace sun_magic {
 			}
 			line++;
 		}
-
-		// Load up our font file for rendering Japanese characters
-		if (!msmincho_.loadFromFile(file_refs::MSMINCHO))
-			throw "ERROR: unable to load " + file_refs::MSMINCHO;
 	}
 
 	sf::Texture* GameAssetManager::GetTexture(std::string texture_name) {
@@ -76,6 +72,43 @@ namespace sun_magic {
 		}
 	}
 
+	sf::Font* GameAssetManager::GetFont(std::string font_name) {
+		if (fonts_[font_name] == NULL) {
+			fonts_[font_name] = new GameAsset<sf::Font>();
+		}
+
+		if (!fonts_[font_name]->HasGameAsset()) {
+			sf::Font* temp = new sf::Font();
+			if (!temp->loadFromFile(font_name)) {
+				textures_.erase(font_name);
+				return NULL;
+			}
+
+			fonts_[font_name]->TrySet(temp);
+		}
+
+		return fonts_[font_name]->GetRef();
+	}
+
+	void GameAssetManager::ReturnFont(std::string font_name) {
+		if (fonts_[font_name] != NULL)
+			fonts_[font_name]->ReturnRef();
+	}
+	void GameAssetManager::CleanUnusedFonts() {
+		std::hash_map<std::string, GameAsset<sf::Font>*>::iterator it;
+		GameAsset<sf::Font>* resource;
+		sf::Font* font;
+
+		/* For each resource, try to set its internal value to NULL, which deletes the
+			texture we created. */
+		for (it = fonts_.begin(); it != fonts_.end(); ++it) {
+			resource = it->second;
+			font = resource->TrySet(NULL);
+			if (font != NULL)
+				delete font;
+		}
+	}
+
 	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {
 		for (std::hash_map<sf::Uint32, zinnia::Character*>::iterator iter =
 				trace_characters_.begin(); iter != trace_characters_.end(); iter++) {
@@ -85,10 +118,6 @@ namespace sun_magic {
 
 	zinnia::Character* GameAssetManager::GetTraceCharacter(sf::Uint32 utf32_character) {
 		return trace_characters_[utf32_character];
-	}
-
-	const sf::Font& GameAssetManager::GetMsminchoFont() {
-		return msmincho_;
 	}
 
 }

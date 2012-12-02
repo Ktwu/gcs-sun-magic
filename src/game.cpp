@@ -9,12 +9,12 @@
 // Game states
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
-#include "references/file_refs.h"
-#include "references/texture_refs.h"
+#include "references/refs.h"
 #include "states/splash.h"
 #include "states/main_menu.h"
 #include "states/save_writing.h"
 #include "states/playing.h"
+#include "states/test_play.h"
 #include "ui/character_tile.h"
 #include "ui/dictionary.h"
 
@@ -56,21 +56,26 @@ namespace sun_magic {
 		return tilelist_;
 	}
 
+	Label* Game::GetTileListLabel() {
+		return listlabel_;
+	}
+
 	void Game::Init() {
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		asset_manager->Init();
 
 		game_state_ = PLAYING;
-		main_window_.create(sf::VideoMode(1024, 725, 32), "Sun Magic!");
+		main_window_.create(sf::VideoMode(1024, 700/*768*/, 32), "Sun Magic!");
 
 		// Init zinnia data
 		// TODO replace with a better dataset
-		CharacterTile::InitRecognizer(file_refs::ZINNIA_MODEL.c_str());
+		CharacterTile::InitRecognizer(refs::zinnia::ZINNIA_MODEL.c_str());
 
 		game_machine_.Init(LOADING, new Splash());
 		game_machine_.AddState(MAIN_MENU, new MainMenu());
 		game_machine_.AddState(RECORDING, new SaveWritingState());
-		game_machine_.AddState(PLAYING, new Playing());
+		//game_machine_.AddState(PLAYING, new Playing());
+		game_machine_.AddState(PLAYING, new TestPlay());
 		
 		event_manager_ = new EventManager();
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
@@ -81,7 +86,7 @@ namespace sun_magic {
 		int height = 150;
 		tilelist_ = new CharacterTileList(0, size.y - height, 750, height, 5);
 
-		dict_ = new Dictionary(750, size.y - height - 40, 750, 0, size.x - 750, size.y);
+		dict_ = new Dictionary(size.x - 20, 0, 750, 0, size.x - 750, size.y - height);
 		listlabel_ = new Label(750, size.y - height, size.x - 750, height);
 	}
 

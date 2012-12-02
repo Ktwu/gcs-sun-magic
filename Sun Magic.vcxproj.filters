@@ -125,6 +125,18 @@
     <ClCompile Include="src\ui\label.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\states\test_play.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\animon.cpp">
+      <Filter>src\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\style.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\ui_group.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -144,12 +156,6 @@
     </ClInclude>
     <ClInclude Include="src\ui\dictionary.h">
       <Filter>src\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\references\file_refs.h">
-      <Filter>src\references</Filter>
-    </ClInclude>
-    <ClInclude Include="src\references\texture_refs.h">
-      <Filter>src\references</Filter>
     </ClInclude>
     <ClInclude Include="src\assets\gameasset.h">
       <Filter>src\assets</Filter>
@@ -190,9 +196,6 @@
     <ClInclude Include="src\tools\sfm.h">
       <Filter>src\tools</Filter>
     </ClInclude>
-    <ClInclude Include="src\tools\tools.h">
-      <Filter>src\tools</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\key_object.h">
       <Filter>src\objects</Filter>
     </ClInclude>
@@ -209,6 +212,24 @@
       <Filter>src\references</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\label.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\test_play.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\animon.h">
+      <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\style.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\references\refs.h">
+      <Filter>src\references</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\ui_group.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\tools.h">
       <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>

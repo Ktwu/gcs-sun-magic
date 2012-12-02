@@ -6,7 +6,7 @@
 #include "game.h"
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
-#include "references/file_refs.h"
+#include "references/refs.h"
 #include "ui/character_tile.h"
 
 namespace sun_magic {
@@ -21,9 +21,8 @@ namespace sun_magic {
 		tile_->SetAnimationSpeed(200.0f);
 		tile_->SetAnimationStroke(0);
 
-		if (!font_.loadFromFile(file_refs::MSMINCHO)) {
-			std::cerr << "ERROR: Unable to load font " << file_refs::MSMINCHO << std::endl;
-		}
+		font_ = *GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
+
 		unsigned int width = size.x;
 		unsigned int y = size.y - 200;
 
@@ -52,7 +51,7 @@ namespace sun_magic {
 		time_t t = time(0);
 		struct tm *now = localtime(&t);
 		std::stringstream ss;
-		ss << file_refs::HIRAGANA_OUTPUT_BASE << (now->tm_year + 1900) <<
+		ss << refs::tracer::HIRAGANA_OUTPUT_BASE << (now->tm_year + 1900) <<
 			'-' << (now->tm_mon + 1) << '-' <<  now->tm_mday << "_" <<
 			now->tm_hour << "-" << now->tm_min << "-" << now->tm_sec << ".txt";
 		std::cout << "Recording to " << ss.str() << std::endl;
@@ -62,6 +61,8 @@ namespace sun_magic {
 	void SaveWritingState::UnregisterState(MachineState<GameState>* next_state) {
 		Game::GetInstance()->GetEventManager()->RemoveGameObject(tile_);
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_KEY_RELEASED, this);
+
+		GameAssetManager::GetInstance()->ReturnFont(refs::fonts::MSMINCHO);
 
 		fclose(trace_output_);
 	}

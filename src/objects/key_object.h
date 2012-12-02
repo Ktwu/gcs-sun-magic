@@ -30,6 +30,9 @@ namespace sun_magic {
 		void SetWord(sf::String word);
 		sf::String GetWord();
 
+		void SetFocused(bool focused);
+		bool IsFocused();
+
 		void SetActive(bool active);
 		bool IsActive();
 
@@ -60,6 +63,7 @@ namespace sun_magic {
 
 		sf::String word_;
 		bool active_;
+		bool focused_;
 		bool registered_;
 		bool visible_;
 		KeyState state_;

@@ -2,32 +2,16 @@
 
 #include "stdafx.h"
 #include "objects/game_object.h"
+#include "ui/button.h"
 
 namespace sun_magic {
 
-	class Label : public GameObject {
+	class Label : public Button {
 	public:
 
-		Label(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "", sf::Texture *texture = NULL);
+		Label(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "");
 		~Label();
 
-		sf::String GetString();
-		void SetString(sf::String string);
-
-		sf::Texture* GetTexture();
-		void SetTexture(sf::Texture *texture);
-
-		void Register();
-		void Unregister();
-
-		void Update(float elapsed_time);
-		void Draw(sf::RenderTarget* target);
-
-	private:
-		sf::String string_;
-		sf::Texture *texture_;
-		sf::Color background_;
-		sf::Color border_;
 	};
 
 }

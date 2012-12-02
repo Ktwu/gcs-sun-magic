@@ -4,6 +4,7 @@
 #include "assets/gameasset_manager.h"
 #include "game.h"
 #include "events/event_manager.h"
+#include "references/refs.h"
 #include "tools/sfm.h"
 
 namespace sun_magic {
@@ -61,8 +62,9 @@ namespace sun_magic {
 		const float padding = 10;
 		float y = padding;
 
+		sf::Font* msmincho = GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
 		sf::Text text(sf::String("DICTIONARY"));
-			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
+			text.setFont(*msmincho);
 			text.setColor(sf::Color::Blue);
 			text.setCharacterSize(25);
 			text.setPosition(2.f * padding, y);
@@ -77,13 +79,15 @@ namespace sun_magic {
 			sf::FloatRect sprite_bounds = sprite.getLocalBounds();
 
 			sf::Text text(iter->first);
-			text.setFont(GameAssetManager::GetInstance()->GetMsminchoFont());
+			text.setFont(*msmincho);
 			text.setColor(iter->second.outline);
 			text.setCharacterSize(50);
 			text.setPosition(2.f * padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
 			target->draw(text);
 			y += std::max(sprite_bounds.height, text.getLocalBounds().height) + padding;
 		}
+
+		GameAssetManager::GetInstance()->ReturnFont(refs::fonts::MSMINCHO);
 	}
 
 	void Dictionary::ProcessEvent(Event event) {

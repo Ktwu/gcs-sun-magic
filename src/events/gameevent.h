@@ -8,6 +8,9 @@ namespace sun_magic {
 		DEFAULT,
 
 		// Test
+		KEY_CLICK,
+		ANIMON_LEVEL_UP,
+
 		CAT,
 		LOVE,
 

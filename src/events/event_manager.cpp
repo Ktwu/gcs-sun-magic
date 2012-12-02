@@ -2,6 +2,7 @@
 #include "event_manager.h"
 
 #include "objects/game_object.h"
+#include "tools/tools.h"
 
 namespace sun_magic {
 
@@ -174,7 +175,6 @@ namespace sun_magic {
 	void EventManager::Update() {
 		for (int i = 0; i < events_.size(); ++i) {
 			Event event = events_[i];
-			GameObject* event_focus = event.focus;
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);
 			if (event_iter == eventfocus__listener_map_.end()) {
@@ -183,7 +183,7 @@ namespace sun_magic {
 			FocusToListenerSetMap *focus_listener_map = event_iter->second;
 
 			// Send event to all listeners with NULL focus i.e. global focus
-			event.focus = NULL;
+			event.focus = (event.focus != NULL) ? event.focus : focus_;
 			FocusToListenerSetMap::iterator focus_iter = focus_listener_map->find(NULL);
 			if (focus_iter != focus_listener_map->end()) {
 				ListenerSet* listener_set = focus_iter->second;
@@ -195,7 +195,6 @@ namespace sun_magic {
 			}
 
 			// Send event to all listeners on the currently focused object if any
-			event.focus = (event_focus != NULL) ? event_focus : focus_;
 			if (event.focus != NULL) {
 				focus_iter = focus_listener_map->find(event.focus);
 				if (focus_iter != focus_listener_map->end()) {
@@ -221,25 +220,21 @@ namespace sun_magic {
 	void EventManager::DrawObjects(sf::RenderTarget *target) {
 		// Save the window default view
 		sf::View view = target->getView();
-		sf::Vector2u window_size = target->getSize();
-		sf::Vector2f center = sf::Vector2f((float)window_size.x/2, (float)window_size.y/2);
 
 		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
 			GameObject * object = *focus_iter;
 
 			// Translate view to object position
-			sf::Vector2f pos = object->GetPosition();
-			target->setView(sf::View(center - pos, 2.f * center));
+			view.move(object->GetNegativePosition());
+			target->setView(view);
 			object->Draw(target);
+			view.move(object->GetPosition());
 		}
 
 		// Reset window view
 		target->setView(view);
 	}
 
-	bool ZSort(GameObject* a, GameObject* b) {
-		return a->GetZ() < b->GetZ();
-	}
 
 	void EventManager::UpdateFocus(sf::Vector2i mouse) {
 		static sf::Vector2i old_mouse = sf::Mouse::getPosition();
@@ -255,8 +250,8 @@ namespace sun_magic {
 		// Sort by z-order
 		GameObject *newfocus_ = NULL;
 		if (intersections.size() > 0) {
-			std::sort(intersections.begin(), intersections.end(), ZSort);
-			newfocus_ = intersections.front();
+			std::sort(intersections.begin(), intersections.end(), tools::ZSort);
+			newfocus_ = intersections.front()->UpdateFocus((float)mouse.x, (float)mouse.y);
 		}
 
 		// If new focus send enter and exit events

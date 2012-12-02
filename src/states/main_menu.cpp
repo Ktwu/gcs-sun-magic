@@ -4,18 +4,26 @@
 #include "game.h"
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
-#include "references/texture_refs.h"
+#include "references/refs.h"
 #include "tools/tools.h"
 #include "ui/button.h"
+#include "ui/style.h"
 
 namespace sun_magic {
 
 	MainMenu::MainMenu() :
 		background_(),
-		game_state_(),
-		play_(new Button(50, 50, 100, 100, "Play")),
-		record_(new Button(300, 300, 100, 100, "Record"))
+		game_state_()
 	{
+		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
+
+		/* Go ahead and just stick our UI code in here */
+		int width = 400;
+		play_ = new Button((window->getSize().x - width) / 2, 500, width, 50, "Play");
+		record_ = new Button((window->getSize().x - width) / 2, 600, width, 50, "Record");
+
+		play_->GetStyle()->SetTextColor(sf::Color::Black);
+		record_->GetStyle()->SetTextColor(sf::Color::Black);
 	}
 
 	MainMenu::~MainMenu() {
@@ -25,25 +33,29 @@ namespace sun_magic {
 
 	void MainMenu::RegisterState(MachineState<GameState>* previous_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(textures::backgrounds::POSTER_CLOSE));
+		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::POSTER_CLOSE));
 		/* The image might be a little too big, so scale it so it fits in the window */
 		tools::ScaleToWindowSize(background_);
 
 		game_state_ = MAIN_MENU;
-		Game::GetInstance()->GetEventManager()->AddGameObject(play_);
-		Game::GetInstance()->GetEventManager()->AddGameObject(record_);
-		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_CLICKED, this, play_);
-		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_CLICKED, this, record_);
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->AddGameObject(play_);
+		event_manager->AddGameObject(record_);
+		event_manager->RegisterListener(Event::E_CLICKED, this, play_);
+		event_manager->RegisterListener(Event::E_CLICKED, this, record_);
 	}
 
 	void MainMenu::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(textures::backgrounds::POSTER_CLOSE);
+		manager->ReturnTexture(refs::textures::backgrounds::POSTER_CLOSE);
 		
-		Game::GetInstance()->GetEventManager()->RemoveGameObject(play_);
-		Game::GetInstance()->GetEventManager()->RemoveGameObject(record_);
-		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_CLICKED, this, play_);
-		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_CLICKED, this, record_);
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->RemoveGameObject(play_);
+		event_manager->RemoveGameObject(record_);
+		event_manager->UnregisterListener(Event::E_CLICKED, this, play_);
+		event_manager->RegisterListener(Event::E_CLICKED, this, record_);
+
+		manager->ReturnTexture(refs::textures::objects::NEKO);
 	}
 
 	GameState MainMenu::Update(float elapsed_time) {

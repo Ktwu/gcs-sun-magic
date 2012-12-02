@@ -14,6 +14,9 @@ namespace sun_magic {
 		sf::Vector2f GetPosition() {
 			return sf::Vector2f(rect_.left, rect_.top);
 		}
+		sf::Vector2f GetNegativePosition() {
+			return sf::Vector2f(-rect_.left, -rect_.top);
+		}
 		sf::Vector2f GetSize() {
 			return sf::Vector2f(rect_.width, rect_.height);
 		}
@@ -21,11 +24,24 @@ namespace sun_magic {
 			return rect_;
 		}
 
+		void SetSize(sf::Vector2f size) {
+			rect_.width = size.x;
+			rect_.height = size.y;
+		}
+		void SetPosition(sf::Vector2f pos) {
+			rect_.left = pos.x;
+			rect_.top = pos.y;
+		}
+
 		int GetZ() {
 			return z_;
 		}
 		void SetZ(int z) {
 			z_ = z;
+		}
+
+		virtual GameObject* UpdateFocus(float mouse_x, float mouse_y) {
+			return this;
 		}
 
 		virtual void Update(float elapsed_time) = 0;

@@ -3,6 +3,7 @@
 #include "stdafx.h"
 #include "events/event.h"
 #include "objects/game_object.h"
+#include "ui/style.h"
 
 namespace sun_magic {
 
@@ -14,14 +15,13 @@ namespace sun_magic {
 			PRESSED,
 		};
 
-		Button(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "", sf::Texture *texture = NULL);
+		Button(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "");
 		~Button();
+
+		Style* GetStyle();
 
 		sf::String GetString();
 		void SetString(sf::String string);
-
-		sf::Texture* GetTexture();
-		void SetTexture(sf::Texture *texture);
 
 		void Register();
 		void Unregister();
@@ -31,15 +31,9 @@ namespace sun_magic {
 
 		void ProcessEvent(Event event);
 
-	private:
+	protected:
 		sf::String string_;
-		sf::Texture *texture_;
-		sf::Color background_;
-		sf::Color border_;
-		sf::Color hoverbackground_;
-		sf::Color hover_border_;
-		sf::Color pressedbackground_;
-		sf::Color pressed_border_;
+		Style style_;
 
 		int state_;
 	};

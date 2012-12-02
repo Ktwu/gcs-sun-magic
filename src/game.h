@@ -7,6 +7,7 @@
 #include "ui/character_tilelist.h"
 #include "ui/dictionary.h"
 #include "ui/label.h"
+#include "ui/ui_group.h"
 
 namespace sun_magic {
 	
@@ -33,6 +34,7 @@ namespace sun_magic {
 		void RemoveUIElements();
 		CharacterTileList* GetTileList();
 		Dictionary* GetDictionary();
+		Label* GetTileListLabel();
 
 		void Init();
 		void Run();

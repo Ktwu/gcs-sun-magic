@@ -6,7 +6,7 @@
 #include "events/event_manager.h"
 #include "events/gameevent_manager.h"
 #include "references/event_refs.h"
-#include "references/texture_refs.h"
+#include "references/refs.h"
 #include "tools/tools.h"
 
 namespace sun_magic {
@@ -17,8 +17,8 @@ namespace sun_magic {
 		GameEventManager* manager = GameEventManager::GetInstance();
 		std::set<KeyObject*>& keys = manager->GetKeyObjectsFor(this);
 
-		keys.insert(new KeyObject(0, 150, textures::objects::NEKO, sf::Color::White, L"ねこ", event_callbacks::Cat));
-		keys.insert(new KeyObject(200, 150, textures::objects::STUPID_LOVE, sf::Color::White, L"あい", event_callbacks::Love, true, false));
+		keys.insert(new KeyObject(0, 150, refs::textures::objects::NEKO, sf::Color::White, L"ねこ", event_callbacks::Cat));
+		keys.insert(new KeyObject(200, 150, refs::textures::objects::STUPID_LOVE, sf::Color::White, L"あい", event_callbacks::Love, true, false));
 	}
 
 	Playing::~Playing() {}
@@ -27,7 +27,7 @@ namespace sun_magic {
 		game_state_ = PLAYING;
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(textures::backgrounds::WINDOW));
+		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::OFFICE));
 		// The image might be a little too big, so scale it so it fits in the window
 		tools::ScaleToWindowSize(background_);
 
@@ -47,7 +47,7 @@ namespace sun_magic {
 
 	void Playing::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(textures::backgrounds::WINDOW);
+		manager->ReturnTexture(refs::textures::backgrounds::WINDOW);
 
 		Game::GetInstance()->RemoveUIElements();
 

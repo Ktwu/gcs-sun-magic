@@ -28,11 +28,13 @@
     <ClCompile Include="src\events\gameevent_manager.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\objects\animon.cpp" />
     <ClCompile Include="src\objects\key_object.cpp" />
     <ClCompile Include="src\states\main_menu.cpp" />
     <ClCompile Include="src\states\playing.cpp" />
     <ClCompile Include="src\states\save_writing.cpp" />
     <ClCompile Include="src\states\splash.cpp" />
+    <ClCompile Include="src\states\test_play.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\tools\tools.cpp" />
     <ClCompile Include="src\ui\button.cpp" />
@@ -40,6 +42,8 @@
     <ClCompile Include="src\ui\character_tilelist.cpp" />
     <ClCompile Include="src\ui\dictionary.cpp" />
     <ClCompile Include="src\ui\label.cpp" />
+    <ClCompile Include="src\ui\style.cpp" />
+    <ClCompile Include="src\ui\ui_group.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assets\gameasset.h" />
@@ -49,11 +53,11 @@
     <ClInclude Include="src\events\gameevent.h" />
     <ClInclude Include="src\events\gameevent_manager.h" />
     <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\objects\animon.h" />
     <ClInclude Include="src\objects\game_object.h" />
     <ClInclude Include="src\objects\key_object.h" />
     <ClInclude Include="src\references\event_refs.h" />
-    <ClInclude Include="src\references\file_refs.h" />
-    <ClInclude Include="src\references\texture_refs.h" />
+    <ClInclude Include="src\references\refs.h" />
     <ClInclude Include="src\states\game_state.h" />
     <ClInclude Include="src\states\machine.h" />
     <ClInclude Include="src\states\machine_state.h" />
@@ -61,6 +65,7 @@
     <ClInclude Include="src\states\playing.h" />
     <ClInclude Include="src\states\save_writing.h" />
     <ClInclude Include="src\states\splash.h" />
+    <ClInclude Include="src\states\test_play.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\tools\sfm.h" />
@@ -70,6 +75,8 @@
     <ClInclude Include="src\ui\character_tilelist.h" />
     <ClInclude Include="src\ui\dictionary.h" />
     <ClInclude Include="src\ui\label.h" />
+    <ClInclude Include="src\ui\style.h" />
+    <ClInclude Include="src\ui\ui_group.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{86CBD65F-1113-45AB-801E-18F2A5E55FD0}</ProjectGuid>

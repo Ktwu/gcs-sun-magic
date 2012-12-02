@@ -14,6 +14,7 @@ namespace sun_magic {
 		
 		for (int i = 0; i < num_tiles; ++i) {
 			tiles_.push_back(new CharacterTile(x + i*tile_width, y, tile_width, height));
+			tiles_[i]->SetZ(0);
 		}
 	}
 
