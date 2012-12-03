@@ -230,7 +230,7 @@
       <Filter>src\ui</Filter>
     </ClInclude>
     <ClInclude Include="src\tools\tools.h">
-      <Filter>src\ui</Filter>
+      <Filter>src\tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

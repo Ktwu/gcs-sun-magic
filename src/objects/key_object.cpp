@@ -11,8 +11,8 @@ namespace sun_magic {
 		sf::Color::Black
 	};
 
-	KeyObject::KeyObject(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, key_callback_t callback, bool active, bool visible) :
-		GameObject(x, y, (float)texture.getSize().x, (float)texture.getSize().y),
+	KeyObject::KeyObject(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, key_callback_t callback, bool active, bool visible) :
+		GameObject(x, y, (float)sprite.getTexture()->getSize().x, (float)sprite.getTexture()->getSize().y),
 		outline_(outline),
 		word_(word),
 		active_(active),
@@ -21,7 +21,9 @@ namespace sun_magic {
 		callback_(callback),
 		state_(DEFAULT)
 	{
-		SetTexture(texture);
+		this->rect_.width = sprite.getTextureRect().width;
+		this->rect_.height = sprite.getTextureRect().height;
+		SetSprite(sprite);
 	}
 
 	KeyObject::KeyObject(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, key_callback_t callback, bool active, bool visible) :
@@ -36,10 +38,8 @@ namespace sun_magic {
 	{
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		sf::Texture* texture = manager->GetTexture(texture_name);
-
 		this->rect_.width = texture->getSize().x;
 		this->rect_.height = texture->getSize().y;
-
 		SetTexture(*texture);
 	}
 
@@ -47,10 +47,15 @@ namespace sun_magic {
 	{
 	}
 
-	void KeyObject::SetTexture(const sf::Texture& texture) {
-		sprite_.setTexture(texture);
+	void KeyObject::SetSprite(sf::Sprite sprite) {
+		sprite_ = sprite;
 
-		sf::Image outline_image = texture.copyToImage();
+		sf::RenderTexture temp;
+		temp.create(sprite.getTextureRect().width, sprite.getTextureRect().height);
+		temp.draw(sprite);
+
+		sf::Image outline_image = temp.getTexture().copyToImage();
+		outline_image.flipVertically();
 		sf::Vector2u size = outline_image.getSize();
 
 		sf::Image new_image;
@@ -85,6 +90,13 @@ namespace sun_magic {
 
 		texture_outline_.loadFromImage(new_image);
 		sprite_outline_.setTexture(texture_outline_, true);
+	}
+	sf::Sprite KeyObject::GetSprite() {
+		return sprite_;
+	}
+
+	void KeyObject::SetTexture(const sf::Texture& texture) {
+		SetSprite(sf::Sprite(texture));
 	}
 	const sf::Texture& KeyObject::GetTexture() {
 		return *sprite_.getTexture();
@@ -167,8 +179,7 @@ namespace sun_magic {
 
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::Vector2f texture_size = sf::Vector2f(sprite_.getTexture()->getSize());
-		sprite_.setPosition((size - texture_size) * 0.5f);
-		sprite_.setOrigin(sf::Vector2f());
+
 		if ((state_ != DEFAULT && active_) || focused_) {
 			target->draw(sprite_outline_);
 		}

@@ -24,6 +24,16 @@ namespace sun_magic {
 	{
 	}
 
+	Animon::Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word) :
+		KeyObject(x, y, sprite, outline, word),
+		happiness_(0.0f),
+		health_(100.0f),
+		level_(1),
+		exist_time_(5.0f),
+		done_(false)
+	{
+	}
+
 	Animon::~Animon()
 	{
 	}

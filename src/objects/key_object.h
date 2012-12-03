@@ -17,9 +17,12 @@ namespace sun_magic {
 			ACTIVE
 		};
 
-		KeyObject(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
+		KeyObject(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
 		KeyObject(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
 		~KeyObject();
+
+		void SetSprite(sf::Sprite Sprite);
+		sf::Sprite GetSprite();
 
 		void SetTexture(const sf::Texture& texture);
 		const sf::Texture& GetTexture();

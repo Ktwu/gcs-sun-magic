@@ -20,7 +20,10 @@ namespace sun_magic {
 		GameEventManager* manager = GameEventManager::GetInstance();
 		std::set<KeyObject*>& keys = manager->GetKeyObjectsFor(this);
 
-		keys.insert(new Animon(500, 300, refs::textures::objects::NEKO, sf::Color::White, L"ねこ"));
+		sf::Sprite ne = tools::GetHiraganaSprite(
+			tools::RomajiToHiragana("ne"),
+			GameAssetManager::GetInstance()->GetTexture(refs::textures::objects::SPRITES));
+		keys.insert(new Animon(500, 300, ne, sf::Color::White, L"ねこ"));
 
 		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 

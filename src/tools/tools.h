@@ -7,7 +7,7 @@ namespace sun_magic {
 	namespace tools {
 
 		void ScaleToWindowSize(sf::Sprite& sprite);
-		
+
 		bool ZSort(GameObject* a, GameObject* b);
 
 		sf::String UTF8ToUTF32(const char* utf8str);
@@ -17,5 +17,7 @@ namespace sun_magic {
 		sf::String RomajiToHiragana(sf::String romaji);
 
 		int LimitBetween(int min, int val, int max);
+
+		sf::Sprite GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites);
 	}
 }

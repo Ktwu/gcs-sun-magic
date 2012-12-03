@@ -11,6 +11,7 @@ namespace sun_magic {
 	{
 	public:
 		Animon(float x, float y, sf::String texture_name, sf::Color outline, sf::String word);
+		Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word);
 		~Animon();
 
 		void Update(float elapsed_time);
