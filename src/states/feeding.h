@@ -9,7 +9,7 @@
 namespace sun_magic {
 
 	class Animon;
-	class Foodbowl;
+	class ProgressBar;
 
 	class Feeding : public MachineState<GameState>, public EventListener {
 	public:
@@ -31,8 +31,12 @@ namespace sun_magic {
 		sf::Sprite background_;
 		std::vector<sf::String> hiraganas_;
 		std::vector<Animon*> animons_;
-		std::vector<Foodbowl*> foodbowls_;
+		std::vector<ProgressBar*> progressbars_;
 		GameState game_state_;
+		float feed_increment_;
+		float eat_rate_;
+		float happy_threshold_;
+		float ok_threshold_;
 	};
 
 }

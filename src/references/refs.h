@@ -31,10 +31,17 @@ namespace sun_magic {
 			}
 
 			namespace objects {
+				static const std::string AHIRU = "assets/objects/ahiru.png";
+				static const std::string EBI = "assets/objects/ebi.png";
+				static const std::string FOODBOWL = "assets/objects/foodbowl.png";
+				static const std::string INU = "assets/objects/inu.png";
 				static const std::string NEKO = "assets/objects/neko.png";
 				static const std::string NEKO_HAPPY = "assets/objects/neko-happy.png";
-				static const std::string STUPID_LOVE = "assets/objects/stupid-love.png";
+				static const std::string OBAKE = "assets/objects/obake.png";
 				static const std::string SPRITES = "assets/objects/hiragana-spritesheet.png";
+				static const std::string STUPID_LOVE = "assets/objects/stupid-love.png";
+				static const std::string SUSHI = "assets/objects/sushi.png";
+				static const std::string USAGI = "assets/objects/usagi.png";
 			}
 
 		}

@@ -6,6 +6,7 @@
 #include "events/event_manager.h"
 #include "events/gameevent_manager.h"
 #include "objects/animon.h"
+#include "objects/progressbar.h"
 #include "references/refs.h"
 #include "tools/tools.h"
 
@@ -15,8 +16,12 @@ namespace sun_magic {
 		background_(),
 		hiraganas_(),
 		animons_(),
-		foodbowls_(),
-		game_state_()
+		progressbars_(),
+		game_state_(),
+		feed_increment_(0.35f),
+		eat_rate_(0.01f),
+		happy_threshold_(0.7f),
+		ok_threshold_(0.4f)
 	{
 	}
 
@@ -29,8 +34,8 @@ namespace sun_magic {
 	void Feeding::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = FEEDING;
 
-		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::OFFICE));
+		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
+		background_.setTexture(*asset_manager->GetTexture(refs::textures::backgrounds::OFFICE));
 		// The image might be a little too big, so scale it so it fits in the window
 		tools::ScaleToWindowSize(background_);
 
@@ -39,14 +44,36 @@ namespace sun_magic {
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
 		// Create animon objects
+		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
+		float y = 470.f;
+		// HACK until we get sprite sheet
+		const sf::String texture_paths[] = {
+			refs::textures::objects::AHIRU,
+			refs::textures::objects::INU,
+			refs::textures::objects::USAGI,
+			refs::textures::objects::EBI,
+			refs::textures::objects::OBAKE
+		};
+		float width = size.x - 50;
 		for (size_t i = 0; i < hiraganas_.size(); i++) {
 			sf::String h = hiraganas_[i];
-			Animon *animon = new Animon((i + 0.5f) * size.x / (hiraganas_.size() + 1.f), 100.f, refs::textures::objects::NEKO, GameAssetManager::symbols_colors[manager->GetHiraganaIndex(h[0])], h);
+			sf::Texture *texture = asset_manager->GetTexture(texture_paths[i]);
+			sf::Sprite sprite(*texture);
+
+			Animon *animon = new Animon((float)i * width / hiraganas_.size(), y - sprite.getLocalBounds().height, sprite, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
+			animon->SetZ(1);
 			animons_.push_back(animon);
 			event_manager->AddGameObject(animon);
 			event_manager->RegisterListener(Event::E_GAME_EVENT, this, animon);
+
+			ProgressBar *progressbar = new ProgressBar((i + 0.5f) * width / hiraganas_.size(), 0, y, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
+			progressbar->SetZ(10);
+			progressbars_.push_back(progressbar);
+			event_manager->AddGameObject(progressbar);
+
+			dictionary->AddWord(h, texture);
 		}
 
 		Event load_event;
@@ -70,6 +97,25 @@ namespace sun_magic {
 	}
 
 	GameState Feeding::Update(float elapsed_time) {
+		bool all_happy = true;
+		for (size_t i = 0; i < animons_.size(); i++) {
+			ProgressBar *progressbar = progressbars_[i];
+			float progress = progressbar->GetProgress();
+			progress -= eat_rate_ * elapsed_time;
+			progressbar->SetProgress(progress);
+
+			Animon *animon = animons_[i];
+			// TODO: Set animon state sprite
+			if (progress >= happy_threshold_) {
+			} else if (progress >= ok_threshold_) {
+				all_happy = false;
+			} else {
+				all_happy = false;
+			}
+		}
+
+		if (all_happy)
+			game_state_ = MAIN_MENU;
 		return game_state_;
 	}
 	
@@ -88,11 +134,25 @@ namespace sun_magic {
 			hiragana = event.message;
 			break;
 		case Event::E_GAME_EVENT:
-			if (event.message == hiragana) {
-				Animon *animon = (Animon*)event.source;
-			} else {
+			if (event.gameEvent == GameEvent::KEY_CLICK && hiragana.getSize() > 0) {
+				size_t i = 0;
+				for (; i < animons_.size(); i++) {
+					if (animons_[i] == event.source)
+						break;
+				}
+				if (i == animons_.size())
+					break;
+
+				if (event.message == hiragana) {
+					ProgressBar *progressbar = progressbars_[i];
+					progressbar->SetProgress(progressbar->GetProgress() + feed_increment_);
+				} else {
+					ProgressBar *progressbar = progressbars_[i];
+					progressbar->SetProgress(progressbar->GetProgress() - feed_increment_);
+				}
+				Game::GetInstance()->GetTileList()->Clear();
+				hiragana = "";
 			}
-			hiragana = "";
 			break;
 		}
 	}

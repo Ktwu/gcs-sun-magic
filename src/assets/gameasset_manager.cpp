@@ -23,31 +23,45 @@ namespace sun_magic {
 		L"Вс"
 	};
 	std::string GameAssetManager::romaji_strings[] = {
-		"a", "i", "u", "e", "o",
-		"ka", "ki", "ku", "ke", "ko",
-		"sa", "shi", "su", "se", "so",
+		"a",  "i",   "u",   "e",  "o",
+		"ka", "ki",  "ku",  "ke", "ko",
+		"sa", "shi", "su",  "se", "so",
 		"ta", "chi", "tsu", "te", "to",
-		"na", "ni", "nu", "ne", "no",
-		"ha", "hi", "fu", "he", "ho",
-		"ma", "mi", "mu", "me", "mo",
-		"ya", "yu", "yo",
-		"ra", "ri", "ru", "re", "ro",
-		"wa", "wo",
+		"na", "ni",  "nu",  "ne", "no",
+		"ha", "hi",  "fu",  "he", "ho",
+		"ma", "mi",  "mu",  "me", "mo",
+		"ya",        "yu",  "yo",
+		"ra", "ri",  "ru",  "re", "ro",
+		"wa",                     "wo",
 		"n"
 	};
+
 	sf::Color GameAssetManager::symbols_colors[] = {
-		tools::HSVColor(0/23.f,1,1), tools::HSVColor(5/23.f,0.7f,0.7f), tools::HSVColor(10/23.f,1,1), tools::HSVColor(15/23.f,0.7f,0.7f), tools::HSVColor(20/23.f,1,1),
-		tools::HSVColor(2/23.f,0.7f,0.7f), tools::HSVColor(7/23.f,1,1), tools::HSVColor(12/23.f,0.7f,0.7f), tools::HSVColor(17/23.f,1,1), tools::HSVColor(22/23.f,0.7f,0.7f),
-		tools::HSVColor(4/23.f,1,1), tools::HSVColor(9/23.f,0.7f,0.7f), tools::HSVColor(14/23.f,1,1), tools::HSVColor(19/23.f,0.7f,0.7f), tools::HSVColor(1/23.f,1,1),
-		tools::HSVColor(6/23.f,0.7f,0.7f), tools::HSVColor(11/23.f,1,1), tools::HSVColor(16/23.f,0.7f,0.7f), tools::HSVColor(21/23.f,1,1), tools::HSVColor(3/23.f,0.7f,0.7f),
-		tools::HSVColor(8/23.f,1,1), tools::HSVColor(13/23.f,0.7f,0.7f), tools::HSVColor(18/23.f,1,1), tools::HSVColor(0.f,0.7f,0.7f), tools::HSVColor(5/23.f,1,1),
-		tools::HSVColor(10/23.f,0.7f,0.7f), tools::HSVColor(15/23.f,1,1), tools::HSVColor(20/23.f,0.7f,0.7f), tools::HSVColor(2/23.f,1,1), tools::HSVColor(7/23.f,0.7f,0.7f),
-		tools::HSVColor(12/23.f,1,1), tools::HSVColor(17/23.f,0.7f,0.7f), tools::HSVColor(22/23.f,1,1), tools::HSVColor(4/23.f,0.7f,0.7f), tools::HSVColor(9/23.f,1,1),
-		tools::HSVColor(14/23.f,0.7f,0.7f), tools::HSVColor(19/23.f,1,1), tools::HSVColor(1/23.f,0.7f,0.7f),
-		tools::HSVColor(6/23.f,1,1), tools::HSVColor(11/23.f,0.7f,0.7f), tools::HSVColor(16/23.f,1,1), tools::HSVColor(21/23.f,0.7f,0.7f), tools::HSVColor(3/23.f,1,1),
-		tools::HSVColor(8/23.f,0.7f,0.7f), tools::HSVColor(13/23.f,1,1),
-		tools::HSVColor(18/23.f,0.7f,0.7f)
+		tools::HSVColor(0/46.f,1,1),  tools::HSVColor(7/46.f,1,1),	tools::HSVColor(14/46.f,1,1), tools::HSVColor(21/46.f,1,1),	tools::HSVColor(28/46.f,1,1),
+		tools::HSVColor(35/46.f,1,1), tools::HSVColor(42/46.f,1,1),	tools::HSVColor(3/46.f,1,1),  tools::HSVColor(10/46.f,1,1),	tools::HSVColor(17/46.f,1,1),
+		tools::HSVColor(24/46.f,1,1), tools::HSVColor(31/46.f,1,1),	tools::HSVColor(38/46.f,1,1), tools::HSVColor(45/46.f,1,1),	tools::HSVColor(6/46.f,1,1),
+		tools::HSVColor(13/46.f,1,1), tools::HSVColor(20/46.f,1,1),	tools::HSVColor(27/46.f,1,1), tools::HSVColor(34/46.f,1,1),	tools::HSVColor(41/46.f,1,1),
+		tools::HSVColor(2/46.f,1,1),  tools::HSVColor(9/46.f,1,1),	tools::HSVColor(16/46.f,1,1), tools::HSVColor(23/46.f,1,1),	tools::HSVColor(30/46.f,1,1),
+		tools::HSVColor(37/46.f,1,1), tools::HSVColor(44/46.f,1,1),	tools::HSVColor(5/46.f,1,1),  tools::HSVColor(12/46.f,1,1), tools::HSVColor(19/46.f,1,1),
+		tools::HSVColor(26/46.f,1,1), tools::HSVColor(33/46.f,1,1),	tools::HSVColor(40/46.f,1,1), tools::HSVColor(1/46.f,1,1),  tools::HSVColor(8/46.f,1,1),
+		tools::HSVColor(15/46.f,1,1),								tools::HSVColor(22/46.f,1,1),								tools::HSVColor(29/46.f,1,1),
+		tools::HSVColor(36/46.f,1,1), tools::HSVColor(43/46.f,1,1),	tools::HSVColor(4/46.f,1,1), tools::HSVColor(11/46.f,1,1),	tools::HSVColor(18/46.f,1,1),
+		tools::HSVColor(25/46.f,1,1),																							tools::HSVColor(32/46.f,1,1),
+		tools::HSVColor(39/46.f,1,1)
 	};
+	int GameAssetManager::symbols_pos[] = {
+			0,  1,  2,  3,  4,
+			5,  6,  7,  8,  9,
+			10, 11, 12, 13, 14,
+			15, 16, 17, 18, 19,
+			20, 21, 22, 23, 24,
+			25, 26, 27, 28, 29,
+			30, 31, 32, 33, 34,
+			35,     37,     39,
+			40, 41, 42, 43, 44,
+			45,             49,
+			50
+		};
 
 	void GameAssetManager::Init() {
 		std::ifstream trace_characters;
@@ -102,6 +116,20 @@ namespace sun_magic {
 	void GameAssetManager::ReturnTexture(std::string texture_name) {
 		if (textures_[texture_name] != NULL)
 			textures_[texture_name]->ReturnRef();
+	}
+
+	sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
+		int index = GetHiraganaIndex(hiragana);
+		int pos = symbols_pos[index];
+
+		sf::Vector2u size = sprites->getSize();
+		size.x /= ROW_SIZE;
+		size.y /= COL_SIZE;
+
+		int x = pos % ROW_SIZE;
+		int y = pos / ROW_SIZE;
+
+		return sf::Sprite(*sprites, sf::IntRect(size.x * x, size.y * y, size.x, size.y));
 	}
 
 
@@ -168,8 +196,8 @@ namespace sun_magic {
 		return trace_characters_[utf32_character];
 	}
 
-	int GameAssetManager::GetHiraganaIndex(sf::Uint32 character) {
-		std::hash_map<sf::Uint32,int>::iterator iter = hiragana_indices_.find(character);
+	int GameAssetManager::GetHiraganaIndex(sf::String character) {
+		std::hash_map<sf::Uint32,int>::iterator iter = hiragana_indices_.find(character[0]);
 		if (iter == hiragana_indices_.end())
 			return -1;
 		else

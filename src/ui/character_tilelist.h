@@ -15,6 +15,7 @@ namespace sun_magic {
 
 		CharacterTileList(float x = 0, float y = 0, float width = 300, float height = 300, int num_tiles = 5);
 		~CharacterTileList();
+		void SetZ(float z);
 
 		void Clear();
 		sf::String GetWord();

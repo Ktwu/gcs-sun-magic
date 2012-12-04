@@ -53,6 +53,8 @@ namespace sun_magic {
 				return sf::Color(x,0,c);
 			case 5:
 				return sf::Color(c,0,x);
+			default:
+				throw "Invalid h value";
 			}
 		}
 	}

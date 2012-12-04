@@ -21,6 +21,13 @@ namespace sun_magic {
 	CharacterTileList::~CharacterTileList() {
 		tiles_.clear();
 	}
+	
+	void CharacterTileList::SetZ(float z) {
+		GameObject::SetZ(z);
+		for (size_t i = 0; i < tiles_.size(); ++i) {
+			tiles_[i]->SetZ(z - 0.001f);
+		}
+	}
 
 	void CharacterTileList::Clear() {
 		for (size_t i = 0; i < tiles_.size(); ++i) {

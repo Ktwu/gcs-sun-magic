@@ -7,18 +7,19 @@
 
 namespace sun_magic {
 
-	class Animon : public GameObject, public EventListener
+	class KeyObject : public GameObject, public EventListener
 	{
 	public:
+		typedef void(*key_callback_t)(KeyObject*, Event);
 		enum KeyState {
 			DEFAULT,
 			OUTLINED,
 			ACTIVE
 		};
 
-		Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, bool active = true, bool visible = true);
-		Animon(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, bool active = true, bool visible = true);
-		~Animon();
+		KeyObject(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
+		KeyObject(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, key_callback_t callback = NULL, bool active = true, bool visible = true);
+		~KeyObject();
 
 		void SetSprite(sf::Sprite Sprite);
 		sf::Sprite GetSprite();
@@ -41,6 +42,9 @@ namespace sun_magic {
 		void SetVisible(bool visible);
 		bool IsVisible();
 
+		void EventCallback(Event event);
+		void SetEventCallback(key_callback_t callback);
+
 		void Register();
 		void Unregister();
 
@@ -51,6 +55,8 @@ namespace sun_magic {
 
 	protected:
 		static const int OUTLINE_WIDTH = 5;
+		static const sf::Color OUTLINE_COLORS[16];
+		static const KeyObject* REGISTERED_KEY_OBJECTS[16];
 
 		sf::Sprite sprite_;
 
@@ -64,6 +70,7 @@ namespace sun_magic {
 		bool registered_;
 		bool visible_;
 		KeyState state_;
+		key_callback_t callback_;
 	};
 	
 }

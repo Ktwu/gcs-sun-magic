@@ -32,7 +32,7 @@ namespace sun_magic {
 		sf::Vector2f hide_pos_;
 		sf::Vector2f show_pos_;
 		sf::Vector2f target_pos_;
-		float animate_speed_;
+		float animate_time_;
 	};
 
 }

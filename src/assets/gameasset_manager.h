@@ -11,9 +11,12 @@ namespace sun_magic {
 	class GameAssetManager {
 	public:
 		static const int NUM_SYMBOLS = 46;
+		static const int ROW_SIZE = 5;
+		static const int COL_SIZE = 11;
 		static sf::String hiragana_strings[];
 		static std::string romaji_strings[];
 		static sf::Color symbols_colors[];
+		static int symbols_pos[];
 
 		GameAssetManager() {}
 		~GameAssetManager() {}
@@ -31,6 +34,8 @@ namespace sun_magic {
 		void ReturnTexture(std::string textureName);
 		void CleanUnusedTextures();
 
+		sf::Sprite GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites);
+
 		sf::Font* GetFont(std::string fontName);
 		void ReturnFont(std::string fontName);
 		void CleanUnusedFonts();
@@ -38,7 +43,7 @@ namespace sun_magic {
 		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
 		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
 
-		int GetHiraganaIndex(sf::Uint32 character);
+		int GetHiraganaIndex(sf::String character);
 		int GetRomajiIndex(std::string str);
 		sf::String HiraganaToRomaji(sf::String hiragana);
 		sf::String RomajiToHiragana(sf::String romaji);

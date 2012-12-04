@@ -16,7 +16,11 @@ namespace sun_magic {
 	}
 
 	void EventManager::AddGameObject(GameObject *object) {
-		game_objects_.push_back(object);
+		std::vector<GameObject*>::iterator focus_iter = game_objects_.begin();
+		while (focus_iter != game_objects_.end() && (*focus_iter)->GetZ() > object->GetZ())
+			focus_iter++;
+
+		game_objects_.insert(focus_iter, object);
 		object->Register();
 	}
 	
@@ -35,8 +39,8 @@ namespace sun_magic {
 	}
 
 	void EventManager::ClearGameObjects() {
-		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
-			GameObject * object = *focus_iter;
+		for (int i = 0; i < game_objects_.size(); i++) {
+			GameObject * object = game_objects_[i];
 			object->Unregister();
 		}
 		game_objects_.clear();
@@ -211,8 +215,8 @@ namespace sun_magic {
 	}
 
 	void EventManager::UpdateObjects(float elapsed_time) {
-		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
-			GameObject * object = *focus_iter;
+		for (int i = 0; i < game_objects_.size(); i++) {
+			GameObject * object = game_objects_[i];
 			object->Update(elapsed_time);
 		}
 	}
@@ -221,8 +225,8 @@ namespace sun_magic {
 		// Save the window default view
 		sf::View view = target->getView();
 
-		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
-			GameObject * object = *focus_iter;
+		for (int i = 0; i < game_objects_.size(); i++) {
+			GameObject * object = game_objects_[i];
 
 			// Translate view to object position
 			view.move(object->GetNegativePosition());
@@ -239,19 +243,19 @@ namespace sun_magic {
 	void EventManager::UpdateFocus(sf::Vector2i mouse) {
 		static sf::Vector2i old_mouse = sf::Mouse::getPosition();
 
-		// Find all intersecting focus objects
-		std::vector<GameObject*> intersections;
-		for (std::vector<GameObject*>::iterator focus_iter = game_objects_.begin(); focus_iter != game_objects_.end(); focus_iter++) {
-			GameObject *object = *focus_iter;
-			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
-				intersections.push_back(object);
-			}
-		}
-		// Sort by z-order
+		// Find the first intersection focus object. Objects in the back are nearer the front.
 		GameObject *newfocus_ = NULL;
-		if (intersections.size() > 0) {
-			std::sort(intersections.begin(), intersections.end(), tools::ZSort);
-			newfocus_ = intersections.front()->UpdateFocus((float)mouse.x, (float)mouse.y);
+		for (int i = game_objects_.size() - 1; i >= 0; i--) {
+			GameObject *object = game_objects_[i];
+			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
+				newfocus_ = object;
+				if (newfocus_ != focus_) {
+					if (focus_ == Game::GetInstance()->GetDictionary()) {
+						int a = 1;
+					}
+				}
+				break;
+			}
 		}
 
 		// If new focus send enter and exit events

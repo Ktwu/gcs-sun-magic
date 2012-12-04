@@ -7,20 +7,21 @@
 
 namespace sun_magic {
 
-	const sf::Color Animon::OUTLINE_COLORS[16] = {
-		sf::Color::Black
-	};
+	const int RADIUS = 7;
 
-	Animon::Animon(float x, float y, sf::Texture& texture, sf::Color outline, sf::String word, bool active, bool visible) :
-		GameObject(x, y, (float)texture.getSize().x, (float)texture.getSize().y),
+	Animon::Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, bool active, bool visible) :
+		GameObject(x, y, (float)sprite.getLocalBounds().width, (float)sprite.getLocalBounds().height),
+		sprite_(),
+		sprite_outline_(),
 		outline_(outline),
+		texture_outline_(),
 		word_(word),
 		active_(active),
 		focused_(false),
 		visible_(visible),
 		state_(DEFAULT)
 	{
-		SetTexture(texture);
+		SetSprite(sprite);
 	}
 
 	Animon::Animon(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, bool active, bool visible) :
@@ -45,29 +46,35 @@ namespace sun_magic {
 	{
 	}
 
-	void Animon::SetTexture(const sf::Texture& texture) {
-		sprite_.setTexture(texture);
+	void Animon::SetSprite(sf::Sprite sprite) {
+		sprite_ = sprite;
+		
+		sf::IntRect rect = sprite.getTextureRect();
+		sf::RenderTexture temp;
+		temp.create(rect.width + 2 * RADIUS, rect.height + 2 * RADIUS);
+		temp.draw(sprite);
 
-		sf::Image outline_image = texture.copyToImage();
-		sf::Vector2u size = outline_image.getSize();
+		sf::Image outline_image = temp.getTexture().copyToImage();
+		outline_image.flipVertically();
+		sf::Vector2u outline_size = outline_image.getSize();
 
 		sf::Image new_image;
-		new_image.create(size.x, size.y, sf::Color::Transparent);
+		new_image.create(outline_size.x, outline_size.y, sf::Color::Transparent);
 
-		int i, j, min_i, max_i, min_j, max_j, local_i, local_j;
-		int radius = 7;
-		for (i = 0; i < (int)size.x; ++i) {
-			for (j = 0; j < (int)size.y; ++j) {
-
-				min_i = std::max(0, i - radius);
-				max_i = std::min(size.x, (unsigned) i + radius);
-				min_j = std::max(0, j - radius);
-				max_j = std::min(size.y, (unsigned) j + radius);
+		int outline_i, outline_j, i, j, max_i, max_j, min_i, min_j, local_i, local_j;
+		for (outline_i = 0; outline_i < (int)outline_size.x; ++outline_i) {
+			for (outline_j = 0; outline_j < (int)outline_size.y; ++outline_j) {
+				i = outline_i - RADIUS;
+				j = outline_j - RADIUS;
+				min_i = std::max(0, i - RADIUS);
+				max_i = std::min(rect.width, i + RADIUS);
+				min_j = std::max(0, j - RADIUS);
+				max_j = std::min(rect.height, j + RADIUS);
 
 				float strength = 0;
 				for (local_i = min_i; local_i < max_i; ++local_i) {
 					for (local_j = min_j; local_j < max_j; ++local_j) {
-						if (outline_image.getPixel(local_i, local_j).a > 50)  {
+						if (outline_image.getPixel(local_i, local_j).a > 0)  {
 							float distSquared = std::pow((float)(i - local_i), 2.f) + std::pow((float)(j - local_j), 2.f);
 							strength += 1.f / std::pow(distSquared, 1.5f);
 						}
@@ -76,13 +83,20 @@ namespace sun_magic {
 				
 				if (strength > 0) {
 					outline_.a = sf::Uint8(std::min(255.f, 255.f * 1.5f * strength));
-					new_image.setPixel(i, j, outline_);
+					new_image.setPixel(outline_i, outline_j, outline_);
 				}
 			}
 		}
 
 		texture_outline_.loadFromImage(new_image);
 		sprite_outline_.setTexture(texture_outline_, true);
+	}
+	sf::Sprite Animon::GetSprite() {
+		return sprite_;
+	}
+
+	void Animon::SetTexture(const sf::Texture& texture) {
+		SetSprite(sf::Sprite(texture));
 	}
 	const sf::Texture& Animon::GetTexture() {
 		return *sprite_.getTexture();
@@ -130,23 +144,15 @@ namespace sun_magic {
 		EventManager *event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->RegisterListener(Event::E_MOUSE_EXITED, this, this);
-
 		event_manager->RegisterListener(Event::E_MOUSE_PRESSED, this, this);
-		event_manager->RegisterListener(Event::E_MOUSE_RELEASED, this, NULL);
-
-		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
-		event_manager->RegisterListener(Event::E_LOAD_STATE, this);
+		event_manager->RegisterListener(Event::E_MOUSE_RELEASED, this, this);
 	}
 	void Animon::Unregister() {
 		EventManager *event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->UnregisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->UnregisterListener(Event::E_MOUSE_EXITED, this, this);
-
 		event_manager->UnregisterListener(Event::E_MOUSE_PRESSED, this, this);
-		event_manager->UnregisterListener(Event::E_MOUSE_RELEASED, this, NULL);
-
-		event_manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this);
-		event_manager->UnregisterListener(Event::E_LOAD_STATE, this);
+		event_manager->UnregisterListener(Event::E_MOUSE_RELEASED, this, this);
 	}
 
 	void Animon::Update(float elapsed_time) {
@@ -158,8 +164,8 @@ namespace sun_magic {
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::Vector2f texture_size = sf::Vector2f(sprite_.getTexture()->getSize());
 		sprite_.setPosition((size - texture_size) * 0.5f);
-		sprite_.setOrigin(sf::Vector2f());
 		if ((state_ != DEFAULT && active_) || focused_) {
+			sprite_outline_.setPosition(sprite_.getPosition() - sf::Vector2f(RADIUS,RADIUS));
 			target->draw(sprite_outline_);
 		}
 		target->draw(sprite_);

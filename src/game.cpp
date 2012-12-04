@@ -87,9 +87,12 @@ namespace sun_magic {
 		sf::Vector2u size = main_window_.getSize();
 		float height = 200;
 		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 1);
-
-		dict_ = new Dictionary(size.x - 20.f, 0, 750.f, 0, size.x - 750.f, size.y - height);
+		tilelist_->SetZ(-1);
 		listlabel_ = new Label(750.f, size.y - height, size.x - 750.f, height);
+		listlabel_->SetZ(-1);
+
+		dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y);
+		dict_->SetZ(-2);
 	}
 
 	void Game::HandleInput() {

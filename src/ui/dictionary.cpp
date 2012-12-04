@@ -11,14 +11,13 @@
 namespace sun_magic {
 
 	Dictionary::Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height) : 
-		GameObject(0,0,0,0)
+		GameObject(hide_x,hide_y,width,height)
 	{
-		animate_speed_ = 600;
+		animate_time_ = 0.3f;
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 		hide_pos_ = sf::Vector2f(hide_x, hide_y);
 		show_pos_ = sf::Vector2f(show_x, show_y);
 		target_pos_ = hide_pos_;
-		rect_ = sf::FloatRect(hide_pos_, sf::Vector2f(width, height));
 	}
 	Dictionary::~Dictionary() {}
 
@@ -40,6 +39,7 @@ namespace sun_magic {
 	}
 
 	void Dictionary::Update(float elapsed_time) {
+		float animate_speed_ = sfm::Length(hide_pos_ - show_pos_) / animate_time_;
 		sf::Vector2f dist = target_pos_ - GetPosition();
 		float length = sfm::Length(dist);
 		float max_dist = animate_speed_ * elapsed_time;
@@ -50,7 +50,6 @@ namespace sun_magic {
 		rect_.top += dist.y;
 	}
 	void Dictionary::Draw(sf::RenderTarget *target) {
-		sf::Vector2f position = GetPosition();
 		sf::Vector2f size = GetSize();
 
 		sf::RectangleShape rect(size);
@@ -59,17 +58,16 @@ namespace sun_magic {
 		rect.setOutlineThickness(1);
 		target->draw(rect);
 
-		const float padding = 10;
+		const float padding = 20;
 		float y = padding;
 
 		sf::Font* msmincho = GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
-		sf::Text text(sf::String("DICTIONARY"));
-			text.setFont(*msmincho);
-			text.setColor(sf::Color::Blue);
-			text.setCharacterSize(25);
-			text.setPosition(2.f * padding, y);
-			target->draw(text);
-			y += text.getLocalBounds().height + padding;
+		sf::Text text(sf::String("D\nI\nC\nT\nI\nO\nN\nA\nR\nY"));
+		text.setFont(*msmincho);
+		text.setColor(sf::Color::Blue);
+		text.setCharacterSize(25);
+		text.setPosition(5, y);
+		target->draw(text);
 
 		for (std::map<sf::String, DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
 			sf::Sprite sprite;

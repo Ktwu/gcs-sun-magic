@@ -33,10 +33,10 @@ namespace sun_magic {
 			rect_.top = pos.y;
 		}
 
-		int GetZ() {
+		float GetZ() {
 			return z_;
 		}
-		void SetZ(int z) {
+		virtual void SetZ(float z) {
 			z_ = z;
 		}
 
@@ -51,7 +51,7 @@ namespace sun_magic {
 
 	protected:
 		sf::FloatRect rect_;
-		int z_;	// Determines front to back order. Higher z's are in the front
+		float z_;	// Determines front to back order. Higher z's are in the front
 		bool outlined_;
 	};
 
