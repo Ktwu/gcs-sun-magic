@@ -101,9 +101,6 @@
     <ClCompile Include="src\states\main_menu.cpp">
       <Filter>src\states</Filter>
     </ClCompile>
-    <ClCompile Include="src\states\playing.cpp">
-      <Filter>src\states</Filter>
-    </ClCompile>
     <ClCompile Include="src\states\save_writing.cpp">
       <Filter>src\states</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
     </ClCompile>
     <ClCompile Include="src\tools\tools.cpp">
       <Filter>src\tools</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\key_object.cpp">
-      <Filter>src\objects</Filter>
     </ClCompile>
     <ClCompile Include="src\ui\character_tilelist.cpp">
       <Filter>src\ui</Filter>
@@ -125,9 +119,6 @@
     <ClCompile Include="src\ui\label.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
-    <ClCompile Include="src\states\test_play.cpp">
-      <Filter>src\states</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\animon.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
@@ -136,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="src\ui\ui_group.cpp">
       <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\states\feeding.cpp">
+      <Filter>src\states</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,9 +175,6 @@
     <ClInclude Include="src\states\main_menu.h">
       <Filter>src\states</Filter>
     </ClInclude>
-    <ClInclude Include="src\states\playing.h">
-      <Filter>src\states</Filter>
-    </ClInclude>
     <ClInclude Include="src\states\save_writing.h">
       <Filter>src\states</Filter>
     </ClInclude>
@@ -196,9 +187,6 @@
     <ClInclude Include="src\tools\sfm.h">
       <Filter>src\tools</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\key_object.h">
-      <Filter>src\objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\character_tilelist.h">
       <Filter>src\ui</Filter>
     </ClInclude>
@@ -208,17 +196,8 @@
     <ClInclude Include="src\events\gameevent_manager.h">
       <Filter>src\events</Filter>
     </ClInclude>
-    <ClInclude Include="src\references\event_refs.h">
-      <Filter>src\references</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\label.h">
       <Filter>src\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="src\states\test_play.h">
-      <Filter>src\states</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\animon.h">
-      <Filter>src\objects</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\style.h">
       <Filter>src\ui</Filter>
@@ -229,8 +208,14 @@
     <ClInclude Include="src\ui\ui_group.h">
       <Filter>src\ui</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\animon.h">
+      <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\feeding.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
     <ClInclude Include="src\tools\tools.h">
-      <Filter>src\ui</Filter>
+      <Filter>src\tools</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

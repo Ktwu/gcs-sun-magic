@@ -8,12 +8,16 @@
 
 namespace sun_magic {
 
-	class Playing : public MachineState<GameState>, public EventListener {
-	public:
-		Playing();
-		~Playing();
+	class Animon;
+	class Foodbowl;
 
-		/* Interface functions */
+	class Feeding : public MachineState<GameState>, public EventListener {
+	public:
+		Feeding();
+		~Feeding();
+
+		void SetHiraganas(std::vector<sf::String> hiraganas);
+
 		void RegisterState(MachineState<GameState>* previous_state);
 		void UnregisterState(MachineState<GameState>* next_state);
 
@@ -25,6 +29,9 @@ namespace sun_magic {
 
 	private:
 		sf::Sprite background_;
+		std::vector<sf::String> hiraganas_;
+		std::vector<Animon*> animons_;
+		std::vector<Foodbowl*> foodbowls_;
 		GameState game_state_;
 	};
 

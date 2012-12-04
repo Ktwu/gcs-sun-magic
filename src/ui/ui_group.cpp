@@ -62,19 +62,19 @@ namespace sun_magic {
 	void UiGroup::Register() {
 		Button::Register();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
-		for (int i = 0; i < objects_.size(); ++i)
+		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Register();
 	}
 	void UiGroup::Unregister() {
 		Button::Unregister();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
-		for (int i = 0; i < objects_.size(); ++i)
+		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Unregister();
 	}
 
 	void UiGroup::Update(float elapsed_time) {
 		Button::Update(elapsed_time);
-		for (int i = 0; i < objects_.size(); ++i)
+		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Update(elapsed_time);
 	}
 	void UiGroup::Draw(sf::RenderTarget* target) {
@@ -82,7 +82,7 @@ namespace sun_magic {
 		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 		sf::View view = window->getView();
 
-		for (int i = 0; i < objects_.size(); ++i) {
+		for (size_t i = 0; i < objects_.size(); ++i) {
 			view.move(objects_[i]->GetNegativePosition());
 			window->setView(view);
 			objects_[i]->Draw(target);

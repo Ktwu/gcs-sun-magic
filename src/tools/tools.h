@@ -12,10 +12,8 @@ namespace sun_magic {
 
 		sf::String UTF8ToUTF32(const char* utf8str);
 
-		bool ContainsSubstringAt(sf::String main, sf::String sub, int pos);
-		sf::String HiraganaToRomaji(sf::String hiragana);
-		sf::String RomajiToHiragana(sf::String romaji);
-
 		int LimitBetween(int min, int val, int max);
+
+		sf::Color HSVColor(float h, float s, float v);
 	}
 }

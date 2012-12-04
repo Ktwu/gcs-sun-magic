@@ -1,15 +1,16 @@
 ﻿#include "stdafx.h"
 #include "dictionary.h"
 
-#include "assets/gameasset_manager.h"
 #include "game.h"
+#include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
 #include "references/refs.h"
 #include "tools/sfm.h"
+#include "tools/tools.h"
 
 namespace sun_magic {
 
-	Dictionary::Dictionary(int hide_x, int hide_y, int show_x, int show_y, int width, int height) : 
+	Dictionary::Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height) : 
 		GameObject(0,0,0,0)
 	{
 		animate_speed_ = 600;
@@ -24,7 +25,6 @@ namespace sun_magic {
 	void Dictionary::AddWord(sf::String word, sf::Texture* texture) {
 		DictionaryEntry entry;
 		entry.texture = texture;
-		entry.outline = GetColor();
 		entries_[word] = entry;
 	}
 
@@ -99,52 +99,5 @@ namespace sun_magic {
 			target_pos_ = hide_pos_;
 			break;
 		}
-	}
-
-	/* Returns the next color with the most H constract in the HSV space */
-	sf::Color Dictionary::GetColor() {
-		static unsigned int index = 0;
-		static unsigned int count = 1;
-		static float h = 0.0f;
-
-		float s = 1;
-		float v = 1;
-
-		float h2 = h * 6;
-		float c = s * v;
-		float x = c * (1 - abs(fmod(h2, 2.f) - 1));
-		sf::Color color;
-		switch ((int)h2) {
-		case 0:
-			color = sf::Color(c,x,0);
-			break;
-		case 1:
-			color = sf::Color(x,c,0);
-			break;
-		case 2:
-			color = sf::Color(0,c,x);
-			break;
-		case 3:
-			color = sf::Color(0,x,c);
-			break;
-		case 4:
-			color = sf::Color(x,0,c);
-			break;
-		case 5:
-			color = sf::Color(c,0,x);
-			break;
-		}
-
-		index++;
-		if (index == 1) {
-			h += 0.5f / count;
-		} else {
-			h += 1.f / count;
-		}
-		if (index == count) {
-			count *= 2;
-			index = 0;
-		}
-		return color;
 	}
 }

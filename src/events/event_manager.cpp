@@ -173,7 +173,7 @@ namespace sun_magic {
 	}
 
 	void EventManager::Update() {
-		for (int i = 0; i < events_.size(); ++i) {
+		for (size_t i = 0; i < events_.size(); ++i) {
 			Event event = events_[i];
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);

@@ -13,8 +13,8 @@
 #include "states/splash.h"
 #include "states/main_menu.h"
 #include "states/save_writing.h"
-#include "states/playing.h"
-#include "states/test_play.h"
+#include "states/feeding.h"
+#include "tools/tools.h"
 #include "ui/character_tile.h"
 #include "ui/dictionary.h"
 
@@ -64,7 +64,7 @@ namespace sun_magic {
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		asset_manager->Init();
 
-		game_state_ = PLAYING;
+		game_state_ = FEEDING;
 		main_window_.create(sf::VideoMode(1024, 700/*768*/, 32), "Sun Magic!");
 
 		// Init zinnia data
@@ -74,8 +74,10 @@ namespace sun_magic {
 		game_machine_.Init(LOADING, new Splash());
 		game_machine_.AddState(MAIN_MENU, new MainMenu());
 		game_machine_.AddState(RECORDING, new SaveWritingState());
-		//game_machine_.AddState(PLAYING, new Playing());
-		game_machine_.AddState(PLAYING, new TestPlay());
+		Feeding *feeding = new Feeding();
+		std::vector<sf::String> hiraganas(GameAssetManager::hiragana_strings, GameAssetManager::hiragana_strings + 5);
+		feeding->SetHiraganas(hiraganas);
+		game_machine_.AddState(FEEDING, feeding);
 		
 		event_manager_ = new EventManager();
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
@@ -83,11 +85,11 @@ namespace sun_magic {
 		event_manager_->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 
 		sf::Vector2u size = main_window_.getSize();
-		int height = 150;
-		tilelist_ = new CharacterTileList(0, size.y - height, 750, height, 5);
+		float height = 200;
+		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 1);
 
-		dict_ = new Dictionary(size.x - 20, 0, 750, 0, size.x - 750, size.y - height);
-		listlabel_ = new Label(750, size.y - height, size.x - 750, height);
+		dict_ = new Dictionary(size.x - 20.f, 0, 750.f, 0, size.x - 750.f, size.y - height);
+		listlabel_ = new Label(750.f, size.y - height, size.x - 750.f, height);
 	}
 
 	void Game::HandleInput() {

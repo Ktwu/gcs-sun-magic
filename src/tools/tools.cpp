@@ -5,34 +5,6 @@
 
 namespace sun_magic {
 	namespace tools {
-		
-		const int NUM_HIRAGANA = 46;
-		sf::String symbols_hiragana[] = {
-			L"あ", L"い", L"う", L"え", L"お",
-			L"か", L"き", L"く", L"け", L"こ",
-			L"さ", L"し", L"す", L"せ", L"そ",
-			L"た", L"ち", L"つ", L"て", L"と",
-			L"な", L"に", L"ぬ", L"ね", L"の",
-			L"は", L"ひ", L"ふ", L"へ", L"ほ",
-			L"ま", L"み", L"む", L"め", L"も",
-			L"や", L"ゆ", L"よ",
-			L"ら", L"り", L"る", L"れ", L"ろ",
-			L"わ", L"を",
-			L"ん"
-		};
-		sf::String symbols_romaji[] = {
-			"a", "i", "u", "e", "o",
-			"ka", "ki", "ku", "ke", "ko",
-			"sa", "shi", "su", "se", "so",
-			"ta", "chi", "tsu", "te", "to",
-			"na", "ni", "nu", "ne", "no",
-			"ha", "hi", "fu", "he", "ho",
-			"ma", "mi", "mu", "me", "mo",
-			"ya", "yu", "yo",
-			"ra", "ri", "ru", "re", "ro",
-			"wa", "wo",
-			"n"
-		};
 
 		void ScaleToWindowSize(sf::Sprite& sprite) {
 			sf::RenderWindow* window = Game::GetInstance()->GetWindow();
@@ -54,52 +26,34 @@ namespace sun_magic {
 			return sf::String(utf32str);
 		}
 
-		bool ContainsSubstringAt(sf::String main, sf::String sub, int pos) {
-			int i;
-			for (i = 0; (pos+i) < main.getSize() && i < sub.getSize(); ++i) {
-				if (main[pos+i] != sub[i])
-					return false;
-			}
-			return (i == sub.getSize());
-		}
-
-		sf::String Translate(sf::String word, sf::String from[], sf::String to[]) {
-			int size = word.getSize();
-			sf::String translation;
-
-			int i, j;
-			for (i = 0; i < size;) {
-				for (j = 0; j < NUM_HIRAGANA; ++j) {
-					if (ContainsSubstringAt(word, from[j], i)) {
-						translation += to[j];
-						i += from[j].getSize();
-						break;
-					}
-				}
-
-				if (j == NUM_HIRAGANA) {
-					translation += "?";
-					i += 1;
-				}
-			}
-
-			return translation;
-		}
-
-		sf::String HiraganaToRomaji(sf::String hiragana_word) {
-			return Translate(hiragana_word, symbols_hiragana, symbols_romaji);
-		}
-
-		sf::String RomajiToHiragana(sf::String romaji_word) {
-			return Translate(romaji_word, symbols_romaji, symbols_hiragana);
-		}
-
 		int LimitBetween(int min, int val, int max) {
 			if (val < min)
 				return min;
 			if (val > max)
 				return max;
 			return val;
+		}
+
+		/* Creates a HSV space color, H,S,V should be in the range [0,1] */
+		sf::Color HSVColor(float h, float s, float v) {
+			h *= 6;
+			sf::Uint8 c = sf::Uint8(255 * s * v);
+			sf::Uint8 x = sf::Uint8(c * (1 - abs(fmod(h, 2.f) - 1)));
+			sf::Color color;
+			switch ((int)h) {
+			case 0:
+				return sf::Color(c,x,0);
+			case 1:
+				return sf::Color(x,c,0);
+			case 2:
+				return sf::Color(0,c,x);
+			case 3:
+				return sf::Color(0,x,c);
+			case 4:
+				return sf::Color(x,0,c);
+			case 5:
+				return sf::Color(c,0,x);
+			}
 		}
 	}
 }

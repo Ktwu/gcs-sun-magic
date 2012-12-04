@@ -18,9 +18,9 @@ namespace sun_magic {
 		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 
 		/* Go ahead and just stick our UI code in here */
-		int width = 400;
-		play_ = new Button((window->getSize().x - width) / 2, 500, width, 50, "Play");
-		record_ = new Button((window->getSize().x - width) / 2, 600, width, 50, "Record");
+		float width = 400;
+		play_ = new Button((window->getSize().x - width) / 2, 500.f, width, 50.f, "Play");
+		record_ = new Button((window->getSize().x - width) / 2, 600.f, width, 50.f, "Record");
 
 		play_->GetStyle()->SetTextColor(sf::Color::Black);
 		record_->GetStyle()->SetTextColor(sf::Color::Black);
@@ -72,7 +72,7 @@ namespace sun_magic {
 		switch(event.type) {
 		case Event::E_CLICKED:
 			if (event.focus == play_) {
-				game_state_ = PLAYING;
+				game_state_ = FEEDING;
 			} else if (event.focus == record_) {
 				game_state_ = RECORDING;
 			}

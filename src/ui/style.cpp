@@ -5,7 +5,7 @@ namespace sun_magic {
 	Style::Style() :
 		text_size(25),
 		text_color(sf::Color::White),
-		text_style(sf::Text::Style::Regular),
+		text_style(sf::Text::Regular),
 		allow_hover(true),
 		allow_press(true),
 		normal_color(sf::Color::White),

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "tools/tools.h"
 
 namespace sun_magic {
 
@@ -9,6 +10,11 @@ namespace sun_magic {
 
 	class GameAssetManager {
 	public:
+		static const int NUM_SYMBOLS = 46;
+		static sf::String hiragana_strings[];
+		static std::string romaji_strings[];
+		static sf::Color symbols_colors[];
+
 		GameAssetManager() {}
 		~GameAssetManager() {}
 
@@ -32,6 +38,11 @@ namespace sun_magic {
 		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
 		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
 
+		int GetHiraganaIndex(sf::Uint32 character);
+		int GetRomajiIndex(std::string str);
+		sf::String HiraganaToRomaji(sf::String hiragana);
+		sf::String RomajiToHiragana(sf::String romaji);
+
 	private:
 		static GameAssetManager* instance_;
 
@@ -39,6 +50,8 @@ namespace sun_magic {
 		std::hash_map<std::string, GameAsset<sf::Font>*> fonts_;
 
 		std::hash_map<sf::Uint32, zinnia::Character*> trace_characters_;
-	};
 
+		std::hash_map<sf::Uint32,int> hiragana_indices_;
+		std::hash_map<std::string,int> romaji_indices_;
+	};
 }

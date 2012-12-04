@@ -13,7 +13,7 @@ namespace sun_magic {
 			sf::Texture *texture;	// Picture of object
 		};
 
-		Dictionary(int hide_x, int hide_y, int show_x, int show_y, int width, int height);
+		Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height);
 		~Dictionary();
 
 		void AddWord(sf::String word, sf::Texture *texture);
@@ -28,8 +28,6 @@ namespace sun_magic {
 		void ProcessEvent(Event event);
 
 	protected:
-		static sf::Color GetColor();
-
 		std::map<sf::String, DictionaryEntry> entries_;
 		sf::Vector2f hide_pos_;
 		sf::Vector2f show_pos_;

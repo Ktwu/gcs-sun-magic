@@ -45,16 +45,8 @@ namespace sun_magic {
 		return (NumOverlap(events) == 0);
 	}
 
-	std::set<KeyObject*>& GameEventManager::GetKeyObjectsFor(MachineState<GameState>* state) {
-		return key_objects_[state];
-	}
-
 	bool& GameEventManager::operator [](GameEvent event) {
 		return events_[event];
-	}
-
-	std::set<KeyObject*>& GameEventManager::operator [](MachineState<GameState>* state) {
-		return key_objects_[state];
 	}
 
 }

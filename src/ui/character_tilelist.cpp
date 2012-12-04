@@ -23,7 +23,7 @@ namespace sun_magic {
 	}
 
 	void CharacterTileList::Clear() {
-		for (int i = 0; i < tiles_.size(); ++i) {
+		for (size_t i = 0; i < tiles_.size(); ++i) {
 			tiles_[i]->Clear();
 		}
 	}
@@ -34,7 +34,7 @@ namespace sun_magic {
 
 	void CharacterTileList::Register() {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
-		for (int i = 0; i < tiles_.size(); ++i) {
+		for (size_t i = 0; i < tiles_.size(); ++i) {
 			manager->AddGameObject(tiles_[i]);
 			manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
@@ -42,7 +42,7 @@ namespace sun_magic {
 
 	void CharacterTileList::Unregister() {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
-		for (int i = 0; i < tiles_.size(); ++i) {
+		for (size_t i = 0; i < tiles_.size(); ++i) {
 			manager->AddGameObject(tiles_[i]);
 			manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
@@ -57,7 +57,7 @@ namespace sun_magic {
 		event.message.clear();
 		word_.clear();
 
-		for (int i = 0; i < tiles_.size(); ++i) {
+		for (size_t i = 0; i < tiles_.size(); ++i) {
 			// Do we have anything drawn into the tile?
 			// If not then we're not actively working in it.
 			if (tiles_[i]->GetCharacter()->strokes_size() == 0)

@@ -8,8 +8,8 @@ namespace sun_magic {
 		LOADING,
 		MAIN_MENU,
 		INGAME_MENU,
-		PLAYING,
-		WRITING,
+		MESSAGE,
+		FEEDING,
 		RECORDING,
 		EXITING,
 	};

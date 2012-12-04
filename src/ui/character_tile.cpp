@@ -453,7 +453,7 @@ namespace sun_magic {
 			if (!is_writing_ && event.mouseButton.button == Mouse::Left) {
 				is_writing_ = true;
 
-				last_mouse_ = sf::Vector2f(event.mouseButton.x, event.mouseButton.y);
+				last_mouse_ = sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y);
 				AddStrokePoint(last_mouse_);
 				std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
 			}
@@ -461,7 +461,7 @@ namespace sun_magic {
 			
 		case Event::E_MOUSE_MOVED:
 			if (is_writing_) {
-				sf::Vector2f mouse_pos = sf::Vector2f(event.mouseMove.x, event.mouseMove.y);
+				sf::Vector2f mouse_pos = sf::Vector2f((float)event.mouseMove.x, (float)event.mouseMove.y);
 				if (sfm::squaredDistance(mouse_pos, last_mouse_) < MIN_STROKE_DISPLACEMENT_SQUARED) {
 					break;
 				}
