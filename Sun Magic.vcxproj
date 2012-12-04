@@ -29,6 +29,7 @@
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\objects\animon.cpp" />
+    <ClCompile Include="src\objects\food_stack.cpp" />
     <ClCompile Include="src\objects\key_object.cpp" />
     <ClCompile Include="src\states\main_menu.cpp" />
     <ClCompile Include="src\states\playing.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="src\events\gameevent_manager.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\objects\animon.h" />
+    <ClInclude Include="src\objects\food_stack.h" />
     <ClInclude Include="src\objects\game_object.h" />
     <ClInclude Include="src\objects\key_object.h" />
     <ClInclude Include="src\references\event_refs.h" />
