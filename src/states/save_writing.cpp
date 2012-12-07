@@ -108,7 +108,7 @@ namespace sun_magic {
 				// for some reason value is not included in toString
 				size_t index = better_string.find("value") + 6;
 				std::wstring pre = sf::String(better_string.substr(0, index)).toWideString();
-				std::wstring value = tile_->GetUnicode().toWideString();
+				std::wstring value = tile_->GetTraceUnicode().toWideString();
 				std::wstring post = sf::String(better_string.substr(index)).toWideString();
 				fwrite(pre.c_str(), pre.size() * sizeof(wchar_t), 1, trace_output_);
 				fwrite(value.c_str(), value.size() * sizeof(wchar_t), 1, trace_output_);

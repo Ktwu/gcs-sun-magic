@@ -11,7 +11,7 @@ namespace sun_magic {
 		}
 
 		namespace zinnia {
-			static const std::string ZINNIA_MODEL = "assets/models/hiragana.model";
+			static const std::string ZINNIA_MODEL = "assets/models/custom_hiragana.txt";//"assets/models/hiragana.model";
 		}
 
 		namespace fonts {

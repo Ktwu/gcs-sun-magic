@@ -77,7 +77,7 @@ namespace sun_magic {
 			sf::Sprite sprite = iter->second.sprite;
 			sprite.setPosition(padding, y);
 			target->draw(sprite);
-			sf::FloatRect sprite_bounds = sprite.getLocalBounds();
+			sf::FloatRect sprite_bounds = sprite.getGlobalBounds();
 
 			sf::Text text(iter->first);
 			text.setFont(*msmincho);

@@ -13,6 +13,8 @@
 
 namespace sun_magic {
 
+	const int MAX_ANIMONS = 5;
+
 	Feeding::Feeding() :
 		background_(),
 		hiraganas_(),
@@ -30,7 +32,6 @@ namespace sun_magic {
 
 	void Feeding::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = FEEDING;
-		std::cout << "FEEDING TIME!\n";
 
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		background_.setTexture(*asset_manager->GetTexture(refs::textures::backgrounds::OFFICE));
@@ -48,9 +49,8 @@ namespace sun_magic {
 		NewLevelState* state = (NewLevelState*) Game::GetInstance()->GetMachine()->GetState(GameState::NEW_LEVEL_LOAD);
 		hiraganas_ = state->GetCurrentLevelHiragana();
 
-		// Create animon objects
+		// Create animon and initialize the values we'll need to stick them into the dictionary
 		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
-		dictionary->Clear();
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->RegisterListener(Event::E_GAME_EVENT, this);
@@ -74,7 +74,11 @@ namespace sun_magic {
 			progressbars_.push_back(progressbar);
 			event_manager->AddGameObject(progressbar);
 
-			dictionary->AddWord(h, sprite);
+			/* Add all the sprites to our dictionary.  Shrink them so that all of our sprites can actually fit with a temporary
+			   hack of a constant */
+			sf::Sprite dict_sprite(sprite);
+			dict_sprite.setScale(0.8f, 0.8f);
+			dictionary->AddWord(h, dict_sprite);
 		}
 
 		Event load_event;
@@ -136,8 +140,8 @@ namespace sun_magic {
 		}
 
 		/* Reload */
-		//if (all_happy)
-		if (one_happy)
+		if (all_happy)
+		//if (one_happy)
 			game_state_ = GameState::NEW_LEVEL_LOAD;
 		return game_state_;
 	}

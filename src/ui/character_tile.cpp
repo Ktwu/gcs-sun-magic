@@ -504,11 +504,6 @@ namespace sun_magic {
 		if (result) {
 			if (result->score(0) > 0.0f) {
 				unicode_ = tools::UTF8ToUTF32(result->value(0));
-
-				// Check if we have enough strokes -- they must complete the character first!
-				if (GameAssetManager::GetInstance()->GetTraceCharacter(unicode_[0])->strokes_size() != character_->strokes_size())
-					unicode_ = sf::String();
-
 			} else {
 				unicode_ = sf::String();
 			}
