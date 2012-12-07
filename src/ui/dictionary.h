@@ -18,6 +18,7 @@ namespace sun_magic {
 
 		void AddWord(sf::String word, sf::Sprite sprite);
 		sf::Color GetWordColor(sf::String word);
+		void Clear();
 
 		void Register();
 		void Unregister();

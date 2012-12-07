@@ -12,6 +12,7 @@
 #include "references/refs.h"
 #include "states/splash.h"
 #include "states/main_menu.h"
+#include "states/new_level.h"
 #include "states/save_writing.h"
 #include "states/feeding.h"
 #include "tools/tools.h"
@@ -34,6 +35,10 @@ namespace sun_magic {
 
 	EventManager* Game::GetEventManager() {
 		return event_manager_;
+	}
+
+	Machine<GameState>* Game::GetMachine() {
+		return &game_machine_;
 	}
 
 	void Game::AddUIElements() {
@@ -74,10 +79,8 @@ namespace sun_magic {
 		game_machine_.Init(LOADING, new Splash());
 		game_machine_.AddState(MAIN_MENU, new MainMenu());
 		game_machine_.AddState(RECORDING, new SaveWritingState());
-		Feeding *feeding = new Feeding();
-		std::vector<sf::String> hiraganas(GameAssetManager::hiragana_strings, GameAssetManager::hiragana_strings + 5);
-		feeding->SetHiraganas(hiraganas);
-		game_machine_.AddState(FEEDING, feeding);
+		game_machine_.AddState(NEW_LEVEL_LOAD, new NewLevelState());
+		game_machine_.AddState(FEEDING, new Feeding());
 		
 		event_manager_ = new EventManager();
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
@@ -150,4 +153,5 @@ namespace sun_magic {
 			break;
 		}
 	}
+
 }

@@ -14,6 +14,8 @@ namespace sun_magic {
 
 		bool Add(GameObject* object);
 		bool Remove(GameObject* object);
+		void Clear();
+		int Size();
 		void UpdateZOrdering();
 
 		GameObject* UpdateFocus(float mouse_x, float mouse_y);
@@ -23,6 +25,8 @@ namespace sun_magic {
 
 		void Update(float elapsed_time);
 		void Draw(sf::RenderTarget* target);
+
+		GameObject* operator[](unsigned int i);
 
 	protected:
 		std::vector<GameObject*> objects_;

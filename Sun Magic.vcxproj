@@ -32,6 +32,7 @@
     <ClCompile Include="src\objects\progressbar.cpp" />
     <ClCompile Include="src\states\main_menu.cpp" />
     <ClCompile Include="src\states\feeding.cpp" />
+    <ClCompile Include="src\states\new_level.cpp" />
     <ClCompile Include="src\states\save_writing.cpp" />
     <ClCompile Include="src\states\splash.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="src\states\machine_state.h" />
     <ClInclude Include="src\states\main_menu.h" />
     <ClInclude Include="src\states\feeding.h" />
+    <ClInclude Include="src\states\new_level.h" />
     <ClInclude Include="src\states\save_writing.h" />
     <ClInclude Include="src\states\splash.h" />
     <ClInclude Include="src\stdafx.h" />

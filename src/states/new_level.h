@@ -4,18 +4,16 @@
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine_state.h"
-#include "ui/character_tilelist.h"
 #include "ui/ui_group.h"
 
 namespace sun_magic {
 
-	class Animon;
-	class ProgressBar;
-
-	class Feeding : public MachineState<GameState>, public EventListener {
+	class NewLevelState : public MachineState<GameState>, public EventListener {
 	public:
-		Feeding();
-		~Feeding();
+		NewLevelState();
+		~NewLevelState();
+
+		sf::String GetCurrentLevelHiragana();
 
 		void RegisterState(MachineState<GameState>* previous_state);
 		void UnregisterState(MachineState<GameState>* next_state);
@@ -27,17 +25,20 @@ namespace sun_magic {
 		void ProcessEvent(Event event);
 
 	private:
+		static bool MapSort(std::pair<sf::String, int> a, std::pair<sf::String, int> b);
+
+		sf::String GetNewLevelHiragana();
+
+		GameState state_;
 		sf::Sprite background_;
 		sf::String hiraganas_;
-		std::vector<Animon*> animons_;
-		std::vector<ProgressBar*> progressbars_;
-		GameState game_state_;
-		float feed_increment_;
-		float eat_rate_;
-		float happy_threshold_;
-		float ok_threshold_;
 
+		Button start_button_;
 		UiGroup intro_display_;
+
+		std::vector<sf::String> levels_;
+		std::map<sf::String, int> hiragana_scores_;
+		sf::String level_hiragana_;
 	};
 
 }

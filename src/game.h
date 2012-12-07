@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine.h"
@@ -29,6 +30,7 @@ namespace sun_magic {
 
 		sf::RenderWindow* GetWindow();
 		EventManager* GetEventManager();
+		Machine<GameState>* GetMachine();
 
 		void AddUIElements();
 		void RemoveUIElements();

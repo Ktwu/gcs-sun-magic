@@ -9,6 +9,7 @@ namespace sun_magic {
 		MAIN_MENU,
 		INGAME_MENU,
 		MESSAGE,
+		NEW_LEVEL_LOAD,
 		FEEDING,
 		RECORDING,
 		EXITING,

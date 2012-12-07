@@ -248,12 +248,7 @@ namespace sun_magic {
 		for (int i = game_objects_.size() - 1; i >= 0; i--) {
 			GameObject *object = game_objects_[i];
 			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
-				newfocus_ = object;
-				if (newfocus_ != focus_) {
-					if (focus_ == Game::GetInstance()->GetDictionary()) {
-						int a = 1;
-					}
-				}
+				newfocus_ = object->UpdateFocus(mouse.x, mouse.y);
 				break;
 			}
 		}

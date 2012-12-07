@@ -134,6 +134,9 @@
     <ClCompile Include="src\objects\progressbar.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\states\new_level.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -222,6 +225,9 @@
     </ClInclude>
     <ClInclude Include="src\objects\progressbar.h">
       <Filter>src\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\states\new_level.h">
+      <Filter>src\states</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

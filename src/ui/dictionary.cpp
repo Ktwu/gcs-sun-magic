@@ -27,6 +27,10 @@ namespace sun_magic {
 		entries_[word] = entry;
 	}
 
+	void Dictionary::Clear() {
+		entries_.clear();
+	}
+
 	void Dictionary::Register() {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);

@@ -11,8 +11,8 @@ namespace sun_magic {
 		KEY_CLICK,
 		ANIMON_LEVEL_UP,
 
-		CAT,
-		LOVE,
+		ANIMON_RIGHT,
+		ANIMON_WRONG,
 
 		// Final count for use by the game
 		NUM_EVENTS

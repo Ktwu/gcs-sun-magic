@@ -16,6 +16,7 @@ namespace sun_magic {
 		MachineState<T>* AddState(T state, MachineState<T>* machine_state);
 		MachineState<T>* RemoveState(T state);
 		MachineState<T>* GetActiveState();
+		MachineState<T>* GetState(T state);
 		T GetActiveStateKey();
 		T Update(float elapsed_time);
 
@@ -56,6 +57,11 @@ namespace sun_magic {
 		return this->machine_states_[this->current_state_];
 	}
 	
+	template <class T>
+	MachineState<T>* Machine<T>::GetState(T state) {
+		return this->machine_states_[state];
+	}
+
 	template <class T>
 	T  Machine<T>::GetActiveStateKey() {
 		return this->current_state_;

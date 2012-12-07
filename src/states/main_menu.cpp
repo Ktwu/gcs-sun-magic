@@ -72,7 +72,7 @@ namespace sun_magic {
 		switch(event.type) {
 		case Event::E_CLICKED:
 			if (event.focus == play_) {
-				game_state_ = FEEDING;
+				game_state_ = NEW_LEVEL_LOAD;
 			} else if (event.focus == record_) {
 				game_state_ = RECORDING;
 			}

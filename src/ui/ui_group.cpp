@@ -33,6 +33,12 @@ namespace sun_magic {
 		}
 		return false;
 	}
+	void UiGroup::Clear() {
+		objects_.clear();
+	}
+	int UiGroup::Size() {
+		return objects_.size();
+	}
 	void UiGroup::UpdateZOrdering() {
 		std::sort(objects_.begin(), objects_.end(), tools::ZSort);
 	}
@@ -90,6 +96,10 @@ namespace sun_magic {
 		}
 
 		window->setView(view);
+	}
+
+	GameObject* UiGroup::operator[](unsigned int i) {
+			return objects_[i];
 	}
 
 }

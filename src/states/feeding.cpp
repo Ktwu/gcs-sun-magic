@@ -8,6 +8,7 @@
 #include "objects/animon.h"
 #include "objects/progressbar.h"
 #include "references/refs.h"
+#include "states/new_level.h"
 #include "tools/tools.h"
 
 namespace sun_magic {
@@ -27,12 +28,9 @@ namespace sun_magic {
 
 	Feeding::~Feeding() {}
 
-	void Feeding::SetHiraganas(std::vector<sf::String> hiraganas) {
-		hiraganas_ = hiraganas;
-	}
-
 	void Feeding::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = FEEDING;
+		std::cout << "FEEDING TIME!\n";
 
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		background_.setTexture(*asset_manager->GetTexture(refs::textures::backgrounds::OFFICE));
@@ -43,14 +41,22 @@ namespace sun_magic {
 		Game::GetInstance()->AddUIElements();
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
+		intro_display_.SetPosition(sf::Vector2f(0, 0));
+		intro_display_.SetSize(sf::Vector2f(700, 400));
+
+		// Load up the hiragana designated by some other state
+		NewLevelState* state = (NewLevelState*) Game::GetInstance()->GetMachine()->GetState(GameState::NEW_LEVEL_LOAD);
+		hiraganas_ = state->GetCurrentLevelHiragana();
+
 		// Create animon objects
 		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
+		dictionary->Clear();
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
+		event_manager->RegisterListener(Event::E_GAME_EVENT, this);
 		float y = 350.f;
-
 		float width = (size.x - 50) / 5;
-		for (size_t i = 0; i < hiraganas_.size(); i++) {
+		for (size_t i = 0; i < hiraganas_.getSize(); i++) {
 			sf::String h = hiraganas_[i];
 
 			Animon *animon = new Animon((float)i * width, y, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
@@ -78,21 +84,36 @@ namespace sun_magic {
 
 	void Feeding::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(refs::textures::backgrounds::WINDOW);
+		manager->ReturnTexture(refs::textures::backgrounds::OFFICE);
 
 		Game::GetInstance()->RemoveUIElements();
 
+		NewLevelState* state = (NewLevelState*) Game::GetInstance()->GetMachine()->GetState(GameState::NEW_LEVEL_LOAD);
+
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->UnregisterListener(Event::E_GAME_EVENT, state);
 		event_manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this);
 		for (size_t i = 0; i < animons_.size(); i++) {
 			Animon *animon = animons_[i];
 			event_manager->RemoveGameObject(animon);
 			event_manager->UnregisterListener(Event::E_GAME_EVENT, this, animon);
+			delete animon;
+
+			ProgressBar* bar = progressbars_[i];
+			event_manager->RemoveGameObject(progressbars_[i]);
+			delete bar;
 		}
+
+		animons_.clear();
+		progressbars_.clear();
+
+		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
+		dictionary->Clear();
 	}
 
 	GameState Feeding::Update(float elapsed_time) {
 		bool all_happy = true;
+		bool one_happy = false;
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 
 		for (size_t i = 0; i < animons_.size(); i++) {
@@ -102,9 +123,9 @@ namespace sun_magic {
 			progressbar->SetProgress(progress);
 
 			Animon *animon = animons_[i];
-			// TODO: Set animon state sprite
 			if (progress >= happy_threshold_) {
 				animon->LoadState(Animon::AnimonState::HAPPY);
+				one_happy = true;
 			} else if (progress >= ok_threshold_) {
 				animon->LoadState(Animon::AnimonState::MEH);
 				all_happy = false;
@@ -114,8 +135,10 @@ namespace sun_magic {
 			}
 		}
 
-		if (all_happy)
-			game_state_ = MAIN_MENU;
+		/* Reload */
+		//if (all_happy)
+		if (one_happy)
+			game_state_ = GameState::NEW_LEVEL_LOAD;
 		return game_state_;
 	}
 	
@@ -143,13 +166,18 @@ namespace sun_magic {
 				if (i == animons_.size())
 					break;
 
+				/* Check if we got the hiragana right.  Create an event for whether we were right or wrong */
 				if (event.message == hiragana) {
 					ProgressBar *progressbar = progressbars_[i];
 					progressbar->SetProgress(progressbar->GetProgress() + feed_increment_);
+					event.gameEvent = GameEvent::ANIMON_RIGHT;
 				} else {
 					ProgressBar *progressbar = progressbars_[i];
 					progressbar->SetProgress(progressbar->GetProgress() - feed_increment_);
+					event.gameEvent = GameEvent::ANIMON_WRONG;
 				}
+				Game::GetInstance()->GetEventManager()->AddEvent(event);
+
 				Game::GetInstance()->GetTileList()->Clear();
 				hiragana = "";
 			}
