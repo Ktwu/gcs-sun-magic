@@ -16,8 +16,14 @@ namespace sun_magic {
 			ACTIVE
 		};
 
-		Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, bool active = true, bool visible = true);
-		Animon(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, bool active = true, bool visible = true);
+		enum AnimonState {
+			HAPPY,
+			ANGRY,
+			MEH,
+			UNINITIALIZED
+		};
+
+		Animon(float x, float y, sf::Color outline, sf::String word, bool active = true, bool visible = true);
 		~Animon();
 
 		void SetSprite(sf::Sprite Sprite);
@@ -41,6 +47,9 @@ namespace sun_magic {
 		void SetVisible(bool visible);
 		bool IsVisible();
 
+		void LoadState(AnimonState state);
+		void WaitForLoadState();
+
 		void Register();
 		void Unregister();
 
@@ -51,6 +60,9 @@ namespace sun_magic {
 
 	protected:
 		static const int OUTLINE_WIDTH = 5;
+		static void ThreadLoad(Animon* animon);
+
+		AnimonState animon_state_;
 
 		sf::Sprite sprite_;
 
@@ -64,6 +76,8 @@ namespace sun_magic {
 		bool registered_;
 		bool visible_;
 		KeyState state_;
+
+		sf::Thread* thread_;
 	};
 	
 }

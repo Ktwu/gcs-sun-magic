@@ -10,13 +10,13 @@ namespace sun_magic {
 	public:
 		struct DictionaryEntry {
 			sf::Color outline;
-			sf::Texture *texture;	// Picture of object
+			sf::Sprite sprite;	// Picture of object
 		};
 
 		Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height);
 		~Dictionary();
 
-		void AddWord(sf::String word, sf::Texture *texture);
+		void AddWord(sf::String word, sf::Sprite sprite);
 		sf::Color GetWordColor(sf::String word);
 
 		void Register();

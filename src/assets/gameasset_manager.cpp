@@ -1,4 +1,4 @@
-#include "stdafx.h"
+Ôªø#include "stdafx.h"
 #include "gameasset_manager.h"
 
 #include "assets/gameasset.h"
@@ -10,17 +10,17 @@ namespace sun_magic {
 	GameAssetManager* GameAssetManager::instance_ = NULL;
 
 	sf::String GameAssetManager::hiragana_strings[] = {
-		L"Ç†", L"Ç¢", L"Ç§", L"Ç¶", L"Ç®",
-		L"Ç©", L"Ç´", L"Ç≠", L"ÇØ", L"Ç±",
-		L"Ç≥", L"Çµ", L"Ç∑", L"Çπ", L"Çª",
-		L"ÇΩ", L"Çø", L"Ç¬", L"Çƒ", L"Ç∆",
-		L"Ç»", L"Ç…", L"Ç ", L"ÇÀ", L"ÇÃ",
-		L"ÇÕ", L"Ç–", L"Ç”", L"Ç÷", L"ÇŸ",
-		L"Ç‹", L"Ç›", L"Çﬁ", L"Çﬂ", L"Ç‡",
-		L"Ç‚", L"Ç‰", L"ÇÊ",
-		L"ÇÁ", L"ÇË", L"ÇÈ", L"ÇÍ", L"ÇÎ",
-		L"ÇÌ", L"Ç",
-		L"ÇÒ"
+		L"„ÅÇ", L"„ÅÑ", L"„ÅÜ", L"„Åà", L"„Åä",
+		L"„Åã", L"„Åç", L"„Åè", L"„Åë", L"„Åì",
+		L"„Åï", L"„Åó", L"„Åô", L"„Åõ", L"„Åù",
+		L"„Åü", L"„Å°", L"„Å§", L"„Å¶", L"„Å®",
+		L"„Å™", L"„Å´", L"„Å¨", L"„Å≠", L"„ÅÆ",
+		L"„ÅØ", L"„Å≤", L"„Åµ", L"„Å∏", L"„Åª",
+		L"„Åæ", L"„Åø", L"„ÇÄ", L"„ÇÅ", L"„ÇÇ",
+		L"„ÇÑ", L"„ÇÜ", L"„Çà",
+		L"„Çâ", L"„Çä", L"„Çã", L"„Çå", L"„Çç",
+		L"„Çè", L"„Çí",
+		L"„Çì"
 	};
 	std::string GameAssetManager::romaji_strings[] = {
 		"a",  "i",   "u",   "e",  "o",
@@ -35,7 +35,6 @@ namespace sun_magic {
 		"wa",                     "wo",
 		"n"
 	};
-
 	sf::Color GameAssetManager::symbols_colors[] = {
 		tools::HSVColor(0/46.f,1,1),  tools::HSVColor(7/46.f,1,1),	tools::HSVColor(14/46.f,1,1), tools::HSVColor(21/46.f,1,1),	tools::HSVColor(28/46.f,1,1),
 		tools::HSVColor(35/46.f,1,1), tools::HSVColor(42/46.f,1,1),	tools::HSVColor(3/46.f,1,1),  tools::HSVColor(10/46.f,1,1),	tools::HSVColor(17/46.f,1,1),
@@ -96,6 +95,7 @@ namespace sun_magic {
 	}
 
 	sf::Texture* GameAssetManager::GetTexture(std::string texture_name) {
+		lock_.lock();
 		if (textures_[texture_name] == NULL) {
 			textures_[texture_name] = new GameAsset<sf::Texture>();
 		}
@@ -104,18 +104,23 @@ namespace sun_magic {
 			sf::Texture* temp = new sf::Texture();
 			if (!temp->loadFromFile(texture_name)) {
 				textures_.erase(texture_name);
+				lock_.unlock();
 				return NULL;
 			}
 
 			textures_[texture_name]->TrySet(temp);
 		}
 
-		return textures_[texture_name]->GetRef();
+		sf::Texture* ref = textures_[texture_name]->GetRef();
+		lock_.unlock();
+		return ref;
 	}
 
 	void GameAssetManager::ReturnTexture(std::string texture_name) {
+		lock_.lock();
 		if (textures_[texture_name] != NULL)
 			textures_[texture_name]->ReturnRef();
+		lock_.unlock();
 	}
 
 	sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
@@ -134,6 +139,7 @@ namespace sun_magic {
 
 
 	void GameAssetManager::CleanUnusedTextures() {
+		lock_.lock();
 		std::hash_map<std::string, GameAsset<sf::Texture>*>::iterator it;
 		GameAsset<sf::Texture>* resource;
 		sf::Texture* texture;
@@ -146,9 +152,11 @@ namespace sun_magic {
 			if (texture != NULL)
 				delete texture;
 		}
+		lock_.unlock();
 	}
 
 	sf::Font* GameAssetManager::GetFont(std::string font_name) {
+		lock_.lock();
 		if (fonts_[font_name] == NULL) {
 			fonts_[font_name] = new GameAsset<sf::Font>();
 		}
@@ -157,20 +165,26 @@ namespace sun_magic {
 			sf::Font* temp = new sf::Font();
 			if (!temp->loadFromFile(font_name)) {
 				textures_.erase(font_name);
+				lock_.unlock();
 				return NULL;
 			}
 
 			fonts_[font_name]->TrySet(temp);
 		}
 
-		return fonts_[font_name]->GetRef();
+		sf::Font* ref = fonts_[font_name]->GetRef();
+		lock_.unlock();
+		return ref;
 	}
 
 	void GameAssetManager::ReturnFont(std::string font_name) {
+		lock_.lock();
 		if (fonts_[font_name] != NULL)
 			fonts_[font_name]->ReturnRef();
+		lock_.unlock();
 	}
 	void GameAssetManager::CleanUnusedFonts() {
+		lock_.lock();
 		std::hash_map<std::string, GameAsset<sf::Font>*>::iterator it;
 		GameAsset<sf::Font>* resource;
 		sf::Font* font;
@@ -183,6 +197,7 @@ namespace sun_magic {
 			if (font != NULL)
 				delete font;
 		}
+		lock_.unlock();
 	}
 
 	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {

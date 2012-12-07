@@ -21,9 +21,9 @@ namespace sun_magic {
 	}
 	Dictionary::~Dictionary() {}
 
-	void Dictionary::AddWord(sf::String word, sf::Texture* texture) {
+	void Dictionary::AddWord(sf::String word, sf::Sprite sprite) {
 		DictionaryEntry entry;
-		entry.texture = texture;
+		entry.sprite = sprite;
 		entries_[word] = entry;
 	}
 
@@ -70,8 +70,7 @@ namespace sun_magic {
 		target->draw(text);
 
 		for (std::map<sf::String, DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
-			sf::Sprite sprite;
-			sprite.setTexture(*iter->second.texture);
+			sf::Sprite sprite = iter->second.sprite;
 			sprite.setPosition(padding, y);
 			target->draw(sprite);
 			sf::FloatRect sprite_bounds = sprite.getLocalBounds();

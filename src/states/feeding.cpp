@@ -47,33 +47,28 @@ namespace sun_magic {
 		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
-		float y = 470.f;
-		// HACK until we get sprite sheet
-		const sf::String texture_paths[] = {
-			refs::textures::objects::AHIRU,
-			refs::textures::objects::INU,
-			refs::textures::objects::USAGI,
-			refs::textures::objects::EBI,
-			refs::textures::objects::OBAKE
-		};
-		float width = size.x - 50;
+		float y = 350.f;
+
+		float width = (size.x - 50) / 5;
 		for (size_t i = 0; i < hiraganas_.size(); i++) {
 			sf::String h = hiraganas_[i];
-			sf::Texture *texture = asset_manager->GetTexture(texture_paths[i]);
-			sf::Sprite sprite(*texture);
 
-			Animon *animon = new Animon((float)i * width / hiraganas_.size(), y - sprite.getLocalBounds().height, sprite, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
+			Animon *animon = new Animon((float)i * width, y, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
+			animon->LoadState(Animon::AnimonState::MEH);
+			animon->WaitForLoadState();
+			sf::Sprite sprite = animon->GetSprite();
+
 			animon->SetZ(1);
 			animons_.push_back(animon);
 			event_manager->AddGameObject(animon);
 			event_manager->RegisterListener(Event::E_GAME_EVENT, this, animon);
 
-			ProgressBar *progressbar = new ProgressBar((i + 0.5f) * width / hiraganas_.size(), 0, y, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
+			ProgressBar *progressbar = new ProgressBar((i + 0.3f) * width, 0, y + sprite.getLocalBounds().height, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
 			progressbar->SetZ(10);
 			progressbars_.push_back(progressbar);
 			event_manager->AddGameObject(progressbar);
 
-			dictionary->AddWord(h, texture);
+			dictionary->AddWord(h, sprite);
 		}
 
 		Event load_event;
@@ -98,6 +93,8 @@ namespace sun_magic {
 
 	GameState Feeding::Update(float elapsed_time) {
 		bool all_happy = true;
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+
 		for (size_t i = 0; i < animons_.size(); i++) {
 			ProgressBar *progressbar = progressbars_[i];
 			float progress = progressbar->GetProgress();
@@ -107,9 +104,12 @@ namespace sun_magic {
 			Animon *animon = animons_[i];
 			// TODO: Set animon state sprite
 			if (progress >= happy_threshold_) {
+				animon->LoadState(Animon::AnimonState::HAPPY);
 			} else if (progress >= ok_threshold_) {
+				animon->LoadState(Animon::AnimonState::MEH);
 				all_happy = false;
 			} else {
+				animon->LoadState(Animon::AnimonState::ANGRY);
 				all_happy = false;
 			}
 		}

@@ -51,6 +51,8 @@ namespace sun_magic {
 	private:
 		static GameAssetManager* instance_;
 
+		sf::Mutex lock_;
+
 		std::hash_map<std::string, GameAsset<sf::Texture>*> textures_;
 		std::hash_map<std::string, GameAsset<sf::Font>*> fonts_;
 

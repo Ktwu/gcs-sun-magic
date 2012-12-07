@@ -4,13 +4,14 @@
 #include "game.h"
 #include "assets/gameasset_manager.h"
 #include "events/event_manager.h"
+#include "references/refs.h"
 
 namespace sun_magic {
 
 	const int RADIUS = 7;
 
-	Animon::Animon(float x, float y, sf::Sprite sprite, sf::Color outline, sf::String word, bool active, bool visible) :
-		GameObject(x, y, (float)sprite.getLocalBounds().width, (float)sprite.getLocalBounds().height),
+	Animon::Animon(float x, float y, sf::Color outline, sf::String word, bool active, bool visible) :
+		GameObject(x, y, 0, 0),
 		sprite_(),
 		sprite_outline_(),
 		outline_(outline),
@@ -19,35 +20,21 @@ namespace sun_magic {
 		active_(active),
 		focused_(false),
 		visible_(visible),
-		state_(DEFAULT)
+		state_(DEFAULT),
+		animon_state_(AnimonState::UNINITIALIZED),
+		thread_(NULL)
 	{
-		SetSprite(sprite);
-	}
-
-	Animon::Animon(float x, float y, sf::String texture_name, sf::Color outline, sf::String word, bool active, bool visible) :
-		GameObject(x, y, 0, 0),
-		outline_(outline),
-		word_(word),
-		active_(active),
-		focused_(false),
-		visible_(visible),
-		state_(DEFAULT)
-	{
-		GameAssetManager* manager = GameAssetManager::GetInstance();
-		sf::Texture* texture = manager->GetTexture(texture_name);
-
-		this->rect_.width = (float)texture->getSize().x;
-		this->rect_.height = (float)texture->getSize().y;
-
-		SetTexture(*texture);
+		sprite_.setPosition(0, 0);
 	}
 
 	Animon::~Animon()
 	{
+		WaitForLoadState();
 	}
 
 	void Animon::SetSprite(sf::Sprite sprite) {
 		sprite_ = sprite;
+		SetSize(sf::Vector2f((float)sprite.getLocalBounds().width, (float)sprite.getLocalBounds().height));
 		
 		sf::IntRect rect = sprite.getTextureRect();
 		sf::RenderTexture temp;
@@ -140,6 +127,37 @@ namespace sun_magic {
 		return visible_;
 	}
 
+	void Animon::LoadState(AnimonState state) {
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+
+		if (state != animon_state_) {
+			switch (animon_state_) {
+			case MEH:
+				manager->ReturnTexture(refs::textures::objects::SPRITES_MEH);
+				break;
+			case HAPPY:
+				manager->ReturnTexture(refs::textures::objects::SPRITES_HAPPY);
+				break;
+			case ANGRY:
+				manager->ReturnTexture(refs::textures::objects::SPRITES_ANGRY);
+				break;
+			}
+
+			animon_state_ = state;
+
+			WaitForLoadState();
+			thread_ = new sf::Thread(Animon::ThreadLoad, this);
+			thread_->launch();
+		}
+	}
+	void Animon::WaitForLoadState() {
+		if (thread_ != NULL) {
+			thread_->wait();
+			delete thread_;
+		}
+		thread_ = NULL;
+	}
+
 	void Animon::Register() {
 		EventManager *event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
@@ -161,9 +179,6 @@ namespace sun_magic {
 		if (!visible_)
 			return;
 
-		sf::Vector2f size(rect_.width, rect_.height);
-		sf::Vector2f texture_size = sf::Vector2f(sprite_.getTexture()->getSize());
-		sprite_.setPosition((size - texture_size) * 0.5f);
 		if ((state_ != DEFAULT && active_) || focused_) {
 			sprite_outline_.setPosition(sprite_.getPosition() - sf::Vector2f(RADIUS,RADIUS));
 			target->draw(sprite_outline_);
@@ -193,5 +208,22 @@ namespace sun_magic {
 			state_ = OUTLINED;
 			break;
 		}
+	}
+
+	void Animon::ThreadLoad(Animon* animon) {
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+		sf::Texture* texture;
+		switch (animon->animon_state_) {
+		case MEH:
+			texture = manager->GetTexture(refs::textures::objects::SPRITES_MEH);
+			break;
+		case HAPPY:
+			texture = manager->GetTexture(refs::textures::objects::SPRITES_HAPPY);
+			break;
+		case ANGRY:
+			texture = manager->GetTexture(refs::textures::objects::SPRITES_ANGRY);
+			break;
+		}
+		animon->SetSprite(manager->GetHiraganaSprite(animon->word_, texture));
 	}
 }
