@@ -54,6 +54,8 @@ namespace sun_magic {
 		GameObject *focus;
 		sf::String message;		// E_HIRAGANA_DRAWN, also C++ is stupid
 
+		sf::Vector2i relativeMousePosition;
+
 		union
 		{
 			KeyEvent			key;			// E_KEY_PRESSED, E_KEY_RELEASED

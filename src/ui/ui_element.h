@@ -7,16 +7,19 @@
 
 namespace sun_magic {
 
-	class Button : public GameObject, public EventListener {
+	class UiElement : public GameObject, public EventListener {
 	public:
-		enum ButtonState {
+		enum UiElementState {
 			NEUTRAL,
 			HOVERED,
 			PRESSED,
 		};
 
-		Button(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "");
-		~Button();
+		UiElement(float x = 0, float y = 0, float width = 300, float height = 100, sf::String text = "");
+		~UiElement();
+
+		static UiElement* InitButton(UiElement* button);
+		static UiElement* InitLabel(UiElement* label);
 
 		Style* GetStyle();
 

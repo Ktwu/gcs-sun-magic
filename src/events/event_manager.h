@@ -52,13 +52,15 @@ namespace sun_magic {
 		void DrawObjects(sf::RenderTarget *target);
 
 	protected:
-		void UpdateFocus(sf::Vector2i mouse);
+		GameObject* UpdateFocus(sf::Vector2i mouse);
+		void AlertFocusListeners(GameObject* newfocus_, sf::Vector2i mouse);
 
 		// Map of listeners registered for each focus object for each event type
 		EventToFocusToListenerSetMap eventfocus__listener_map_;
 		std::vector<Event> events_;
 		std::vector<GameObject*> game_objects_;	// Set of all objects that can be focused
 		GameObject *focus_;						// Currently focused object
+		sf::Vector2i rel_mouse_pos_;
 	};
 
 }

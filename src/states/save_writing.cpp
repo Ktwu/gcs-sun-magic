@@ -18,7 +18,7 @@ namespace sun_magic {
 		target_index = 0;
 		GameAssetManager::GetInstance()->GetTraceableCharacters(traceable_characters_);
 		tile_->SetTraceCharacter(GameAssetManager::GetInstance()->GetTraceCharacter(traceable_characters_[target_index]));
-		tile_->SetAnimationSpeed(200.0f);
+		tile_->GetTileStyle()->SetAnimationSpeed(200.0f);
 		tile_->SetAnimationStroke(0);
 
 		font_ = *GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);

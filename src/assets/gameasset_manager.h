@@ -60,5 +60,7 @@ namespace sun_magic {
 
 		std::hash_map<sf::Uint32,int> hiragana_indices_;
 		std::hash_map<std::string,int> romaji_indices_;
+
+		sf::Music music;
 	};
 }

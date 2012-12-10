@@ -4,10 +4,9 @@
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine_state.h"
+#include "ui/ui_element.h"
 
 namespace sun_magic {
-
-	class Button;
 
 	class MainMenu : public MachineState<GameState>, public EventListener {
 	public:
@@ -27,8 +26,12 @@ namespace sun_magic {
 	private:
 		sf::Sprite background_;
 		GameState game_state_;
-		Button *play_;
-		Button *record_;
+		UiElement play_;
+		UiElement record_;
+
+		int animate_state_;
+		GameState after_state_;
+		sf::Clock animate_timer_;
 	};
 
 }

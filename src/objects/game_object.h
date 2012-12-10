@@ -40,7 +40,9 @@ namespace sun_magic {
 			z_ = z;
 		}
 
-		virtual GameObject* UpdateFocus(float mouse_x, float mouse_y) {
+		virtual GameObject* UpdateFocus(float mouse_x, float mouse_y, sf::Vector2i& abs_pos) {
+			abs_pos.x += rect_.left;
+			abs_pos.y += rect_.top;
 			return this;
 		}
 

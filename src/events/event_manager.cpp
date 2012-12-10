@@ -137,6 +137,11 @@ namespace sun_magic {
 					break;
 				}
 				event.mouseButton = sf_event.mouseButton;
+
+				// Find the relative position of the mouse w/ respect to the clicked object
+				UpdateFocus(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+				event.relativeMousePosition = rel_mouse_pos_;
+
 				AddEvent(event);
 				break;
 			}
@@ -144,10 +149,12 @@ namespace sun_magic {
 			{
 				event.type = Event::E_MOUSE_MOVED;
 				event.mouseMove = sf_event.mouseMove;
-				AddEvent(event);
 
 				// Update currently focused object
-				UpdateFocus(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+				sf::Vector2i mouse_pos = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+				AlertFocusListeners(UpdateFocus(mouse_pos), mouse_pos);
+				event.relativeMousePosition = rel_mouse_pos_;
+				AddEvent(event);
 				break;
 			}
 			
@@ -240,18 +247,25 @@ namespace sun_magic {
 	}
 
 
-	void EventManager::UpdateFocus(sf::Vector2i mouse) {
-		static sf::Vector2i old_mouse = sf::Mouse::getPosition();
-
+	GameObject* EventManager::UpdateFocus(sf::Vector2i mouse) {
 		// Find the first intersection focus object. Objects in the back are nearer the front.
 		GameObject *newfocus_ = NULL;
 		for (int i = game_objects_.size() - 1; i >= 0; i--) {
 			GameObject *object = game_objects_[i];
 			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
-				newfocus_ = object->UpdateFocus(mouse.x, mouse.y);
+				sf::Vector2i pos(0, 0);
+				newfocus_ = object->UpdateFocus(mouse.x, mouse.y, pos);
+				rel_mouse_pos_.x = mouse.x - pos.x;
+				rel_mouse_pos_.y = mouse.y - pos.y;
 				break;
 			}
 		}
+
+		return newfocus_;
+	}
+
+	void EventManager::AlertFocusListeners(GameObject* newfocus_, sf::Vector2i mouse) {
+		static sf::Vector2i old_mouse = sf::Mouse::getPosition();
 
 		// If new focus send enter and exit events
 		if (newfocus_ != focus_) {

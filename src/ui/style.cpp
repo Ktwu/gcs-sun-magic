@@ -2,22 +2,30 @@
 #include "style.h"
 
 namespace sun_magic {
-	Style::Style() :
-		text_size(25),
-		text_color(sf::Color::White),
-		text_style(sf::Text::Regular),
-		allow_hover(true),
-		allow_press(true),
-		normal_color(sf::Color::White),
-		hover_color(sf::Color::White),
-		press_color(sf::Color::White),
-		normal_border_color(sf::Color::White),
-		hover_border_color(sf::Color::White),
-		press_border_color(sf::Color::White)
-	{
+	Style::Style() {
+		Clear();
 	}
 
 	Style::~Style() {}
+
+	Style* Style::Clear() {
+		text_size = 25;
+		text_color = sf::Color::Transparent;
+		text_style = sf::Text::Regular;
+		allow_hover = false;
+		allow_press = false;
+		normal_color = sf::Color::Transparent;
+		hover_color = sf::Color::Transparent;
+		press_color = sf::Color::Transparent;
+		normal_border_color = sf::Color::Transparent;
+		hover_border_color = sf::Color::Transparent;
+		press_border_color = sf::Color::Transparent;
+		normal_sprite = sf::Sprite();
+		hover_sprite = sf::Sprite();
+		press_sprite = sf::Sprite();
+		text_font = sf::Font();
+		return this;
+	}
 
 	Style* Style::SetTextSize(int text_size) {
 		this->text_size = text_size;

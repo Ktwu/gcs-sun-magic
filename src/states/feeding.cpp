@@ -61,7 +61,6 @@ namespace sun_magic {
 
 			Animon *animon = new Animon((float)i * width, y, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
 			animon->LoadState(Animon::AnimonState::MEH);
-			animon->WaitForLoadState();
 			sf::Sprite sprite = animon->GetSprite();
 
 			animon->SetZ(1);

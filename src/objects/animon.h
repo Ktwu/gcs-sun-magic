@@ -29,9 +29,6 @@ namespace sun_magic {
 		void SetSprite(sf::Sprite Sprite);
 		sf::Sprite GetSprite();
 
-		void SetTexture(const sf::Texture& texture);
-		const sf::Texture& GetTexture();
-
 		void SetOutlineColor(sf::Color);
 		sf::Color GetOutlineColor();
 
@@ -48,7 +45,6 @@ namespace sun_magic {
 		bool IsVisible();
 
 		void LoadState(AnimonState state);
-		void WaitForLoadState();
 
 		void Register();
 		void Unregister();

@@ -4,6 +4,7 @@
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine_state.h"
+#include "ui/ui_element.h"
 #include "ui/ui_group.h"
 
 namespace sun_magic {
@@ -33,7 +34,7 @@ namespace sun_magic {
 		sf::Sprite background_;
 		sf::String hiraganas_;
 
-		Button start_button_;
+		UiElement start_button_;
 		UiGroup intro_display_;
 
 		std::vector<sf::String> levels_;

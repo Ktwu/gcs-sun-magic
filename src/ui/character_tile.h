@@ -2,11 +2,12 @@
 
 #include "stdafx.h"
 #include "events/event.h"
-#include "objects/game_object.h"
+#include "ui/character_tile_style.h"
+#include "ui/ui_element.h"
 
 namespace sun_magic {
 
-	class CharacterTile : public GameObject, public EventListener {
+	class CharacterTile : public UiElement {
 	public:
 		// This must be called before using any Character Tiles
 		static void InitRecognizer(const char *modelFile);
@@ -15,6 +16,8 @@ namespace sun_magic {
 
 		CharacterTile(float x = 0, float y = 0, float width = 300, float height = 300);
 		~CharacterTile();
+
+		CharacterTileStyle* GetTileStyle();
 
 		// Get the character that the user has written so far
 		zinnia::Character * GetCharacter();
@@ -39,30 +42,6 @@ namespace sun_magic {
 		int GetAnimationStroke();
 		void SetAnimationStroke(int stroke);
 
-		float GetAnimationSpeed();
-		void SetAnimationSpeed(float speed);
-
-		float GetAnimationWait();
-		void SetAnimaitonWait(float secondsToWait);
-
-		float GetStrokeThickness();
-		void SetStrokeThickness(float thickness);
-
-		sf::Color GetBorderColor();
-		void SetBorderColor(sf::Color color);
-
-		sf::Color GetGuideColor();
-		void SetGuideColor(sf::Color color);
-
-		sf::Color GetTraceColor();
-		void SetTraceColor(sf::Color color);
-
-		sf::Color GetAnimateColor();
-		void SetAnimateColor(sf::Color color);
-
-		sf::Color GetStrokeColor();
-		void SetStrokeColor(sf::Color color);
-
 		void Register();
 		void Unregister();
 		void Update(float elapsed_time);
@@ -84,15 +63,8 @@ namespace sun_magic {
 		zinnia::Character *trace_character_;
 		sf::String trace_unicode_;
 		int animating_stroke_;
-		float animation_speed_;
-		float wait_seconds_;
 
-		float stroke_thickness_;
-		sf::Color border_color_;
-		sf::Color guide_color_;
-		sf::Color trace_color_;
-		sf::Color animate_color_;
-		sf::Color stroke_color_;
+		CharacterTileStyle tilestyle_;
 
 		// Current animation variables
 		sf::Vector2f last_mouse_;

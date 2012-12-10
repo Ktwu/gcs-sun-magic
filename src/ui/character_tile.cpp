@@ -9,6 +9,7 @@
 #include "events/event_manager.h"
 #include "tools/sfm.h"
 #include "tools/tools.h"
+#include "ui/character_tile_style.h"
 
 namespace sun_magic {
 
@@ -26,21 +27,13 @@ namespace sun_magic {
 	}
 
 	CharacterTile::CharacterTile(float x, float y, float width, float height) :
-		GameObject(x, y, width, height),
+		UiElement(x, y, width, height),
 		character_(zinnia::Character::create()),
 		unicode_(),
 		current_stroke_(0),
 		trace_character_(NULL),
 		trace_unicode_(),
 		animating_stroke_(-1),
-		animation_speed_(150.0f),
-		wait_seconds_(0.2f),
-		stroke_thickness_(4),
-		border_color_(sf::Color(80, 80, 80)),
-		stroke_color_(sf::Color::Black),
-		guide_color_(sf::Color(238, 238, 238)),
-		trace_color_(sf::Color(210, 210, 210)),
-		animate_color_(sf::Color(150, 150, 150)),
 		seconds_to_wait_(0),
 		current_line_distance_(0),
 		is_writing_(false)
@@ -50,10 +43,18 @@ namespace sun_magic {
 		character_->set_height((size_t)height);
 	
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
+
+		tilestyle_.SetAnimationSpeed(150.0f)->SetAnimationWait(0.2f);
+		tilestyle_.SetStrokeThickness(4)->SetStrokeColor(sf::Color::Black)->SetAnimateColor(sf::Color(150, 150, 150));
+		tilestyle_.SetBorderColor(sf::Color(80, 80, 80))->SetGuideColor(sf::Color(238, 238, 238))->SetTraceColor(sf::Color(210, 210, 210));
 	}
 
 	CharacterTile::~CharacterTile() {
 		delete character_;
+	}
+
+	CharacterTileStyle* CharacterTile::GetTileStyle() {
+		return &tilestyle_;
 	}
 
 	zinnia::Character * CharacterTile::GetCharacter() {
@@ -68,15 +69,14 @@ namespace sun_magic {
 		return character_->strokes_size() - ((is_writing_) ? 1 : 0);
 	}
 	void CharacterTile::AddStrokePoint(sf::Vector2f p) {
-		p -= GetPosition();
 		character_->add(current_stroke_, (int)p.x, (int)p.y);
 		size_t points = character_->stroke_size(current_stroke_);
 		if (points > 1) {
 			sf::RectangleShape rect;
 			sf::Vector2f prev((float)character_->x(current_stroke_, points-2),
 				(float)character_->y(current_stroke_, points-2));
-			sfm::SetToLine(rect, prev, p, stroke_thickness_);
-			rect.setFillColor(stroke_color_);
+			sfm::SetToLine(rect, prev, p, tilestyle_.stroke_thickness);
+			rect.setFillColor(tilestyle_.stroke_color);
 			stroke_lines_.back().push_back(rect);
 		}
 	}
@@ -154,7 +154,7 @@ namespace sun_magic {
 		character_ = character;
 
 		// Add lines for the new stroke
-		CreateLines(stroke_lines_, character_, stroke_color_, current_stroke_, current_stroke_+1);
+		CreateLines(stroke_lines_, character_, tilestyle_.stroke_color, current_stroke_, current_stroke_+1);
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
 
 		current_stroke_++;
@@ -240,7 +240,7 @@ namespace sun_magic {
 	
 		trace_lines_.clear();
 		if (trace_character_ != NULL) {
-			CreateLines(trace_lines_, trace_character_, trace_color_, 0, trace_character_->strokes_size());
+			CreateLines(trace_lines_, trace_character_, tilestyle_.trace_color, 0, trace_character_->strokes_size());
 		}
 	}
 
@@ -263,62 +263,6 @@ namespace sun_magic {
 			animating_lines_.clear();
 		}
 		animating_stroke_ = stroke;
-	}
-
-	float CharacterTile::GetAnimationSpeed() {
-		return animation_speed_;
-	}
-	void CharacterTile::SetAnimationSpeed(float speed) {
-		animation_speed_ = speed;
-	}
-
-	float CharacterTile::GetAnimationWait() {
-		return wait_seconds_;
-	}
-	void CharacterTile::SetAnimaitonWait(float secondsToWait) {
-		wait_seconds_ = secondsToWait;
-	}
-
-	float CharacterTile::GetStrokeThickness() {
-		return stroke_thickness_;
-	}
-	void CharacterTile::SetStrokeThickness(float thickness) {
-		stroke_thickness_ = thickness;
-	}
-
-	sf::Color CharacterTile::GetBorderColor() {
-		return border_color_;
-	}
-	void CharacterTile::SetBorderColor(sf::Color color) {
-		border_color_ = color;
-	}
-
-	sf::Color CharacterTile::GetGuideColor() {
-		return guide_color_;
-	}
-	void CharacterTile::SetGuideColor(sf::Color color) {
-		guide_color_ = color;
-	}
-
-	sf::Color CharacterTile::GetTraceColor() {
-		return trace_color_;
-	}
-	void CharacterTile::SetTraceColor(sf::Color color) {
-		trace_color_ = color;
-	}
-
-	sf::Color CharacterTile::GetAnimateColor() {
-		return animate_color_;
-	}
-	void CharacterTile::SetAnimateColor(sf::Color color) {
-		animate_color_ = color;
-	}
-
-	sf::Color CharacterTile::GetStrokeColor() {
-		return stroke_color_;
-	}
-	void CharacterTile::SetStrokeColor(sf::Color color) {
-		stroke_color_ = color;
 	}
 
 	void CharacterTile::Register() {
@@ -346,19 +290,19 @@ namespace sun_magic {
 					animating_lines_.clear();
 				}
 			} else {
-				current_line_distance_ += elapsed_seconds * animation_speed_;
+				current_line_distance_ += elapsed_seconds * tilestyle_.animation_speed;
 
 				if (animating_lines_.size() > 0) {
 					animating_lines_.pop_back();
 				}
 				sf::RectangleShape rect;
-				rect.setFillColor(animate_color_);
+				rect.setFillColor(tilestyle_.animate_color);
 				sf::Vector2f p2((float)trace_character_->x(animating_stroke_, animating_lines_.size()),
 					(float)trace_character_->y(animating_stroke_, animating_lines_.size()));
 				while (true) {
 					if (animating_lines_.size() + 1 >= trace_character_->stroke_size(animating_stroke_)) {
 						// Finished animating the stroke
-						seconds_to_wait_ = wait_seconds_;
+						seconds_to_wait_ = tilestyle_.wait_seconds;
 						break;
 					}
 
@@ -370,12 +314,12 @@ namespace sun_magic {
 					if (current_line_distance_ < distance) {
 						float ratio = current_line_distance_ / distance;
 						sf::Vector2f p = p1 + ratio * diff;
-						sfm::SetToLine(rect, p1, p, stroke_thickness_);
+						sfm::SetToLine(rect, p1, p, tilestyle_.stroke_thickness);
 						animating_lines_.push_back(rect);
 						break;
 					} else {
 						current_line_distance_ -= distance;
-						sfm::SetToLine(rect, p1, p2, stroke_thickness_);
+						sfm::SetToLine(rect, p1, p2, tilestyle_.stroke_thickness);
 						animating_lines_.push_back(rect);
 					}
 				}
@@ -387,29 +331,25 @@ namespace sun_magic {
 		sf::Vector2f size(rect_.width, rect_.height);
 
 		// Draw background and border
-		sf::RectangleShape rect(size);
-		rect.setFillColor(sf::Color::White);
-		rect.setOutlineColor(border_color_);
-		rect.setOutlineThickness(stroke_thickness_);
-		rect.setPosition(0, 0);
-		target->draw(rect);
+		UiElement::Draw(target);
 
 		// Draw guide lines
+		sf::RectangleShape rect(size);
 		rect.setOutlineThickness(0);
-		rect.setFillColor(guide_color_);
-		rect.setPosition(0, (size.y - stroke_thickness_)/2);
-		rect.setSize(sf::Vector2f(size.x, stroke_thickness_));
+		rect.setFillColor(tilestyle_.guide_color);
+		rect.setPosition(0, (size.y - tilestyle_.stroke_thickness)/2);
+		rect.setSize(sf::Vector2f(size.x, tilestyle_.stroke_thickness));
 		target->draw(rect);
-		rect.setPosition((size.x - stroke_thickness_)/2, 0);
-		rect.setSize(sf::Vector2f(stroke_thickness_, size.y));
+		rect.setPosition((size.x - tilestyle_.stroke_thickness)/2, 0);
+		rect.setSize(sf::Vector2f(tilestyle_.stroke_thickness, size.y));
 		target->draw(rect);
 
-		sf::CircleShape circle(0.5f * stroke_thickness_);
-		circle.setOrigin(0.5f * stroke_thickness_, 0.5f * stroke_thickness_);
+		sf::CircleShape circle(0.5f * tilestyle_.stroke_thickness);
+		circle.setOrigin(0.5f * tilestyle_.stroke_thickness, 0.5f * tilestyle_.stroke_thickness);
 		if (trace_character_ != NULL) {
 			// Draw trace character up to the currently animated stroke, or all strokes if no animation
 			size_t maxStroke = (animating_stroke_ < 0) ? trace_lines_.size() : std::min((int)trace_lines_.size(), animating_stroke_ + 1);		
-			circle.setFillColor(trace_color_);
+			circle.setFillColor(tilestyle_.trace_color);
 			for (size_t i = 0; i < maxStroke; i++) {
 				circle.setPosition((float)trace_character_->x(i, 0), (float)trace_character_->y(i, 0));
 				target->draw(circle);
@@ -421,7 +361,7 @@ namespace sun_magic {
 			}
 
 			// Draw animating stroke
-			circle.setFillColor(animate_color_);
+			circle.setFillColor(tilestyle_.animate_color);
 			if (animating_lines_.size() > 0) {
 				for (size_t j = 0; j < animating_lines_.size(); j++) {
 					target->draw(animating_lines_[j]);
@@ -432,7 +372,7 @@ namespace sun_magic {
 		}
 
 		// Draw current character
-		circle.setFillColor(stroke_color_);
+		circle.setFillColor(tilestyle_.stroke_color);
 		for (size_t i = 0; i < stroke_lines_.size(); i++) {
 			size_t stroke_size = stroke_lines_[i].size();
 			if (stroke_size == 0)
@@ -453,7 +393,7 @@ namespace sun_magic {
 			if (!is_writing_ && event.mouseButton.button == Mouse::Left) {
 				is_writing_ = true;
 
-				last_mouse_ = sf::Vector2f((float)event.mouseButton.x, (float)event.mouseButton.y);
+				last_mouse_ = sf::Vector2f((float)event.relativeMousePosition.x, (float)event.relativeMousePosition.y);
 				AddStrokePoint(last_mouse_);
 				std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
 			}
@@ -461,7 +401,7 @@ namespace sun_magic {
 			
 		case Event::E_MOUSE_MOVED:
 			if (is_writing_) {
-				sf::Vector2f mouse_pos = sf::Vector2f((float)event.mouseMove.x, (float)event.mouseMove.y);
+				sf::Vector2f mouse_pos = sf::Vector2f((float)event.relativeMousePosition.x, (float)event.relativeMousePosition.y);
 				if (sfm::squaredDistance(mouse_pos, last_mouse_) < MIN_STROKE_DISPLACEMENT_SQUARED) {
 					break;
 				}
@@ -524,7 +464,7 @@ namespace sun_magic {
 			for (size_t j = 1; j < character->stroke_size(i); j++) {
 				sf::Vector2f p1 = p2;
 				p2 = sf::Vector2f((float)character->x(i, j), (float)character->y(i, j));
-				sfm::SetToLine(rect, p1, p2, stroke_thickness_);
+				sfm::SetToLine(rect, p1, p2, tilestyle_.stroke_thickness);
 				stroke.push_back(rect);
 			}
 			lines.push_back(stroke);

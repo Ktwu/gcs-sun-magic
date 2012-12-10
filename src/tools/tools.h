@@ -7,7 +7,9 @@ namespace sun_magic {
 	namespace tools {
 
 		void ScaleToWindowSize(sf::Sprite& sprite);
-		
+
+		void OutlineSprite(sf::Sprite sprite, sf::Sprite outline, sf::Texture texture_outline, int radius, sf::Color color);
+
 		bool ZSort(GameObject* a, GameObject* b);
 
 		sf::String UTF8ToUTF32(const char* utf8str);

@@ -1,31 +1,30 @@
 #pragma once
 
 #include "stdafx.h"
+#include "ui/ui_group.h"
+
 #include "events/event_manager.h"
 #include "objects/game_object.h"
 #include "tools/tools.h"
-#include "ui/ui_group.h"
 
 namespace sun_magic {
 
 	UiGroup::UiGroup(float x, float y, float width, float height) :
-		Button(x, y, width, height)
-	{
-		style_.SetAllowHover(false)->SetAllowPress(false);
-	}
+		UiElement(x, y, width, height)
+	{}
 
 	UiGroup::~UiGroup() {
 		this->objects_.clear();
 	}
 
-	bool UiGroup::Add(GameObject* object) {
+	bool UiGroup::UiAdd(GameObject* object) {
 		if (std::find(objects_.begin(), objects_.end(), object) == objects_.end()) {
 			objects_.push_back(object);
 			return true;
 		}
 		return false;
 	}
-	bool UiGroup::Remove(GameObject* object) {
+	bool UiGroup::UiRemove(GameObject* object) {
 		std::vector<GameObject*>::iterator i = std::find(objects_.begin(), objects_.end(), object);
 		if (i != objects_.end()) {
 			objects_.erase(i);
@@ -33,18 +32,20 @@ namespace sun_magic {
 		}
 		return false;
 	}
-	void UiGroup::Clear() {
+	void UiGroup::UiClear() {
 		objects_.clear();
 	}
-	int UiGroup::Size() {
+	int UiGroup::UiSize() {
 		return objects_.size();
 	}
-	void UiGroup::UpdateZOrdering() {
+	void UiGroup::UiUpdateZOrdering() {
 		std::sort(objects_.begin(), objects_.end(), tools::ZSort);
 	}
 
-	GameObject* UiGroup::UpdateFocus(float x, float y) {
+	GameObject* UiGroup::UpdateFocus(float x, float y, sf::Vector2i& abs_pos) {
 		// Find all intersecting focus objects
+		GameObject::UpdateFocus(x, y, abs_pos);
+
 		x -= GetRect().left;
 		y -= GetRect().top;
 
@@ -59,32 +60,32 @@ namespace sun_magic {
 		GameObject *newfocus = NULL;
 		if (intersections.size() > 0) {
 			std::sort(intersections.begin(), intersections.end(), tools::ZSort);
-			newfocus = intersections.front()->UpdateFocus(x, y);
+			newfocus = intersections.front()->UpdateFocus(x, y, abs_pos);
 		}
 
 		return (newfocus == NULL) ? this : newfocus;
 	}
 
 	void UiGroup::Register() {
-		Button::Register();
+		UiElement::Register();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Register();
 	}
 	void UiGroup::Unregister() {
-		Button::Unregister();
+		UiElement::Unregister();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Unregister();
 	}
 
 	void UiGroup::Update(float elapsed_time) {
-		Button::Update(elapsed_time);
+		UiElement::Update(elapsed_time);
 		for (size_t i = 0; i < objects_.size(); ++i)
 			objects_[i]->Update(elapsed_time);
 	}
 	void UiGroup::Draw(sf::RenderTarget* target) {
-		Button::Draw(target);
+		UiElement::Draw(target);
 		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 		sf::View view = window->getView();
 

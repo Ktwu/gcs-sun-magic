@@ -9,6 +9,8 @@ namespace sun_magic {
 		Style();
 		~Style();
 
+		Style* Clear();
+
 		Style* SetTextSize(int text_size);
 		Style* SetTextColor(sf::Color text_color);
 		Style* SetTextFont(sf::Font text_font);

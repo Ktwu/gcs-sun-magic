@@ -61,7 +61,7 @@ namespace sun_magic {
 		return tilelist_;
 	}
 
-	Label* Game::GetTileListLabel() {
+	UiElement* Game::GetTileListLabel() {
 		return listlabel_;
 	}
 
@@ -73,29 +73,33 @@ namespace sun_magic {
 		main_window_.create(sf::VideoMode(1024, 700/*768*/, 32), "Sun Magic!");
 
 		// Init zinnia data
-		// TODO replace with a better dataset
 		CharacterTile::InitRecognizer(refs::zinnia::ZINNIA_MODEL.c_str());
 
-		game_machine_.Init(LOADING, new Splash());
-		game_machine_.AddState(MAIN_MENU, new MainMenu());
-		game_machine_.AddState(RECORDING, new SaveWritingState());
-		game_machine_.AddState(NEW_LEVEL_LOAD, new NewLevelState());
-		game_machine_.AddState(FEEDING, new Feeding());
-		
+		// Initialize event listeners
 		event_manager_ = new EventManager();
 		event_manager_->RegisterListener(Event::E_CLOSED, this);
 		event_manager_->RegisterListener(Event::E_KEY_RELEASED, this);
 		event_manager_->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 
+		// Init UI elements
 		sf::Vector2u size = main_window_.getSize();
-		float height = 200;
-		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 1);
+		float height = 300;
+		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 100, 100, 1);
 		tilelist_->SetZ(-1);
-		listlabel_ = new Label(750.f, size.y - height, size.x - 750.f, height);
+		tilelist_->GetStyle()->SetNormalSprite(sf::Sprite(*asset_manager->GetTexture(refs::textures::ui::NOTE_PAD)));
+
+		listlabel_ = UiElement::InitLabel(new UiElement(750.f, size.y - height, size.x - 750.f, height));
+		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(refs::fonts::KAORI))->SetTextSize(50);
 		listlabel_->SetZ(-1);
 
 		dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y);
 		dict_->SetZ(-2);
+
+		// Init game states
+		game_machine_.Init(MAIN_MENU, new MainMenu());
+		game_machine_.AddState(RECORDING, new SaveWritingState());
+		game_machine_.AddState(NEW_LEVEL_LOAD, new NewLevelState());
+		game_machine_.AddState(FEEDING, new Feeding());
 	}
 
 	void Game::HandleInput() {

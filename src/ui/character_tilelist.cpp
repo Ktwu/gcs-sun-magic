@@ -6,20 +6,25 @@
 
 namespace sun_magic {
 
-	CharacterTileList::CharacterTileList(float x, float y, float width, float height, int num_tiles) :
-		GameObject(x, y, width, height)
+	CharacterTileList::CharacterTileList(float x, float y, float width, float height, float start_x, float start_y, int num_tiles) :
+		UiGroup(x, y, width, height)
 	{
 		z_ = -1;
-		float tile_width = width / num_tiles;
+		float tile_width = (width-start_x) / num_tiles;
 		
 		for (int i = 0; i < num_tiles; ++i) {
-			tiles_.push_back(new CharacterTile(x + i*tile_width, y, tile_width, height));
+			tiles_.push_back(new CharacterTile(start_x + i*tile_width, start_y, tile_width, height-start_y));
 			tiles_[i]->SetZ(0);
+			UiAdd(tiles_[i]);
 		}
 	}
 
 	CharacterTileList::~CharacterTileList() {
+		for (int i = 0; i < tiles_.size(); ++i)
+			delete tiles_[i];
+
 		tiles_.clear();
+		UiClear();
 	}
 	
 	void CharacterTileList::SetZ(float z) {
@@ -40,22 +45,21 @@ namespace sun_magic {
 	}
 
 	void CharacterTileList::Register() {
+		UiGroup::Register();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < tiles_.size(); ++i) {
-			manager->AddGameObject(tiles_[i]);
+			//manager->AddGameObject(tiles_[i]);
 			manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
 	}
 
 	void CharacterTileList::Unregister() {
+		UiGroup::Unregister();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < tiles_.size(); ++i) {
-			manager->AddGameObject(tiles_[i]);
+			//manager->AddGameObject(tiles_[i]);
 			manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
-	}
-
-	void CharacterTileList::Update(float elapsed_time) {
 	}
 
 	void CharacterTileList::ProcessEvent(Event event) {
@@ -89,6 +93,4 @@ namespace sun_magic {
 		manager->AddEvent(event);
 	}
 
-	void CharacterTileList::Draw(sf::RenderTarget* target) {
-	}
 }

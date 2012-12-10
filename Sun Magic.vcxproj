@@ -37,12 +37,12 @@
     <ClCompile Include="src\states\splash.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\tools\tools.cpp" />
-    <ClCompile Include="src\ui\button.cpp" />
     <ClCompile Include="src\ui\character_tile.cpp" />
     <ClCompile Include="src\ui\character_tilelist.cpp" />
+    <ClCompile Include="src\ui\character_tile_style.cpp" />
     <ClCompile Include="src\ui\dictionary.cpp" />
-    <ClCompile Include="src\ui\label.cpp" />
     <ClCompile Include="src\ui\style.cpp" />
+    <ClCompile Include="src\ui\ui_element.cpp" />
     <ClCompile Include="src\ui\ui_group.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -69,12 +69,12 @@
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\tools\sfm.h" />
     <ClInclude Include="src\tools\tools.h" />
-    <ClInclude Include="src\ui\button.h" />
     <ClInclude Include="src\ui\character_tile.h" />
     <ClInclude Include="src\ui\character_tilelist.h" />
+    <ClInclude Include="src\ui\character_tile_style.h" />
     <ClInclude Include="src\ui\dictionary.h" />
-    <ClInclude Include="src\ui\label.h" />
     <ClInclude Include="src\ui\style.h" />
+    <ClInclude Include="src\ui\ui_element.h" />
     <ClInclude Include="src\ui\ui_group.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -130,6 +130,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\*-d-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\libsndfile-1.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\openal32.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-d-2.lib" "$(OutDir)"
 xcopy /y "$(ProjectDir)zinnia-0.06\lib\libzinnia.dll" "$(OutDir)"</Command>
     </PostBuildEvent>

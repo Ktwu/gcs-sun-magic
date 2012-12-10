@@ -83,9 +83,6 @@
     <ClCompile Include="src\stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\button.cpp">
-      <Filter>src\ui</Filter>
-    </ClCompile>
     <ClCompile Include="src\ui\character_tile.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
@@ -116,9 +113,6 @@
     <ClCompile Include="src\events\gameevent_manager.cpp">
       <Filter>src\events</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\label.cpp">
-      <Filter>src\ui</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\animon.cpp">
       <Filter>src\objects</Filter>
     </ClCompile>
@@ -137,6 +131,12 @@
     <ClCompile Include="src\states\new_level.cpp">
       <Filter>src\states</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\ui_element.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\character_tile_style.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -147,9 +147,6 @@
     </ClInclude>
     <ClInclude Include="src\targetver.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ui\button.h">
-      <Filter>src\ui</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\character_tile.h">
       <Filter>src\ui</Filter>
@@ -202,9 +199,6 @@
     <ClInclude Include="src\events\gameevent_manager.h">
       <Filter>src\events</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\label.h">
-      <Filter>src\ui</Filter>
-    </ClInclude>
     <ClInclude Include="src\ui\style.h">
       <Filter>src\ui</Filter>
     </ClInclude>
@@ -228,6 +222,12 @@
     </ClInclude>
     <ClInclude Include="src\states\new_level.h">
       <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\ui_element.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\character_tile_style.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

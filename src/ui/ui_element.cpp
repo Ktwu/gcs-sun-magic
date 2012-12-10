@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "button.h"
+#include "ui_element.h"
 
 #include "assets/gameasset_manager.h"
 #include "game.h"
@@ -8,46 +8,44 @@
 
 namespace sun_magic {
 
-	Button::Button(float x, float y, float width, float height, sf::String text) :
+	UiElement::UiElement(float x, float y, float width, float height, sf::String text) :
 		GameObject(x, y, width, height),
 		string_(text),
 		state_(NEUTRAL)
 	{
-		style_.SetAllowHover(true)->SetAllowPress(true);
-		style_.SetNormalColor(sf::Color(230,230,230))->SetNormalBorderColor(sf::Color(50,50,50));
-		style_.SetHoverColor(sf::Color(200,200,200))->SetHoverBorderColor(sf::Color(100,100,100));
-		style_.SetPressColor(sf::Color(150,150,150))->SetPressBorderColor(sf::Color(20,20,20));
-		style_.SetTextFont(*GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO));
+		style_.Clear();
 	}
 
-	Button::~Button() {}
+	UiElement::~UiElement() {
+	}
 
-	Style* Button::GetStyle() {
+
+	Style* UiElement::GetStyle() {
 		return &style_;
 	}
 
-	sf::String Button::GetString() {
+	sf::String UiElement::GetString() {
 		return string_;
 	}
-	void Button::SetString(sf::String string) {
+	void UiElement::SetString(sf::String string) {
 		string_ = string;
 	}
 
-	void Button::Register() {
+	void UiElement::Register() {
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_EXITED, this, this);
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_PRESSED, this, this);
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_RELEASED, this, this);
 	}
-	void Button::Unregister() {
+	void UiElement::Unregister() {
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_MOUSE_ENTERED, this, this);
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_MOUSE_EXITED, this, this);
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_MOUSE_PRESSED, this, this);
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_MOUSE_RELEASED, this, this);
 	}
 
-	void Button::Update(float elapsed_time) {}
-	void Button::Draw(sf::RenderTarget* target) {
+	void UiElement::Update(float elapsed_time) {}
+	void UiElement::Draw(sf::RenderTarget* target) {
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::RectangleShape rect(size);
 		sf::Sprite sprite;
@@ -85,7 +83,7 @@ namespace sun_magic {
 		target->draw(text);
 	}
 
-	void Button::ProcessEvent(Event event) {
+	void UiElement::ProcessEvent(Event event) {
 		switch (event.type) {
 		case Event::E_MOUSE_RELEASED:
 			if (state_ == PRESSED) {
@@ -105,6 +103,21 @@ namespace sun_magic {
 				state_ = PRESSED;
 			break;
 		}
+	}
+
+	UiElement* UiElement::InitButton(UiElement* button) {
+		button->GetStyle()->SetAllowHover(true)->SetAllowPress(true)
+			->SetNormalColor(sf::Color(230,230,230))->SetNormalBorderColor(sf::Color(50,50,50))
+			->SetHoverColor(sf::Color(200,200,200))->SetHoverBorderColor(sf::Color(100,100,100))
+			->SetPressColor(sf::Color(150,150,150))->SetPressBorderColor(sf::Color(20,20,20))
+			->SetTextSize(25)->SetTextStyle(sf::Text::Style::Regular);
+		return button;
+	}
+	UiElement* UiElement::InitLabel(UiElement* label){
+		InitButton(label)->GetStyle()->SetAllowHover(false)->SetAllowPress(false)
+			->SetTextColor(sf::Color::Black)
+			->SetNormalColor(sf::Color::White);
+		return label;
 	}
 
 }

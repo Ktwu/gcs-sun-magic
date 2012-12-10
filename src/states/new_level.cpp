@@ -12,9 +12,10 @@
 
 namespace sun_magic {
 
-	NewLevelState::NewLevelState() :
-		start_button_(0, 0, 200, 40, "Start") 
-	{
+	NewLevelState::NewLevelState() {
+		start_button_ = UiElement(0, 0, 200, 40, "Start");
+		UiElement::InitButton(&start_button_);
+
 		/* Treat the vector like a queue and push our levels on backwards */
 		levels_.push_back(L"さしすせそ");
 		levels_.push_back(L"かきくけこ");
@@ -23,16 +24,16 @@ namespace sun_magic {
 			hiragana_scores_[GameAssetManager::hiragana_strings[i]] = 0;
 
 		for (int i = 0; i < 5; ++i)
-			intro_display_.Add(new Label(0, 0, 0, 0, "--"));
-		intro_display_.Add(&start_button_);
+			intro_display_.UiAdd(UiElement::InitLabel(new UiElement(0, 0, 0, 0, "--")));
+		intro_display_.UiAdd(&start_button_);
 	}
 
 	NewLevelState::~NewLevelState() {
-		intro_display_.Remove(&start_button_);
+		intro_display_.UiRemove(&start_button_);
 		for (int i = 0; i < 5; ++i) {
 			delete intro_display_[i];
 		}
-		intro_display_.Clear();
+		intro_display_.UiClear();
 	}
 
 	bool NewLevelState::MapSort(std::pair<sf::String, int> a, std::pair<sf::String, int> b) {
@@ -92,15 +93,15 @@ namespace sun_magic {
 		sf::Font* font = GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
 		int i;
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
-			Label* label = (Label*) intro_display_[i];
+			UiElement* label = (UiElement*) intro_display_[i];
 			label->GetStyle()->SetTextFont(*font)->SetTextColor(sf::Color::Blue)->SetTextSize(60)
 				->SetNormalBorderColor(sf::Color::Transparent)->SetNormalColor(sf::Color::Transparent);
 			label->SetPosition(sf::Vector2f(width*i, 0));
 			label->SetSize(sf::Vector2f(width, width));
 			label->SetString(level_hiragana_[i]);
 		}
-		for (; i < intro_display_.Size()-1; ++i) {
-			Label* label = (Label*) intro_display_[i];
+		for (; i < intro_display_.UiSize()-1; ++i) {
+			UiElement* label = (UiElement*) intro_display_[i];
 			label->SetSize(sf::Vector2f(0,0));
 			label->SetString("");
 		}
