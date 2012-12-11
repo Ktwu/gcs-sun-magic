@@ -46,7 +46,7 @@ namespace sun_magic {
 
 		tilestyle_.SetAnimationSpeed(150.0f)->SetAnimationWait(0.2f);
 		tilestyle_.SetStrokeThickness(4)->SetStrokeColor(sf::Color::Black)->SetAnimateColor(sf::Color(150, 150, 150));
-		tilestyle_.SetBorderColor(sf::Color(80, 80, 80))->SetGuideColor(sf::Color(238, 238, 238))->SetTraceColor(sf::Color(210, 210, 210));
+		tilestyle_.SetTraceColor(sf::Color(210, 210, 210));
 	}
 
 	CharacterTile::~CharacterTile() {
@@ -211,21 +211,6 @@ namespace sun_magic {
 
 		return stroke_errors_[stroke];
 	}
-	void CharacterTile::Resize(float width, float height) {
-		sf::Vector2f size = GetSize();
-	
-		zinnia::Character *character = zinnia::createCharacter();
-		character->set_width((size_t)width);
-		character->set_height((size_t)height);
-		for (int i = 0; i < current_stroke_; i++) {
-			size_t points = character_->stroke_size(i);
-			for (size_t j = 0; j < points; j++) {
-				character->add(i, (int)(character_->x(i, j) * width / size.x), (int)(character_->y(i, j) * height / size.y));
-			}
-		}
-		rect_.width = width;
-		rect_.height = height;
-	}
 
 	zinnia::Character * CharacterTile::GetTraceCharacter() {
 		return trace_character_;
@@ -235,7 +220,8 @@ namespace sun_magic {
 	}
 	void CharacterTile::SetTraceCharacter(zinnia::Character *character) {
 		trace_character_ = character;
-		trace_unicode_ = tools::UTF8ToUTF32(character->value());
+		
+		trace_unicode_ = (character == NULL) ? "" : tools::UTF8ToUTF32(character->value()); 
 		animating_stroke_ = -1;
 	
 		trace_lines_.clear();

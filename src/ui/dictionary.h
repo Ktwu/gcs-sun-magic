@@ -34,6 +34,8 @@ namespace sun_magic {
 		sf::Vector2f show_pos_;
 		sf::Vector2f target_pos_;
 		float animate_time_;
+
+		sf::Font* font;
 	};
 
 }

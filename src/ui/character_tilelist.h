@@ -19,13 +19,12 @@ namespace sun_magic {
 		void SetZ(float z);
 
 		void Clear();
+		void SetTraceWord(sf::String word);
 		sf::String GetWord();
 	
 		void Register();
 		void Unregister();
-		//void Update(float elapsedSeconds);
-		void ProcessEvent(Event event);
-		//void Draw(sf::RenderTarget* target);		
+		void ProcessEvent(Event event);	
 
 	private:
 		std::vector<CharacterTile*> tiles_;

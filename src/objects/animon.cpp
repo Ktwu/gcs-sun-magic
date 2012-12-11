@@ -21,16 +21,18 @@ namespace sun_magic {
 		visible_(visible),
 		state_(DEFAULT),
 		animon_state_(AnimonState::UNINITIALIZED),
-		thread_(NULL)
+		meh_texture_(NULL),
+		angry_texture_(NULL),
+		happy_texture_(NULL)
 	{
-		sf::Texture *texture = GameAssetManager::GetInstance()->GetTexture(refs::textures::objects::SPRITES_OUTLINE);
+		sf::Texture *texture = GameAssetManager::GetInstance()->GetTexture(this, refs::textures::objects::SPRITES_OUTLINE);
 		sprite_outline_ = GameAssetManager::GetInstance()->GetHiraganaSprite(word_, texture);
 		sprite_outline_.setColor(outline);
 	}
 
 	Animon::~Animon()
 	{
-		GameAssetManager::GetInstance()->ReturnTexture(refs::textures::objects::SPRITES_OUTLINE);
+		GameAssetManager::GetInstance()->ReturnTextures(this);
 	}
 
 	void Animon::SetSprite(sf::Sprite sprite) {
@@ -83,30 +85,24 @@ namespace sun_magic {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 
 		if (state != animon_state_) {
-			switch (animon_state_) {
-			case MEH:
-				manager->ReturnTexture(refs::textures::objects::SPRITES_MEH);
-				break;
-			case HAPPY:
-				manager->ReturnTexture(refs::textures::objects::SPRITES_HAPPY);
-				break;
-			case ANGRY:
-				manager->ReturnTexture(refs::textures::objects::SPRITES_ANGRY);
-				break;
-			}
-
 			animon_state_ = state;
 
 			sf::Texture* texture = NULL;
 			switch (animon_state_) {
 			case MEH:
-				texture = manager->GetTexture(refs::textures::objects::SPRITES_MEH);
+				if (meh_texture_ == NULL)
+					meh_texture_ = manager->GetTexture(this, refs::textures::objects::SPRITES_MEH);
+				texture = meh_texture_;
 				break;
 			case HAPPY:
-				texture = manager->GetTexture(refs::textures::objects::SPRITES_HAPPY);
+				if (happy_texture_ == NULL)
+					happy_texture_ = manager->GetTexture(this, refs::textures::objects::SPRITES_HAPPY);
+				texture = happy_texture_;
 				break;
 			case ANGRY:
-				texture = manager->GetTexture(refs::textures::objects::SPRITES_ANGRY);
+				if (angry_texture_ == NULL)
+					angry_texture_ = manager->GetTexture(this, refs::textures::objects::SPRITES_ANGRY);
+				texture = angry_texture_;
 				break;
 			}
 			SetSprite(manager->GetHiraganaSprite(word_, texture));

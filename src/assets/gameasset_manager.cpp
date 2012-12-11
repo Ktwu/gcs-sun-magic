@@ -94,110 +94,46 @@ namespace sun_magic {
 		}
 	}
 
-	sf::Texture* GameAssetManager::GetTexture(std::string texture_name) {
-		lock_.lock();
-		if (textures_[texture_name] == NULL) {
-			textures_[texture_name] = new GameAsset<sf::Texture>();
-		}
+	sf::Texture* GameAssetManager::GetTexture(void* key, std::string file) {
+		std::vector<sf::Texture*> vector;
+		std::vector<std::string> strings;
+		strings.push_back(file);
 
-		if (!textures_[texture_name]->HasGameAsset()) {
-			sf::Texture* temp = new sf::Texture();
-			if (!temp->loadFromFile(texture_name)) {
-				textures_.erase(texture_name);
-				lock_.unlock();
-				return NULL;
-			}
-
-			textures_[texture_name]->TrySet(temp);
-		}
-
-		sf::Texture* ref = textures_[texture_name]->GetRef();
-		lock_.unlock();
-		return ref;
+		GetTextures(key, strings, vector);
+		return vector[0];
 	}
 
-	void GameAssetManager::ReturnTexture(std::string texture_name) {
-		lock_.lock();
-		if (textures_[texture_name] != NULL)
-			textures_[texture_name]->ReturnRef();
-		lock_.unlock();
+	void GameAssetManager::GetTextures(void* key, const std::vector<std::string>& texture_keys, std::vector<sf::Texture*>& textures) {
+		GetAssets(key, texture_keys, textures, this->textures_, this->texture_holders_, this->LoadTexture);
 	}
 
-	sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
-		int index = GetHiraganaIndex(hiragana);
-		int pos = symbols_pos[index];
-
-		sf::Vector2u size = sprites->getSize();
-		size.x /= ROW_SIZE;
-		size.y /= COL_SIZE;
-
-		int x = pos % ROW_SIZE;
-		int y = pos / ROW_SIZE;
-
-		return sf::Sprite(*sprites, sf::IntRect(size.x * x, size.y * y, size.x, size.y));
+	void GameAssetManager::ReturnTextures(void* key) {
+		ReturnAssets(key, this->textures_, this->texture_holders_);
 	}
 
+	sf::Font* GameAssetManager::GetFont(void* key, std::string file) {
+		std::vector<sf::Font*> vector;
+		std::vector<std::string> strings;
+		strings.push_back(file);
+
+		GetFonts(key, strings, vector);
+		return vector[0];
+	}
+
+	void GameAssetManager::GetFonts(void* key, const std::vector<std::string>& font_keys, std::vector<sf::Font*>& fonts) {
+		GetAssets(key, font_keys, fonts, this->fonts_, this->font_holders_, this->LoadFont);
+	}
+
+	void GameAssetManager::ReturnFonts(void* key) {
+		ReturnAssets(key, this->fonts_, this->font_holders_);
+	}
 
 	void GameAssetManager::CleanUnusedTextures() {
-		lock_.lock();
-		std::hash_map<std::string, GameAsset<sf::Texture>*>::iterator it;
-		GameAsset<sf::Texture>* resource;
-		sf::Texture* texture;
-
-		/* For each resource, try to set its internal value to NULL, which deletes the
-			texture we created. */
-		for (it = textures_.begin(); it != textures_.end(); ++it) {
-			resource = it->second;
-			texture = resource->TrySet(NULL);
-			if (texture != NULL)
-				delete texture;
-		}
-		lock_.unlock();
+		CleanUnusedAssets(textures_);
 	}
 
-	sf::Font* GameAssetManager::GetFont(std::string font_name) {
-		lock_.lock();
-		if (fonts_[font_name] == NULL) {
-			fonts_[font_name] = new GameAsset<sf::Font>();
-		}
-
-		if (!fonts_[font_name]->HasGameAsset()) {
-			sf::Font* temp = new sf::Font();
-			if (!temp->loadFromFile(font_name)) {
-				textures_.erase(font_name);
-				lock_.unlock();
-				return NULL;
-			}
-
-			fonts_[font_name]->TrySet(temp);
-		}
-
-		sf::Font* ref = fonts_[font_name]->GetRef();
-		lock_.unlock();
-		return ref;
-	}
-
-	void GameAssetManager::ReturnFont(std::string font_name) {
-		lock_.lock();
-		if (fonts_[font_name] != NULL)
-			fonts_[font_name]->ReturnRef();
-		lock_.unlock();
-	}
 	void GameAssetManager::CleanUnusedFonts() {
-		lock_.lock();
-		std::hash_map<std::string, GameAsset<sf::Font>*>::iterator it;
-		GameAsset<sf::Font>* resource;
-		sf::Font* font;
-
-		/* For each resource, try to set its internal value to NULL, which deletes the
-			texture we created. */
-		for (it = fonts_.begin(); it != fonts_.end(); ++it) {
-			resource = it->second;
-			font = resource->TrySet(NULL);
-			if (font != NULL)
-				delete font;
-		}
-		lock_.unlock();
+		CleanUnusedAssets(fonts_);
 	}
 
 	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {
@@ -209,6 +145,20 @@ namespace sun_magic {
 
 	zinnia::Character* GameAssetManager::GetTraceCharacter(sf::Uint32 utf32_character) {
 		return trace_characters_[utf32_character];
+	}
+
+		sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
+		int index = GetHiraganaIndex(hiragana);
+		int pos = symbols_pos[index];
+
+		sf::Vector2u size = sprites->getSize();
+		size.x /= ROW_SIZE;
+		size.y /= COL_SIZE;
+
+		int x = pos % ROW_SIZE;
+		int y = pos / ROW_SIZE;
+
+		return sf::Sprite(*sprites, sf::IntRect(size.x * x, size.y * y, size.x, size.y));
 	}
 
 	int GameAssetManager::GetHiraganaIndex(sf::String character) {

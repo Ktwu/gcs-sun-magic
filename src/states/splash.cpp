@@ -36,8 +36,7 @@ namespace sun_magic {
 		game_state_ = LOADING;
 
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::POSTER_AWAY));
-		/* The image might be a little too big, so scale it so it fits in the window */
+		background_.setTexture(*manager->GetTexture(this, refs::textures::backgrounds::POSTER_AWAY));
 		tools::ScaleToWindowSize(background_);
 
 		// Start a thread to load assets in the background
@@ -46,7 +45,7 @@ namespace sun_magic {
 
 	void Splash::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(refs::textures::backgrounds::POSTER_AWAY);
+		manager->ReturnTextures(this);
 	}
 
 	GameState Splash::Update(float elapsed_time) {

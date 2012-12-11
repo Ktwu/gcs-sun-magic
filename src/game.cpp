@@ -26,6 +26,8 @@ namespace sun_magic {
 	Game::Game() {}
 
 	Game::~Game() {
+		GameAssetManager::GetInstance()->ReturnTextures(this);
+		GameAssetManager::GetInstance()->ReturnFonts(this);
 		delete event_manager_;
 	}
 
@@ -86,10 +88,10 @@ namespace sun_magic {
 		float height = 300;
 		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 100, 100, 1);
 		tilelist_->SetZ(-1);
-		tilelist_->GetStyle()->SetNormalSprite(sf::Sprite(*asset_manager->GetTexture(refs::textures::ui::NOTE_PAD)));
+		tilelist_->GetStyle()->SetNormalSprite(sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD)));
 
 		listlabel_ = UiElement::InitLabel(new UiElement(750.f, size.y - height, size.x - 750.f, height));
-		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(refs::fonts::KAORI))->SetTextSize(50);
+		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::KAORI))->SetTextSize(50);
 		listlabel_->SetZ(-1);
 
 		dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y);

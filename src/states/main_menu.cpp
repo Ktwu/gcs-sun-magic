@@ -24,16 +24,11 @@ namespace sun_magic {
 		UiElement::InitButton(&play_);
 		UiElement::InitButton(&record_);
 
-		GameAssetManager* manager = GameAssetManager::GetInstance();
-		sf::Sprite normal = sf::Sprite(*manager->GetTexture(refs::textures::ui::BUTTON));
-		sf::Sprite hover = sf::Sprite(*manager->GetTexture(refs::textures::ui::BUTTON_HOVER));
-		sf::Sprite press = sf::Sprite(*manager->GetTexture(refs::textures::ui::BUTTON_PRESS));
-
-		play_.GetStyle()->SetTextColor(sf::Color::Black)->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)
+		play_.GetStyle()->SetTextColor(sf::Color::Black)
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
-		record_.GetStyle()->SetTextColor(sf::Color::Black)->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)
+		record_.GetStyle()->SetTextColor(sf::Color::Black)
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
@@ -41,16 +36,30 @@ namespace sun_magic {
 
 	MainMenu::~MainMenu() {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(refs::textures::ui::BUTTON);
-		manager->ReturnTexture(refs::textures::ui::BUTTON_HOVER);
-		manager->ReturnTexture(refs::textures::ui::BUTTON_PRESS);
 	}
 
 	void MainMenu::RegisterState(MachineState<GameState>* previous_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		background_.setTexture(*manager->GetTexture(refs::textures::backgrounds::TITLE));
-		/* The image might be a little too big, so scale it so it fits in the window */
+
+		// Load background
+		background_.setTexture(*manager->GetTexture(this, refs::textures::backgrounds::TITLE));
 		tools::ScaleToWindowSize(background_);
+
+		// Load button textures
+		std::vector<sf::Texture*> textures;
+		std::vector<std::string> files;
+		files.push_back(refs::textures::ui::BUTTON);
+		files.push_back(refs::textures::ui::BUTTON_HOVER);
+		files.push_back(refs::textures::ui::BUTTON_PRESS);
+		manager->GetTextures(this, files, textures);
+
+		// YAY NO ERROR CHECKING.  DERP.
+		sf::Sprite normal = sf::Sprite(*textures[0]);
+		sf::Sprite hover = sf::Sprite(*textures[1]);
+		sf::Sprite press = sf::Sprite(*textures[2]);
+
+		play_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press);
+		record_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press);
 
 		game_state_ = MAIN_MENU;
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
@@ -62,7 +71,7 @@ namespace sun_magic {
 
 	void MainMenu::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		manager->ReturnTexture(refs::textures::backgrounds::TITLE);
+		manager->ReturnTextures(this);
 		
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RemoveGameObject(&play_);

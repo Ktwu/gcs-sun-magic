@@ -24,14 +24,14 @@ namespace sun_magic {
 		progress_()
 	{
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		sf::Texture* texture = manager->GetTexture(base_name);
+		sf::Texture* texture = manager->GetTexture(this, base_name);
 		SetBaseSprite(sf::Sprite(*texture));
-		texture = manager->GetTexture(increment_name);
+		texture = manager->GetTexture(this, increment_name);
 		SetIncrementSprite(sf::Sprite(*texture));
 	}
 
-	ProgressBar::~ProgressBar()
-	{
+	ProgressBar::~ProgressBar()	{
+		 GameAssetManager::GetInstance()->ReturnTextures(this);
 	}
 
 	void ProgressBar::SetBaseSprite(sf::Sprite sprite) {

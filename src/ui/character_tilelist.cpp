@@ -1,7 +1,10 @@
 #include "stdafx.h"
-#include "events\event_manager.h"
-#include "ui/character_tile.h"
 #include "ui/character_tilelist.h"
+
+#include "assets/gameasset_manager.h"
+#include "events/event_manager.h"
+#include "tools/tools.h"
+#include "ui/character_tile.h"
 #include "game.h"
 
 namespace sun_magic {
@@ -37,18 +40,28 @@ namespace sun_magic {
 	void CharacterTileList::Clear() {
 		for (size_t i = 0; i < tiles_.size(); ++i) {
 			tiles_[i]->Clear();
+			tiles_[i]->SetAnimationStroke(-1);
+			tiles_[i]->SetTraceCharacter(NULL);
 		}
 	}
 
 	sf::String CharacterTileList::GetWord() {
 		return word_;
 	}
+	void CharacterTileList::SetTraceWord(sf::String word) {
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+		for (size_t i = 0; i < tiles_.size(); ++i) {
+			zinnia::Character* character = manager->GetTraceCharacter(word[i]);
+			character = tools::Resize(character, tiles_[i]->GetSize().x, tiles_[i]->GetSize().y);
+			tiles_[i]->SetTraceCharacter(character);
+			tiles_[i]->SetAnimationStroke(0);
+		}
+	}
 
 	void CharacterTileList::Register() {
 		UiGroup::Register();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < tiles_.size(); ++i) {
-			//manager->AddGameObject(tiles_[i]);
 			manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
 	}
@@ -57,7 +70,6 @@ namespace sun_magic {
 		UiGroup::Unregister();
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		for (size_t i = 0; i < tiles_.size(); ++i) {
-			//manager->AddGameObject(tiles_[i]);
 			manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this, tiles_[i]);
 		}
 	}

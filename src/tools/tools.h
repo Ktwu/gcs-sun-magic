@@ -17,5 +17,7 @@ namespace sun_magic {
 		int LimitBetween(int min, int val, int max);
 
 		sf::Color HSVColor(float h, float s, float v);
+
+		zinnia::Character* Resize(zinnia::Character* character, size_t width, size_t height);
 	}
 }

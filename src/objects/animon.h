@@ -73,7 +73,9 @@ namespace sun_magic {
 		bool visible_;
 		KeyState state_;
 
-		sf::Thread* thread_;
+		sf::Texture* meh_texture_;
+		sf::Texture* angry_texture_;
+		sf::Texture* happy_texture_;
 	};
 	
 }

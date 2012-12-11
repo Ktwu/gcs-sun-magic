@@ -18,8 +18,11 @@ namespace sun_magic {
 		hide_pos_ = sf::Vector2f(hide_x, hide_y);
 		show_pos_ = sf::Vector2f(show_x, show_y);
 		target_pos_ = hide_pos_;
+		font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::KAORI);
 	}
-	Dictionary::~Dictionary() {}
+	Dictionary::~Dictionary() {
+		GameAssetManager::GetInstance()->ReturnFonts(this);
+	}
 
 	void Dictionary::AddWord(sf::String word, sf::Sprite sprite) {
 		DictionaryEntry entry;
@@ -65,9 +68,8 @@ namespace sun_magic {
 		const float padding = 20;
 		float y = padding;
 
-		sf::Font* msmincho = GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
 		sf::Text text(sf::String("D\nI\nC\nT\nI\nO\nN\nA\nR\nY"));
-		text.setFont(*msmincho);
+		text.setFont(*font);
 		text.setColor(sf::Color::Blue);
 		text.setCharacterSize(25);
 		text.setPosition(5, y);
@@ -80,15 +82,13 @@ namespace sun_magic {
 			sf::FloatRect sprite_bounds = sprite.getGlobalBounds();
 
 			sf::Text text(iter->first);
-			text.setFont(*msmincho);
+			text.setFont(*font);
 			text.setColor(iter->second.outline);
 			text.setCharacterSize(50);
 			text.setPosition(2.f * padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
 			target->draw(text);
 			y += std::max(sprite_bounds.height, text.getLocalBounds().height) + padding;
 		}
-
-		GameAssetManager::GetInstance()->ReturnFont(refs::fonts::MSMINCHO);
 	}
 
 	void Dictionary::ProcessEvent(Event event) {

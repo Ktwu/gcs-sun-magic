@@ -21,7 +21,7 @@ namespace sun_magic {
 		tile_->GetTileStyle()->SetAnimationSpeed(200.0f);
 		tile_->SetAnimationStroke(0);
 
-		font_ = *GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
+		font_ = *GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
 
 		unsigned int width = size.x;
 		unsigned int y = size.y - 200;
@@ -40,6 +40,7 @@ namespace sun_magic {
 	}
 
 	SaveWritingState::~SaveWritingState() {
+		GameAssetManager::GetInstance()->ReturnFonts(this);
 		delete tile_;
 	}
 	
@@ -61,8 +62,6 @@ namespace sun_magic {
 	void SaveWritingState::UnregisterState(MachineState<GameState>* next_state) {
 		Game::GetInstance()->GetEventManager()->RemoveGameObject(tile_);
 		Game::GetInstance()->GetEventManager()->UnregisterListener(Event::E_KEY_RELEASED, this);
-
-		GameAssetManager::GetInstance()->ReturnFont(refs::fonts::MSMINCHO);
 
 		fclose(trace_output_);
 	}

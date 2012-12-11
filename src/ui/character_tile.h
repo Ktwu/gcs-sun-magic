@@ -28,7 +28,6 @@ namespace sun_magic {
 		void EndStroke();
 		void UndoStroke();
 		void Clear();
-		void Resize(float width, float height);
 		float GetStrokeError(size_t stroke);
 
 		// The trace character is the character the user should be trying to write

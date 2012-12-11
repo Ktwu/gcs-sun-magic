@@ -72,7 +72,7 @@ namespace sun_magic {
 		std::cout << "NewLevelState TIME!\n";
 
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
-		background_.setTexture(*asset_manager->GetTexture(refs::textures::backgrounds::OFFICE));
+		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
 		// The image might be a little too big, so scale it so it fits in the window
 		tools::ScaleToWindowSize(background_);
 
@@ -90,7 +90,7 @@ namespace sun_magic {
 		GetNewLevelHiragana();
 
 		int width = intro_display_.GetSize().x / 5;
-		sf::Font* font = GameAssetManager::GetInstance()->GetFont(refs::fonts::MSMINCHO);
+		sf::Font* font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
 		int i;
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
 			UiElement* label = (UiElement*) intro_display_[i];
@@ -115,8 +115,8 @@ namespace sun_magic {
 
 	void NewLevelState::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
-		asset_manager->ReturnTexture(refs::textures::backgrounds::OFFICE);
-		asset_manager->ReturnFont(refs::fonts::MSMINCHO);
+		asset_manager->ReturnTextures(this);
+		asset_manager->ReturnFonts(this);
 
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		manager->RemoveGameObject(&intro_display_);
