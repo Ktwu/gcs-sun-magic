@@ -214,6 +214,9 @@ namespace sun_magic {
 
 				if (num_hiragana_left_ == 0)
 					start_button_.GetStyle()->SetIsVisible(true)->SetIsEnabled(true);
+
+				selected_hiragana_ = NULL;
+				tile_.SetTraceCharacter(NULL);
 			}
 			break;
 		}	
