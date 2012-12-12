@@ -29,7 +29,7 @@ namespace sun_magic {
 		UiElement::InitLabel(&level_label_);
 		level_label_.GetStyle()->SetNormalColor(sf::Color::Cyan);
 		level_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
-		level_label_.SetString("Feeding Time Warmup!");
+		level_label_.SetString("Ge to know your Animons!");
 		intro_display_.UiAdd(&level_label_);
 		temp_y += level_label_.GetSize().y + padding;
 
@@ -61,7 +61,9 @@ namespace sun_magic {
 		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i) {
 			UiElement* label = &hiragana_labels_[i];
 			UiElement::InitButton(label);
-			label->GetStyle()->SetTextColor(sf::Color::Blue)->SetTextSize(60)->SetNormalColor(sf::Color::White);
+			label->GetStyle()->SetTextColor(sf::Color::Blue)
+				->SetTextSize(60)
+				->SetNormalColor(sf::Color::White);
 
 			label->SetPosition(sf::Vector2f(temp_x, temp_y));
 			label->SetSize(sf::Vector2f(temp_width, temp_width));
@@ -127,11 +129,14 @@ namespace sun_magic {
 		// Load up the hiragana we're going to be teaching for this level.
 		GetNewLevelHiragana();
 		int width = intro_display_.GetSize().x / 5.f;
-
+		
+		sf::Texture *texture = asset_manager->GetTexture(this, refs::textures::objects::SPRITES_MEH);
 		int i;
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
-			hiragana_labels_[i].GetStyle()->SetTextFont(*font)->SetAllowHover(true)->SetAllowPress(true);
-			hiragana_labels_[i].SetString(level_hiragana_[i]);
+			sf::Sprite sprite = asset_manager->GetHiraganaSprite(level_hiragana_[i], texture);
+			sprite.setScale(0.7, 0.7);
+			hiragana_labels_[i].GetStyle()->SetTextFont(*font)->SetAllowHover(true)->SetAllowPress(true)
+				->SetNormalSprite(sprite)->SetHoverSprite(sprite)->SetPressSprite(sprite);
 			manager->RegisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
 		}
 		for (; i < NUM_HIRAGANA_LABELS; ++i) {

@@ -69,8 +69,8 @@ namespace sun_magic {
 			break;
 		}
 		
-		target->draw(sprite);
 		target->draw(rect);
+		target->draw(sprite);
 
 		sf::Text text(string_);
 		text.setCharacterSize(style_.text_size);
