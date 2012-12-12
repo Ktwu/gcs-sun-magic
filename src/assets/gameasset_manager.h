@@ -45,8 +45,8 @@ namespace sun_magic {
 		void ReturnSoundBuffers(void* key);
 		void CleanUnusedSoundBuffers();
 
-		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
-		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
+		void GetTraceableCharacters(std::vector<sf::String>& hiraganas);
+		zinnia::Character* GetTraceCharacter(sf::String hiragana);
 
 		sf::Sprite GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites);
 
@@ -91,7 +91,7 @@ namespace sun_magic {
 			T* (*loader)(std::string))
 		{
 			lock_.lock();
-			for (int i = 0; i < asset_keys.size(); ++i) {
+			for (size_t i = 0; i < asset_keys.size(); ++i) {
 				std::string asset_key = asset_keys[i];
 				if (map[asset_key] == NULL) {
 					map[asset_key] = new GameAsset<T>();
@@ -128,7 +128,7 @@ namespace sun_magic {
 		void ReturnAssets(void* key, std::hash_map<std::string, GameAsset<T>*> map, std::hash_map<void*, std::vector<std::string>> keymap) {
 			lock_.lock();
 			std::vector<std::string>& strings = keymap[key];
-			for (int i = 0; i < strings.size(); ++i) {
+			for (size_t i = 0; i < strings.size(); ++i) {
 				if (map[strings[i]] != NULL)
 					map[strings[i]]->ReturnRef();
 			}

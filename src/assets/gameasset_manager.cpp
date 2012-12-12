@@ -136,15 +136,15 @@ namespace sun_magic {
 		CleanUnusedAssets(soundbuffers_);
 	}
 
-	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {
+	void GameAssetManager::GetTraceableCharacters(std::vector<sf::String>& hiraganas) {
 		for (std::hash_map<sf::Uint32, zinnia::Character*>::iterator iter =
 				trace_characters_.begin(); iter != trace_characters_.end(); iter++) {
-			characters.push_back(iter->first);
+			hiraganas.push_back(sf::String(iter->first));
 		}
 	}
 
-	zinnia::Character* GameAssetManager::GetTraceCharacter(sf::Uint32 utf32_character) {
-		return trace_characters_[utf32_character];
+	zinnia::Character* GameAssetManager::GetTraceCharacter(sf::String hiragana) {
+		return trace_characters_[hiragana[0]];
 	}
 
 		sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {

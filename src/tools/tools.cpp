@@ -107,7 +107,7 @@ namespace sun_magic {
 				(character->height() == height && character->width() == width))
 				return character;
 
-			sf::Vector2f size = sf::Vector2f(width, height);
+			sf::Vector2f size = sf::Vector2f((float)width, (float)height);
 			zinnia::Character* new_char = zinnia::createCharacter();
 			new_char->set_width(width);
 			new_char->set_height(height);
@@ -115,7 +115,7 @@ namespace sun_magic {
 			float xRatio = size.x / character->width();
 			float yRatio = size.y / character->height();
 
-			for (int i = 0; i < character->strokes_size(); i++) {
+			for (size_t i = 0; i < character->strokes_size(); i++) {
 				size_t points = character->stroke_size(i);
 				for (size_t j = 0; j < points; j++) {
 					new_char->add(i, (int)(character->x(i, j) * xRatio), (int)(character->y(i, j) * yRatio));

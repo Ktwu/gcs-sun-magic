@@ -35,14 +35,14 @@ namespace sun_magic {
 	void UiGroup::UiClear() {
 		objects_.clear();
 	}
-	int UiGroup::UiSize() {
+	size_t UiGroup::UiSize() {
 		return objects_.size();
 	}
 	void UiGroup::UiUpdateZOrdering() {
 		std::sort(objects_.begin(), objects_.end(), tools::ZSort);
 	}
 
-	GameObject* UiGroup::UpdateFocus(float x, float y, sf::Vector2i& abs_pos) {
+	GameObject* UiGroup::UpdateFocus(int x, int y, sf::Vector2f& abs_pos) {
 		// Find all intersecting focus objects
 		GameObject::UpdateFocus(x, y, abs_pos);
 

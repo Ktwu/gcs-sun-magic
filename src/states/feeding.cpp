@@ -41,7 +41,6 @@ namespace sun_magic {
 		sample_.setBuffer(*asset_manager->GetSoundBuffer(this, refs::sounds::SAMPLE));
 
 		// Load our game's UI
-		Game::GetInstance()->AddUIElements();
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
 		intro_display_.SetPosition(sf::Vector2f(0, 0));
@@ -56,8 +55,8 @@ namespace sun_magic {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->RegisterListener(Event::E_GAME_EVENT, this);
-		float y = 250.f;
-		float width = (size.x - 50) / 5;
+		float y = 240.f;
+		float width = (size.x - 50.f) / 5.f;
 		for (size_t i = 0; i < hiraganas_.getSize(); i++) {
 			sf::String h = hiraganas_[i];
 
@@ -75,16 +74,15 @@ namespace sun_magic {
 			progressbars_.push_back(progressbar);
 			event_manager->AddGameObject(progressbar);
 
-			/* Add all the sprites to our dictionary.  Shrink them so that all of our sprites can actually fit with a temporary
-			   hack of a constant */
-			sf::Sprite dict_sprite(sprite);
-			dict_sprite.setScale(0.8f, 0.8f);
-			dictionary->AddWord(h, dict_sprite);
+			dictionary->AddWord(h);
 		}
 
 		Event load_event;
 		load_event.type = Event::E_LOAD_STATE;
 		event_manager->AddEvent(load_event);
+
+		// Need to do this last
+		Game::GetInstance()->AddUIElements();
 	}
 
 	void Feeding::UnregisterState(MachineState<GameState>* next_state) {
@@ -143,7 +141,6 @@ namespace sun_magic {
 
 		/* Reload */
 		if (all_happy)
-		//if (one_happy)
 			game_state_ = GameState::NEW_LEVEL_LOAD;
 		return game_state_;
 	}

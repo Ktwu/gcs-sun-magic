@@ -4,21 +4,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{aaa08f1e-3aec-40b5-a54a-dae2c157764b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="assets">
-      <UniqueIdentifier>{9512eb6b-a3b2-450e-a842-fb56edc70b03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\backgrounds">
-      <UniqueIdentifier>{1f07c654-6209-49da-9037-f6e758af4b07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\fonts">
-      <UniqueIdentifier>{8a0fc823-e3be-459c-b99e-00ab0b85e79c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\objects">
-      <UniqueIdentifier>{0f4cc42b-23ab-4b48-918a-54137f223345}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\models">
-      <UniqueIdentifier>{94748089-6b19-4fcb-8ca5-10e3f80893a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\assets">
       <UniqueIdentifier>{9c5a7963-49c4-44b9-8e22-f6cc7cfb4691}</UniqueIdentifier>
     </Filter>
@@ -43,38 +28,6 @@
     <Filter Include="src\animations">
       <UniqueIdentifier>{08030e64-0d90-452f-afed-baefd6479be1}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\backgrounds\bg_dummy1.jpg">
-      <Filter>assets\backgrounds</Filter>
-    </None>
-    <None Include="assets\backgrounds\bg_dummy1_1.jpg">
-      <Filter>assets\backgrounds</Filter>
-    </None>
-    <None Include="assets\backgrounds\bg_dummy2.jpg">
-      <Filter>assets\backgrounds</Filter>
-    </None>
-    <None Include="assets\backgrounds\bg_dummy3.jpg">
-      <Filter>assets\backgrounds</Filter>
-    </None>
-    <None Include="assets\backgrounds\bg_dummy4.jpg">
-      <Filter>assets\backgrounds</Filter>
-    </None>
-    <None Include="assets\fonts\msmincho.ttc">
-      <Filter>assets\fonts</Filter>
-    </None>
-    <None Include="assets\objects\neko.png">
-      <Filter>assets\objects</Filter>
-    </None>
-    <None Include="assets\models\hiragana.model">
-      <Filter>assets\models</Filter>
-    </None>
-    <None Include="assets\models\hiragana.model.txt">
-      <Filter>assets\models</Filter>
-    </None>
-    <None Include="assets\models\hiragana_learn.txt">
-      <Filter>assets\models</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

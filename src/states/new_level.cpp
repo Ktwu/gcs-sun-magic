@@ -89,9 +89,9 @@ namespace sun_magic {
 		// Load up the hiragana we're going to be teaching for this level.
 		GetNewLevelHiragana();
 
-		int width = intro_display_.GetSize().x / 5;
+		float width = intro_display_.GetSize().x / 5.f;
 		sf::Font* font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
-		int i;
+		size_t i;
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
 			UiElement* label = (UiElement*) intro_display_[i];
 			label->GetStyle()->SetTextFont(*font)->SetTextColor(sf::Color::Blue)->SetTextSize(60)

@@ -11,18 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\backgrounds\bg_dummy1.jpg" />
-    <None Include="assets\backgrounds\bg_dummy1_1.jpg" />
-    <None Include="assets\backgrounds\bg_dummy2.jpg" />
-    <None Include="assets\backgrounds\bg_dummy3.jpg" />
-    <None Include="assets\backgrounds\bg_dummy4.jpg" />
-    <None Include="assets\fonts\msmincho.ttc" />
-    <None Include="assets\models\hiragana.model" />
-    <None Include="assets\models\hiragana.model.txt" />
-    <None Include="assets\models\hiragana_learn.txt" />
-    <None Include="assets\objects\neko.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\animations\move_animation.cpp" />
     <ClCompile Include="src\assets\gameasset_manager.cpp" />
     <ClCompile Include="src\events\event_manager.cpp" />

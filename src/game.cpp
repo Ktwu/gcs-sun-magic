@@ -84,15 +84,15 @@ namespace sun_magic {
 		event_manager_->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 
 		// Init UI elements
-		sf::Vector2u size = main_window_.getSize();
+		sf::Vector2f size = sf::Vector2f(main_window_.getSize());
 		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD));
-		float height = tilesprite.getGlobalBounds().height - 20;
+		float height = tilesprite.getGlobalBounds().height + 20;
 		float width = tilesprite.getGlobalBounds().width;
 		tilelist_ = new CharacterTileList(size.x - width, size.y - height, height, height, width - 200, height - 200, 1);
 		tilelist_->SetZ(10);
 		tilelist_->GetStyle()->SetNormalSprite(tilesprite);
 
-		listlabel_ = (Card*) UiElement::InitLabel(new Card(size.x - 200, size.y - height - 15, size.x - 200, size.y - height - 55, width/2, size.y));
+		listlabel_ = (Card*) UiElement::InitLabel(new Card(size.x - 200.f, size.y - height - 15.f, size.x - 200.f, size.y - height - 55.f, width/2.f, size.y));
 		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::KAORI))->SetTextSize(50)
 			->SetTextPadding(0.f)->SetTextVerticalAlignment(Style::TextAlignment::SMALLER);
 		listlabel_->SetZ(9);

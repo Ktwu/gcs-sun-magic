@@ -25,10 +25,23 @@ namespace sun_magic {
 		GameAssetManager::GetInstance()->ReturnFonts(this);
 	}
 
-	void Dictionary::AddWord(sf::String word, sf::Sprite sprite) {
+	void Dictionary::AddWord(sf::String word) {
+		GameAssetManager *asset_manager = GameAssetManager::GetInstance();
+		sf::Texture *texture = asset_manager->GetTexture(this, refs::textures::objects::SPRITES_MEH);
+		sf::Sprite sprite = asset_manager->GetHiraganaSprite(word, texture);
+		sprite.setScale(0.8f, 0.8f);
+
+		int index = asset_manager->GetHiraganaIndex(word);
 		DictionaryEntry entry;
+		entry.outline = GameAssetManager::symbols_colors[index];
 		entry.sprite = sprite;
-		entries_[word] = entry;
+		entry.romanji = GameAssetManager::romaji_strings[index];
+		entry.tile = new CharacterTile(0, 0, 128, 128);
+		entry.tile->SetZ(8.1);
+		entry.tile->SetWritable(false);
+		entry.tile->SetTraceCharacter(asset_manager->GetTraceCharacter(word));
+		entry.tile->SetAnimatingContinuously(true);
+		entries_.push_back(entry);
 	}
 
 	void Dictionary::Clear() {
@@ -39,11 +52,19 @@ namespace sun_magic {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->RegisterListener(Event::E_MOUSE_EXITED, this, this);
+
+		for (std::vector<DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
+			event_manager->AddGameObject(iter->tile);
+		}
 	}
 	void Dictionary::Unregister() {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->UnregisterListener(Event::E_MOUSE_ENTERED, this, this);
 		event_manager->UnregisterListener(Event::E_MOUSE_EXITED, this, this);
+
+		for (std::vector<DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
+			event_manager->RemoveGameObject(iter->tile);
+		}
 	}
 
 	void Dictionary::Update(float elapsed_time) {
@@ -58,7 +79,8 @@ namespace sun_magic {
 		rect.setOutlineThickness(1);
 		target->draw(rect);
 
-		const float padding = 20;
+		const float padding = 8;
+		const float packing_ratio = 0.82f;
 		float x = padding;
 		float y = padding;
 
@@ -77,22 +99,27 @@ namespace sun_magic {
 		}
 		target->draw(text);
 
-		for (std::map<sf::String, DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
-			sf::Sprite sprite = iter->second.sprite;
+		sf::Vector2f pos = GetPosition();
+		for (std::vector<DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
+			sf::Sprite sprite = iter->sprite;
 			sprite.setPosition(x, y);
 			target->draw(sprite);
 			sf::FloatRect sprite_bounds = sprite.getGlobalBounds();
 
-			sf::Text text(iter->first);
-			text.setFont(*font);
-			text.setColor(iter->second.outline);
+			sf::Text text(iter->romanji);
+			text.setColor(iter->outline);
 			text.setCharacterSize(50);
 
+			CharacterTile *tile = iter->tile;
 			if (is_vertical_) {
-				text.setPosition(x + padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
+				tile->SetPosition(pos + sf::Vector2f(x + padding + packing_ratio * sprite_bounds.width, y));
+
+				text.setPosition(x + padding + packing_ratio * (sprite_bounds.width + tile->GetSize().x), y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
 				y += std::max(sprite_bounds.height, text.getGlobalBounds().height) + padding;
 			} else {
-				text.setPosition(x + sprite_bounds.width/2 - text.getGlobalBounds().width/2, y + padding + sprite_bounds.height);
+				tile->SetPosition(pos + sf::Vector2f(x, y + padding + packing_ratio * sprite_bounds.height));
+
+				text.setPosition(x + sprite_bounds.width/2 - text.getGlobalBounds().width/2, y + padding + packing_ratio * (sprite_bounds.height + tile->GetSize().y));
 				x += std::max(sprite_bounds.width, text.getGlobalBounds().width) + padding;
 			}
 

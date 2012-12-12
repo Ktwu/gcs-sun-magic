@@ -24,11 +24,11 @@ namespace sun_magic {
 		UiElement::InitButton(&play_);
 		UiElement::InitButton(&record_);
 
-		play_.GetStyle()->SetTextColor(sf::Color::Black)
+		play_.GetStyle()
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
-		record_.GetStyle()->SetTextColor(sf::Color::Black)
+		record_.GetStyle()
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
@@ -102,7 +102,7 @@ namespace sun_magic {
 		case 1:
 			sf::Color black = sf::Color::Black;
 			float time = animate_timer_.getElapsedTime().asMilliseconds();
-			black.a = 255 * (time / 1000.f);
+			black.a = sf::Uint8(255 * (time / 1000.f));
 
 			if (time >= 1000.f) {
 				animate_state_ = -1;
@@ -110,7 +110,7 @@ namespace sun_magic {
 			}
 
 			sf::Vector2u size = target->getSize();
-			sf::RectangleShape temp(sf::Vector2f(size.x, size.y));
+			sf::RectangleShape temp(sf::Vector2f((float)size.x, (float)size.y));
 			temp.setFillColor(black);
 			target->draw(temp);
 			break;

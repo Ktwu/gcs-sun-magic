@@ -23,7 +23,7 @@ namespace sun_magic {
 	}
 
 	CharacterTileList::~CharacterTileList() {
-		for (int i = 0; i < tiles_.size(); ++i)
+		for (size_t i = 0; i < tiles_.size(); ++i)
 			delete tiles_[i];
 
 		tiles_.clear();
@@ -52,7 +52,7 @@ namespace sun_magic {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		for (size_t i = 0; i < tiles_.size(); ++i) {
 			zinnia::Character* character = manager->GetTraceCharacter(word[i]);
-			character = tools::Resize(character, tiles_[i]->GetSize().x, tiles_[i]->GetSize().y);
+			character = tools::Resize(character, (size_t)tiles_[i]->GetSize().x, (size_t)tiles_[i]->GetSize().y);
 			tiles_[i]->SetTraceCharacter(character);
 			tiles_[i]->SetAnimationStroke(0);
 		}

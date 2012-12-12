@@ -39,7 +39,7 @@ namespace sun_magic {
 	}
 
 	void EventManager::ClearGameObjects() {
-		for (int i = 0; i < game_objects_.size(); i++) {
+		for (size_t i = 0; i < game_objects_.size(); i++) {
 			GameObject * object = game_objects_[i];
 			object->Unregister();
 		}
@@ -228,7 +228,7 @@ namespace sun_magic {
 	}
 
 	void EventManager::UpdateObjects(float elapsed_time) {
-		for (int i = 0; i < game_objects_.size(); i++) {
+		for (size_t i = 0; i < game_objects_.size(); i++) {
 			GameObject * object = game_objects_[i];
 			object->Update(elapsed_time);
 		}
@@ -238,7 +238,7 @@ namespace sun_magic {
 		// Save the window default view
 		sf::View view = target->getView();
 
-		for (int i = 0; i < game_objects_.size(); i++) {
+		for (size_t i = 0; i < game_objects_.size(); i++) {
 			GameObject * object = game_objects_[i];
 
 			// Translate view to object position
@@ -259,10 +259,10 @@ namespace sun_magic {
 		for (int i = game_objects_.size() - 1; i >= 0; i--) {
 			GameObject *object = game_objects_[i];
 			if (object->GetRect().contains((float)mouse.x, (float)mouse.y)) {
-				sf::Vector2i pos(0, 0);
+				sf::Vector2f pos(0, 0);
 				newfocus_ = object->UpdateFocus(mouse.x, mouse.y, pos);
-				rel_mouse_pos_.x = mouse.x - pos.x;
-				rel_mouse_pos_.y = mouse.y - pos.y;
+				rel_mouse_pos_.x = mouse.x - (int)pos.x;
+				rel_mouse_pos_.y = mouse.y - (int)pos.y;
 				break;
 			}
 		}

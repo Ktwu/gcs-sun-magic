@@ -19,6 +19,9 @@ namespace sun_magic {
 
 		CharacterTileStyle* GetTileStyle();
 
+		bool IsWritable();
+		void SetWritable(bool writable);
+
 		// Get the character that the user has written so far
 		zinnia::Character * GetCharacter();
 		sf::String GetUnicode();
@@ -38,6 +41,8 @@ namespace sun_magic {
 		// Setting the animation stroke to a valid stroke number will make the tile
 		// continuously animate that stroke
 		bool IsAnimating();
+		bool IsAnimatingContinuously();
+		void SetAnimatingContinuously(bool animate_continuously);
 		int GetAnimationStroke();
 		void SetAnimationStroke(int stroke);
 
@@ -54,11 +59,13 @@ namespace sun_magic {
 		void Reclassify();
 		void CreateLines(std::vector<std::vector<sf::RectangleShape>>& lines, zinnia::Character *character, sf::Color color, size_t startStroke, size_t endStroke);
 		void CalcStrokeError();
-
+		
+		bool writable_;
 		zinnia::Character *character_;
 		sf::String unicode_;
 		int current_stroke_;
 
+		bool animate_continuously_;
 		zinnia::Character *trace_character_;
 		sf::String trace_unicode_;
 		int animating_stroke_;

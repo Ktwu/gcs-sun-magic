@@ -28,6 +28,7 @@ namespace sun_magic {
 
 	CharacterTile::CharacterTile(float x, float y, float width, float height) :
 		UiElement(x, y, width, height),
+		writable_(true),
 		character_(zinnia::Character::create()),
 		unicode_(),
 		current_stroke_(0),
@@ -55,6 +56,14 @@ namespace sun_magic {
 
 	CharacterTileStyle* CharacterTile::GetTileStyle() {
 		return &tilestyle_;
+	}
+
+	
+	bool CharacterTile::IsWritable() {
+		return writable_;
+	}
+	void CharacterTile::SetWritable(bool writable) {
+		writable_ = writable;
 	}
 
 	zinnia::Character * CharacterTile::GetCharacter() {
@@ -219,7 +228,7 @@ namespace sun_magic {
 		return trace_unicode_;
 	}
 	void CharacterTile::SetTraceCharacter(zinnia::Character *character) {
-		trace_character_ = character;
+		trace_character_ = tools::Resize(character, rect_.width, rect_.height);
 		
 		trace_unicode_ = (character == NULL) ? "" : tools::UTF8ToUTF32(character->value()); 
 		animating_stroke_ = -1;
@@ -232,6 +241,15 @@ namespace sun_magic {
 
 	bool CharacterTile::IsAnimating() {
 		return animating_stroke_ >= 0;
+	}
+	bool CharacterTile::IsAnimatingContinuously() {
+		return animate_continuously_;
+	}
+	void CharacterTile::SetAnimatingContinuously(bool animate_continuously) {
+		animate_continuously_ = animate_continuously;
+		if (animate_continuously_ && animating_stroke_ == -1) {
+			animating_stroke_ = 0;
+		}
 	}
 	int CharacterTile::GetAnimationStroke() {
 		return animating_stroke_;
@@ -274,6 +292,9 @@ namespace sun_magic {
 					// Reset animation stroke
 					current_line_distance_ = 0;
 					animating_lines_.clear();
+					if (animate_continuously_) {
+						animating_stroke_ = (animating_stroke_ + 1) % trace_character_->strokes_size();
+					}
 				}
 			} else {
 				current_line_distance_ += elapsed_seconds * tilestyle_.animation_speed;
@@ -333,13 +354,27 @@ namespace sun_magic {
 		sf::CircleShape circle(0.5f * tilestyle_.stroke_thickness);
 		circle.setOrigin(0.5f * tilestyle_.stroke_thickness, 0.5f * tilestyle_.stroke_thickness);
 		if (trace_character_ != NULL) {
-			// Draw trace character up to the currently animated stroke, or all strokes if no animation
-			size_t maxStroke = (animating_stroke_ < 0) ? trace_lines_.size() : std::min((int)trace_lines_.size(), animating_stroke_ + 1);		
-			circle.setFillColor(tilestyle_.trace_color);
-			for (size_t i = 0; i < maxStroke; i++) {
+			// Draw trace character up to the currently animated stroke	
+			circle.setFillColor(tilestyle_.animate_color);
+			for (size_t i = 0; i < animating_stroke_; i++) {
 				circle.setPosition((float)trace_character_->x(i, 0), (float)trace_character_->y(i, 0));
 				target->draw(circle);
 				for (size_t j = 0; j < trace_lines_[i].size(); j++) {
+					trace_lines_[i][j].setFillColor(tilestyle_.animate_color);
+					target->draw(trace_lines_[i][j]);
+					circle.setPosition((float)trace_character_->x(i, j+1), (float)trace_character_->y(i, j+1));
+					target->draw(circle);
+				}
+			}
+
+			// Draw strokes after animating stroke if animating continuously or no animating stroke
+			size_t maxStroke = (animating_stroke_ < 0 || animate_continuously_) ? trace_lines_.size() : 0;		
+			circle.setFillColor(tilestyle_.trace_color);
+			for (size_t i = animating_stroke_; i < maxStroke; i++) {
+				circle.setPosition((float)trace_character_->x(i, 0), (float)trace_character_->y(i, 0));
+				target->draw(circle);
+				for (size_t j = 0; j < trace_lines_[i].size(); j++) {
+					trace_lines_[i][j].setFillColor(tilestyle_.trace_color);
 					target->draw(trace_lines_[i][j]);
 					circle.setPosition((float)trace_character_->x(i, j+1), (float)trace_character_->y(i, j+1));
 					target->draw(circle);
@@ -374,6 +409,9 @@ namespace sun_magic {
 	}
 
 	void CharacterTile::ProcessEvent(Event event) {
+		if (!writable_)
+			return;
+
 		switch(event.type) {
 		case Event::E_MOUSE_PRESSED:
 			if (!is_writing_ && event.mouseButton.button == Mouse::Left) {

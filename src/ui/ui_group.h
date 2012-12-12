@@ -15,10 +15,10 @@ namespace sun_magic {
 		bool UiAdd(GameObject* object);
 		bool UiRemove(GameObject* object);
 		void UiClear();
-		int UiSize();
+		size_t UiSize();
 		void UiUpdateZOrdering();
 
-		GameObject* UpdateFocus(float mouse_x, float mouse_y, sf::Vector2i& abs_pos);
+		GameObject* UpdateFocus(int mouse_x, int mouse_y, sf::Vector2f& abs_pos);
 
 		void Register();
 		void Unregister();

@@ -97,7 +97,7 @@ namespace sun_magic {
 		}
 
 		text.setPosition(position);
-		target->draw(text);
+			target->draw(text);
 	}
 
 	void UiElement::ProcessEvent(Event event) {
@@ -127,7 +127,7 @@ namespace sun_magic {
 			->SetNormalColor(sf::Color(230,230,230))->SetNormalBorderColor(sf::Color(50,50,50))
 			->SetHoverColor(sf::Color(200,200,200))->SetHoverBorderColor(sf::Color(100,100,100))
 			->SetPressColor(sf::Color(150,150,150))->SetPressBorderColor(sf::Color(20,20,20))
-			->SetTextSize(25)->SetTextStyle(sf::Text::Style::Regular);
+			->SetTextSize(25)->SetTextStyle(sf::Text::Regular);
 		return button;
 	}
 	UiElement* UiElement::InitLabel(UiElement* label){

@@ -5,6 +5,7 @@
 #include "events/event.h"
 #include "objects/game_object.h"
 #include "tools/sfm.h"
+#include "ui/character_tile.h"
 
 namespace sun_magic {
 
@@ -12,14 +13,15 @@ namespace sun_magic {
 	public:
 		struct DictionaryEntry {
 			sf::Color outline;
-			sf::Sprite sprite;	// Picture of object
+			sf::Sprite sprite;
+			sf::String romanji;
+			CharacterTile *tile;
 		};
 
 		Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height, bool is_vertical);
 		~Dictionary();
 
-		void AddWord(sf::String word, sf::Sprite sprite);
-		sf::Color GetWordColor(sf::String word);
+		void AddWord(sf::String word);
 		void Clear();
 
 		void Register();
@@ -31,7 +33,7 @@ namespace sun_magic {
 		void ProcessEvent(Event event);
 
 	protected:
-		std::map<sf::String, DictionaryEntry> entries_;
+		std::vector<DictionaryEntry> entries_;
 		sf::Vector2f hide_pos_;
 		sf::Vector2f show_pos_;
 

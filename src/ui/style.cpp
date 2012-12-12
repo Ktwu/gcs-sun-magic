@@ -10,7 +10,7 @@ namespace sun_magic {
 
 	Style* Style::Clear() {
 		text_size = 25;
-		text_color = sf::Color::Transparent;
+		text_color = sf::Color::Black;
 		text_style = sf::Text::Regular;
 		text_padding = 0;
 		text_horizontal_align = CENTER;

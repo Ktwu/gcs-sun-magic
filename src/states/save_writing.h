@@ -41,7 +41,7 @@ namespace sun_magic {
 		sf::Text current_;
 		sf::Text save_;
 		FILE* trace_output_;
-		std::vector<sf::Uint32> traceable_characters_;
+		std::vector<sf::String> traceable_characters_;
 		zinnia::Character *character_;
 	};
 
