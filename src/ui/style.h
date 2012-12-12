@@ -27,6 +27,9 @@ namespace sun_magic {
 		Style* SetTextHorizontalAlignment(TextAlignment align);
 		Style* SetTextVerticalAlignment(TextAlignment align);
 
+		Style* SetIsEnabled(bool is_enabled);
+		Style* SetIsVisible(bool is_visible);
+
 		Style* SetAllowHover(bool allow_hover);
 		Style* SetAllowPress(bool allow_press);
 	
@@ -49,6 +52,9 @@ namespace sun_magic {
 		float			text_padding;
 		TextAlignment	text_horizontal_align;
 		TextAlignment	text_vertical_align;
+
+		bool			is_enabled;
+		bool			is_visible;
 
 		bool			allow_hover;
 		bool			allow_press;

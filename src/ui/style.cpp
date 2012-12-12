@@ -15,6 +15,8 @@ namespace sun_magic {
 		text_padding = 0;
 		text_horizontal_align = CENTER;
 		text_vertical_align = CENTER;
+		is_enabled = true;
+		is_visible = true;
 		allow_hover = false;
 		allow_press = false;
 		normal_color = sf::Color::Transparent;
@@ -56,6 +58,15 @@ namespace sun_magic {
 	}
 	Style* Style::SetTextVerticalAlignment(TextAlignment align) {
 		this->text_vertical_align = align;
+		return this;
+	}
+
+	Style* Style::SetIsEnabled(bool is_enabled) {
+		this->is_enabled = is_enabled;
+		return this;
+	}
+	Style* Style::SetIsVisible(bool is_visible) {
+		this->is_visible = is_visible;
 		return this;
 	}
 

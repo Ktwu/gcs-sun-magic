@@ -29,6 +29,8 @@ namespace sun_magic {
 	private:
 		static bool MapSort(std::pair<sf::String, int> a, std::pair<sf::String, int> b);
 		sf::String GetNewLevelHiragana();
+		void Hide(UiElement* element);
+		void Show(UiElement* element);
 
 		static const int NUM_HIRAGANA_LABELS = 5;
 
@@ -42,6 +44,9 @@ namespace sun_magic {
 		UiElement level_label_;
 		CharacterTile tile_;
 		UiElement hiragana_labels_[NUM_HIRAGANA_LABELS];
+
+		UiElement* selected_hiragana_;
+		int num_hiragana_left_;
 
 		std::vector<sf::String> levels_;
 		std::map<sf::String, int> hiragana_scores_;
