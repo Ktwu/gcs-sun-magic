@@ -29,13 +29,13 @@ namespace sun_magic {
 		UiElement::InitLabel(&level_label_);
 		level_label_.GetStyle()->SetNormalColor(sf::Color::Cyan);
 		level_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
-		level_label_.SetString("Ge to know your Animons!");
+		level_label_.SetString("New Animons!");
 		intro_display_.UiAdd(&level_label_);
 		temp_y += level_label_.GetSize().y + padding;
 
 		// init character tile for tracing
 		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
-		tile_.GetTileStyle()->SetGuideColor(sf::Color(200, 200, 200))->SetBorderColor(sf::Color(200, 200, 200));
+		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190));
 		tile_.GetStyle()->SetNormalColor(sf::Color::White);
 		intro_display_.UiAdd(&tile_);
 		temp_y += tile_.GetSize().y + padding;
@@ -61,8 +61,8 @@ namespace sun_magic {
 		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i) {
 			UiElement* label = &hiragana_labels_[i];
 			UiElement::InitButton(label);
-			label->GetStyle()->SetTextColor(sf::Color::Blue)
-				->SetTextSize(60)
+			label->GetStyle()->SetTextColor(sf::Color::Transparent)
+				->SetTextSize(70)
 				->SetNormalColor(sf::Color::White);
 
 			label->SetPosition(sf::Vector2f(temp_x, temp_y));
@@ -135,6 +135,7 @@ namespace sun_magic {
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
 			sf::Sprite sprite = asset_manager->GetHiraganaSprite(level_hiragana_[i], texture);
 			sprite.setScale(0.7, 0.7);
+			hiragana_labels_[i].SetString(level_hiragana_[i]);
 			hiragana_labels_[i].GetStyle()->SetTextFont(*font)->SetAllowHover(true)->SetAllowPress(true)
 				->SetNormalSprite(sprite)->SetHoverSprite(sprite)->SetPressSprite(sprite);
 			manager->RegisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
