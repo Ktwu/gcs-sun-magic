@@ -6,6 +6,7 @@ namespace sun_magic {
 
 	enum GameEvent {
 		DEFAULT,
+		ANIMATION_DONE,
 
 		// Test
 		KEY_CLICK,

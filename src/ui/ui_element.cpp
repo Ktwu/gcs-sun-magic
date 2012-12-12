@@ -79,7 +79,24 @@ namespace sun_magic {
 		text.setFont(style_.text_font);
 
 		sf::FloatRect text_size = text.getLocalBounds();
-		text.setPosition((size - sf::Vector2f(text_size.width, text_size.height)) * 0.5f);
+		sf::Vector2f position(style_.text_padding, style_.text_padding);
+
+		switch (style_.text_horizontal_align) {
+			case Style::TextAlignment::CENTER:
+				position.x = (size.x - text_size.width) * 0.5f;
+				break;
+			case Style::TextAlignment::LARGER:
+				position.x = size.x - text_size.width - style_.text_padding;
+		}
+		switch (style_.text_vertical_align) {
+			case Style::TextAlignment::CENTER:
+				position.y = (size.y - text_size.height) * 0.5f;
+				break;
+			case Style::TextAlignment::LARGER:
+				position.y = size.y - text_size.height - style_.text_padding;
+		}
+
+		text.setPosition(position);
 		target->draw(text);
 	}
 

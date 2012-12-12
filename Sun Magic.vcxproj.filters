@@ -40,6 +40,9 @@
     <Filter Include="src\ui">
       <UniqueIdentifier>{a3d9e34e-d662-44f6-b518-7fe979362cc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\animations">
+      <UniqueIdentifier>{08030e64-0d90-452f-afed-baefd6479be1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\backgrounds\bg_dummy1.jpg">
@@ -74,9 +77,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\game.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -137,11 +137,17 @@
     <ClCompile Include="src\ui\character_tile_style.cpp">
       <Filter>src\ui</Filter>
     </ClCompile>
+    <ClCompile Include="src\game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animations\move_animation.cpp">
+      <Filter>src\animations</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\card.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\game.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\stdafx.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -227,6 +233,18 @@
       <Filter>src\ui</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\character_tile_style.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animations\animation.h">
+      <Filter>src\animations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animations\move_animation.h">
+      <Filter>src\animations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\card.h">
       <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>

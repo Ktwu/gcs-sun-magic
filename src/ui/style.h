@@ -6,6 +6,13 @@ namespace sun_magic {
 
 	class Style {
 	public:
+
+		enum TextAlignment {
+			CENTER,
+			SMALLER,
+			LARGER
+		};
+
 		Style();
 		~Style();
 
@@ -15,6 +22,10 @@ namespace sun_magic {
 		Style* SetTextColor(sf::Color text_color);
 		Style* SetTextFont(sf::Font text_font);
 		Style* SetTextStyle(sf::Text::Style text_style);
+
+		Style* SetTextPadding(float padding);
+		Style* SetTextHorizontalAlignment(TextAlignment align);
+		Style* SetTextVerticalAlignment(TextAlignment align);
 
 		Style* SetAllowHover(bool allow_hover);
 		Style* SetAllowPress(bool allow_press);
@@ -35,6 +46,9 @@ namespace sun_magic {
 		int				text_size;
 		sf::Color		text_color;
 		sf::Text::Style text_style;
+		float			text_padding;
+		TextAlignment	text_horizontal_align;
+		TextAlignment	text_vertical_align;
 
 		bool			allow_hover;
 		bool			allow_press;

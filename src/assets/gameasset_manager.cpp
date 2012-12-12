@@ -94,46 +94,46 @@ namespace sun_magic {
 		}
 	}
 
+	// Textures
 	sf::Texture* GameAssetManager::GetTexture(void* key, std::string file) {
-		std::vector<sf::Texture*> vector;
-		std::vector<std::string> strings;
-		strings.push_back(file);
-
-		GetTextures(key, strings, vector);
-		return vector[0];
+		return GetAsset(key, file, &GameAssetManager::GetTextures);
 	}
-
 	void GameAssetManager::GetTextures(void* key, const std::vector<std::string>& texture_keys, std::vector<sf::Texture*>& textures) {
 		GetAssets(key, texture_keys, textures, this->textures_, this->texture_holders_, this->LoadTexture);
 	}
-
 	void GameAssetManager::ReturnTextures(void* key) {
 		ReturnAssets(key, this->textures_, this->texture_holders_);
 	}
-
-	sf::Font* GameAssetManager::GetFont(void* key, std::string file) {
-		std::vector<sf::Font*> vector;
-		std::vector<std::string> strings;
-		strings.push_back(file);
-
-		GetFonts(key, strings, vector);
-		return vector[0];
-	}
-
-	void GameAssetManager::GetFonts(void* key, const std::vector<std::string>& font_keys, std::vector<sf::Font*>& fonts) {
-		GetAssets(key, font_keys, fonts, this->fonts_, this->font_holders_, this->LoadFont);
-	}
-
-	void GameAssetManager::ReturnFonts(void* key) {
-		ReturnAssets(key, this->fonts_, this->font_holders_);
-	}
-
 	void GameAssetManager::CleanUnusedTextures() {
 		CleanUnusedAssets(textures_);
 	}
 
+	// Fonts
+	sf::Font* GameAssetManager::GetFont(void* key, std::string file) {
+		return GetAsset(key, file, &GameAssetManager::GetFonts);
+	}
+	void GameAssetManager::GetFonts(void* key, const std::vector<std::string>& font_keys, std::vector<sf::Font*>& fonts) {
+		GetAssets(key, font_keys, fonts, this->fonts_, this->font_holders_, this->LoadFont);
+	}
+	void GameAssetManager::ReturnFonts(void* key) {
+		ReturnAssets(key, this->fonts_, this->font_holders_);
+	}
 	void GameAssetManager::CleanUnusedFonts() {
 		CleanUnusedAssets(fonts_);
+	}
+
+	// Sound Buffers
+	sf::SoundBuffer* GameAssetManager::GetSoundBuffer(void* key, std::string file) {
+		return GetAsset(key, file, &GameAssetManager::GetSoundBuffers);
+	}
+    void GameAssetManager::GetSoundBuffers(void* key, const std::vector<std::string>& soundbuffer_keys, std::vector<sf::SoundBuffer*>& soundbuffers) {
+		GetAssets(key, soundbuffer_keys, soundbuffers, this->soundbuffers_, this->soundbuffer_holders_, this->LoadSoundBuffer);
+	}
+	void GameAssetManager::ReturnSoundBuffers(void* key) {
+		ReturnAssets(key, this->soundbuffers_, this->soundbuffer_holders_);
+	}
+	void GameAssetManager::CleanUnusedSoundBuffers() {
+		CleanUnusedAssets(soundbuffers_);
 	}
 
 	void GameAssetManager::GetTraceableCharacters(std::vector<sf::Uint32>& characters) {

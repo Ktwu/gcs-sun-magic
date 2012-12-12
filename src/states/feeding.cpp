@@ -37,6 +37,9 @@ namespace sun_magic {
 		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
 		tools::ScaleToWindowSize(background_);
 
+		// Load sound
+		sample_.setBuffer(*asset_manager->GetSoundBuffer(this, refs::sounds::SAMPLE));
+
 		// Load our game's UI
 		Game::GetInstance()->AddUIElements();
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
@@ -53,7 +56,7 @@ namespace sun_magic {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->RegisterListener(Event::E_GAME_EVENT, this);
-		float y = 350.f;
+		float y = 250.f;
 		float width = (size.x - 50) / 5;
 		for (size_t i = 0; i < hiraganas_.getSize(); i++) {
 			sf::String h = hiraganas_[i];
@@ -62,13 +65,13 @@ namespace sun_magic {
 			animon->LoadState(Animon::AnimonState::MEH);
 			sf::Sprite sprite = animon->GetSprite();
 
-			animon->SetZ(1);
+			animon->SetZ(-1);
 			animons_.push_back(animon);
 			event_manager->AddGameObject(animon);
 			event_manager->RegisterListener(Event::E_GAME_EVENT, this, animon);
 
 			ProgressBar *progressbar = new ProgressBar((i + 0.3f) * width, 0, y + sprite.getLocalBounds().height, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
-			progressbar->SetZ(10);
+			progressbar->SetZ(-2);
 			progressbars_.push_back(progressbar);
 			event_manager->AddGameObject(progressbar);
 
@@ -87,6 +90,7 @@ namespace sun_magic {
 	void Feeding::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTextures(this);
+		manager->ReturnSoundBuffers(this);
 
 		Game::GetInstance()->RemoveUIElements();
 
@@ -157,9 +161,16 @@ namespace sun_magic {
 		switch (event.type) {
 		case Event::E_HIRAGANA_DRAWN:
 			hiragana = event.message;
+
+			if (hiragana.isEmpty()) {
+				Game::GetInstance()->GetTileListLabel()->Hide();
+			} else {
+				Game::GetInstance()->GetTileListLabel()->Show();
+			}
 			break;
 		case Event::E_GAME_EVENT:
 			if (event.gameEvent == GameEvent::KEY_CLICK) {
+				sample_.play();
 				if (hiragana.getSize() > 0) {
 					size_t i = 0;
 					for (; i < animons_.size(); i++) {

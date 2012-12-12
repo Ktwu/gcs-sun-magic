@@ -1,8 +1,10 @@
 #pragma once
 
 #include "stdafx.h"
+#include "animations/move_animation.h"
 #include "events/event.h"
 #include "objects/game_object.h"
+#include "tools/sfm.h"
 
 namespace sun_magic {
 
@@ -13,7 +15,7 @@ namespace sun_magic {
 			sf::Sprite sprite;	// Picture of object
 		};
 
-		Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height);
+		Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height, bool is_vertical);
 		~Dictionary();
 
 		void AddWord(sf::String word, sf::Sprite sprite);
@@ -32,10 +34,13 @@ namespace sun_magic {
 		std::map<sf::String, DictionaryEntry> entries_;
 		sf::Vector2f hide_pos_;
 		sf::Vector2f show_pos_;
-		sf::Vector2f target_pos_;
-		float animate_time_;
+
+		bool is_vertical_;
 
 		sf::Font* font;
+		sf::Font* english_font;
+
+		MoveAnimation move_animation_;
 	};
 
 }

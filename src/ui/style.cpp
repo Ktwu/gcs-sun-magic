@@ -12,6 +12,9 @@ namespace sun_magic {
 		text_size = 25;
 		text_color = sf::Color::Transparent;
 		text_style = sf::Text::Regular;
+		text_padding = 0;
+		text_horizontal_align = CENTER;
+		text_vertical_align = CENTER;
 		allow_hover = false;
 		allow_press = false;
 		normal_color = sf::Color::Transparent;
@@ -41,6 +44,18 @@ namespace sun_magic {
 	}
 	Style* Style::SetTextStyle(sf::Text::Style text_style) {
 		this->text_style = text_style;
+		return this;
+	}
+	Style* Style::SetTextPadding(float padding) {
+		this->text_padding = padding;
+		return this;
+	}
+	Style* Style::SetTextHorizontalAlignment(TextAlignment align) {
+		this->text_horizontal_align = align;
+		return this;
+	}
+	Style* Style::SetTextVerticalAlignment(TextAlignment align) {
+		this->text_vertical_align = align;
 		return this;
 	}
 

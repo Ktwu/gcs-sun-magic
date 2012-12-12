@@ -44,15 +44,15 @@ namespace sun_magic {
 	}
 
 	void Game::AddUIElements() {
-		event_manager_->AddGameObject(tilelist_);
 		event_manager_->AddGameObject(dict_);
 		event_manager_->AddGameObject(listlabel_);
+		event_manager_->AddGameObject(tilelist_);
 	}
 
 	void Game::RemoveUIElements() {
-		event_manager_->RemoveGameObject(tilelist_);
 		event_manager_->RemoveGameObject(dict_);
 		event_manager_->RemoveGameObject(listlabel_);
+		event_manager_->RemoveGameObject(tilelist_);
 	}
 
 	Dictionary* Game::GetDictionary() {
@@ -63,7 +63,7 @@ namespace sun_magic {
 		return tilelist_;
 	}
 
-	UiElement* Game::GetTileListLabel() {
+	Card* Game::GetTileListLabel() {
 		return listlabel_;
 	}
 
@@ -85,17 +85,21 @@ namespace sun_magic {
 
 		// Init UI elements
 		sf::Vector2u size = main_window_.getSize();
-		float height = 300;
-		tilelist_ = new CharacterTileList(750.f - height, size.y - height, height, height, 100, 100, 1);
-		tilelist_->SetZ(-1);
-		tilelist_->GetStyle()->SetNormalSprite(sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD)));
+		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD));
+		float height = tilesprite.getGlobalBounds().height - 20;
+		float width = tilesprite.getGlobalBounds().width;
+		tilelist_ = new CharacterTileList(size.x - width, size.y - height, height, height, width - 200, height - 200, 1);
+		tilelist_->SetZ(10);
+		tilelist_->GetStyle()->SetNormalSprite(tilesprite);
 
-		listlabel_ = UiElement::InitLabel(new UiElement(750.f, size.y - height, size.x - 750.f, height));
-		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::KAORI))->SetTextSize(50);
-		listlabel_->SetZ(-1);
+		listlabel_ = (Card*) UiElement::InitLabel(new Card(size.x - 200, size.y - height - 15, size.x - 200, size.y - height - 55, width/2, size.y));
+		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::KAORI))->SetTextSize(50)
+			->SetTextPadding(0.f)->SetTextVerticalAlignment(Style::TextAlignment::SMALLER);
+		listlabel_->SetZ(9);
 
-		dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y);
-		dict_->SetZ(-2);
+		//dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y, true);
+		dict_ = new Dictionary(0, size.y - 20.f, 0, size.y - height, size.x, height, false);
+		dict_->SetZ(8);
 
 		// Init game states
 		game_machine_.Init(MAIN_MENU, new MainMenu());

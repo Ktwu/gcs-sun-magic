@@ -31,6 +31,7 @@ namespace sun_magic {
 		sf::String hiraganas_;
 		std::vector<Animon*> animons_;
 		std::vector<ProgressBar*> progressbars_;
+
 		GameState game_state_;
 		float feed_increment_;
 		float eat_rate_;
@@ -38,6 +39,8 @@ namespace sun_magic {
 		float ok_threshold_;
 
 		UiGroup intro_display_;
+
+		sf::Sound sample_;
 	};
 
 }

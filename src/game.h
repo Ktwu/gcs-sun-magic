@@ -5,6 +5,7 @@
 #include "events/event.h"
 #include "states/game_state.h"
 #include "states/machine.h"
+#include "ui/card.h"
 #include "ui/character_tilelist.h"
 #include "ui/dictionary.h"
 #include "ui/ui_element.h"
@@ -36,7 +37,7 @@ namespace sun_magic {
 		void RemoveUIElements();
 		CharacterTileList* GetTileList();
 		Dictionary* GetDictionary();
-		UiElement* GetTileListLabel();
+		Card* GetTileListLabel();
 
 		void Init();
 		void Run();
@@ -56,7 +57,7 @@ namespace sun_magic {
 		/* UI elements shared by everyone */
 		CharacterTileList* tilelist_;
 		Dictionary* dict_;
-		UiElement* listlabel_;
+		Card* listlabel_;
 		
 		EventManager *event_manager_;
 		GameState game_state_;

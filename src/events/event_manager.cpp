@@ -17,7 +17,7 @@ namespace sun_magic {
 
 	void EventManager::AddGameObject(GameObject *object) {
 		std::vector<GameObject*>::iterator focus_iter = game_objects_.begin();
-		while (focus_iter != game_objects_.end() && (*focus_iter)->GetZ() > object->GetZ())
+		while (focus_iter != game_objects_.end() && (*focus_iter)->GetZ() < object->GetZ())
 			focus_iter++;
 
 		game_objects_.insert(focus_iter, object);
@@ -44,6 +44,10 @@ namespace sun_magic {
 			object->Unregister();
 		}
 		game_objects_.clear();
+	}
+
+	void EventManager::UpdateGameObjectOrder() {
+		std::sort(game_objects_.begin(), game_objects_.end(), tools::ZSort);
 	}
 
 	std::vector<GameObject*>& EventManager::GetGameObjects() {
@@ -186,6 +190,8 @@ namespace sun_magic {
 	void EventManager::Update() {
 		for (size_t i = 0; i < events_.size(); ++i) {
 			Event event = events_[i];
+			
+			/* Hidden events -- relevant to the state of the event manager */
 
 			EventToFocusToListenerSetMap::iterator event_iter = eventfocus__listener_map_.find(event.type);
 			if (event_iter == eventfocus__listener_map_.end()) {

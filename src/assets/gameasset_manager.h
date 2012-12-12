@@ -40,6 +40,11 @@ namespace sun_magic {
 		void ReturnFonts(void* key);
 		void CleanUnusedFonts();
 
+		sf::SoundBuffer* GetSoundBuffer(void* key, std::string file);
+		void GetSoundBuffers(void* key, const std::vector<std::string>& soundbuffer_keys, std::vector<sf::SoundBuffer*>& soundbuffers);
+		void ReturnSoundBuffers(void* key);
+		void CleanUnusedSoundBuffers();
+
 		void GetTraceableCharacters(std::vector<sf::Uint32>& characters);
 		zinnia::Character* GetTraceCharacter(sf::Uint32 utf32_character);
 
@@ -68,6 +73,14 @@ namespace sun_magic {
 				font = NULL;
 			}
 			return font;
+		}
+		static sf::SoundBuffer* LoadSoundBuffer(std::string file) {
+			sf::SoundBuffer* buffer = new sf::SoundBuffer();
+			if (!buffer->loadFromFile(file)) {
+				delete buffer;
+				buffer = NULL;
+			}
+			return buffer;
 		}
 
 		template<class T>
@@ -100,6 +113,15 @@ namespace sun_magic {
 				assets.push_back(ref);
 			}
 		    lock_.unlock();
+		}
+
+		template<class T>
+		T* GetAsset(void* key, std::string file, void (GameAssetManager::*getter)(void*, const std::vector<std::string>&, std::vector<T*>&)) {
+			std::vector<T*> assets;
+			std::vector<std::string> strings;
+			strings.push_back(file);
+			((this)->*(getter))(key, strings, assets);
+			return assets[0];
 		}
 
 		template<class T>
@@ -139,6 +161,9 @@ namespace sun_magic {
 
 		std::hash_map<std::string, GameAsset<sf::Font>*> fonts_;
 		std::hash_map<void*, std::vector<std::string>> font_holders_;
+
+		std::hash_map<std::string, GameAsset<sf::SoundBuffer>*> soundbuffers_;
+		std::hash_map<void*, std::vector<std::string>> soundbuffer_holders_;
 
 		std::hash_map<sf::Uint32, zinnia::Character*> trace_characters_;
 

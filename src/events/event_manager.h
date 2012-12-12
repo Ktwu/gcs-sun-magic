@@ -24,6 +24,8 @@ namespace sun_magic {
 
 		void ClearGameObjects();
 
+		void UpdateGameObjectOrder();
+
 		std::vector<GameObject*>& GetGameObjects();
 
 		// Gets the current focus. This is the GameObject that the mouse is intersecting with the lowest Z value.

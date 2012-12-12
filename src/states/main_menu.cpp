@@ -41,6 +41,8 @@ namespace sun_magic {
 	void MainMenu::RegisterState(MachineState<GameState>* previous_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 
+		sf::Font* font = manager->GetFont(this, refs::fonts::MSMINCHO);
+
 		// Load background
 		background_.setTexture(*manager->GetTexture(this, refs::textures::backgrounds::TITLE));
 		tools::ScaleToWindowSize(background_);
@@ -58,8 +60,8 @@ namespace sun_magic {
 		sf::Sprite hover = sf::Sprite(*textures[1]);
 		sf::Sprite press = sf::Sprite(*textures[2]);
 
-		play_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press);
-		record_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press);
+		play_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)->SetTextFont(*font);
+		record_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)->SetTextFont(*font);
 
 		game_state_ = MAIN_MENU;
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
@@ -72,6 +74,7 @@ namespace sun_magic {
 	void MainMenu::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTextures(this);
+		manager->ReturnFonts(this);
 		
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RemoveGameObject(&play_);

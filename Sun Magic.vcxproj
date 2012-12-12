@@ -23,6 +23,7 @@
     <None Include="assets\objects\neko.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\animations\move_animation.cpp" />
     <ClCompile Include="src\assets\gameasset_manager.cpp" />
     <ClCompile Include="src\events\event_manager.cpp" />
     <ClCompile Include="src\events\gameevent_manager.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\states\splash.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\tools\tools.cpp" />
+    <ClCompile Include="src\ui\card.cpp" />
     <ClCompile Include="src\ui\character_tile.cpp" />
     <ClCompile Include="src\ui\character_tilelist.cpp" />
     <ClCompile Include="src\ui\character_tile_style.cpp" />
@@ -46,6 +48,8 @@
     <ClCompile Include="src\ui\ui_group.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\animations\animation.h" />
+    <ClInclude Include="src\animations\move_animation.h" />
     <ClInclude Include="src\assets\gameasset.h" />
     <ClInclude Include="src\assets\gameasset_manager.h" />
     <ClInclude Include="src\events\event.h" />
@@ -69,6 +73,7 @@
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\tools\sfm.h" />
     <ClInclude Include="src\tools\tools.h" />
+    <ClInclude Include="src\ui\card.h" />
     <ClInclude Include="src\ui\character_tile.h" />
     <ClInclude Include="src\ui\character_tilelist.h" />
     <ClInclude Include="src\ui\character_tile_style.h" />

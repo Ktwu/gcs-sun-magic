@@ -10,15 +10,16 @@
 
 namespace sun_magic {
 
-	Dictionary::Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height) : 
-		GameObject(hide_x,hide_y,width,height)
+	Dictionary::Dictionary(float hide_x, float hide_y, float show_x, float show_y, float width, float height, bool is_vertical) : 
+		//GameObject(hide_x,hide_y,width,height),
+		GameObject(show_x, show_y, width, height),
+		hide_pos_(sf::Vector2f(hide_x, hide_y)),
+		show_pos_(sf::Vector2f(show_x, show_y)),
+		is_vertical_(is_vertical),
+		move_animation_(this, .3f)
 	{
-		animate_time_ = 0.3f;
-		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
-		hide_pos_ = sf::Vector2f(hide_x, hide_y);
-		show_pos_ = sf::Vector2f(show_x, show_y);
-		target_pos_ = hide_pos_;
 		font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::KAORI);
+		english_font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
 	}
 	Dictionary::~Dictionary() {
 		GameAssetManager::GetInstance()->ReturnFonts(this);
@@ -46,15 +47,7 @@ namespace sun_magic {
 	}
 
 	void Dictionary::Update(float elapsed_time) {
-		float animate_speed_ = sfm::Length(hide_pos_ - show_pos_) / animate_time_;
-		sf::Vector2f dist = target_pos_ - GetPosition();
-		float length = sfm::Length(dist);
-		float max_dist = animate_speed_ * elapsed_time;
-		if (length > max_dist) {
-			dist *= max_dist / length;
-		}
-		rect_.left += dist.x;
-		rect_.top += dist.y;
+		//move_animation_.Update(elapsed_time);
 	}
 	void Dictionary::Draw(sf::RenderTarget *target) {
 		sf::Vector2f size = GetSize();
@@ -66,18 +59,27 @@ namespace sun_magic {
 		target->draw(rect);
 
 		const float padding = 20;
+		float x = padding;
 		float y = padding;
 
-		sf::Text text(sf::String("D\nI\nC\nT\nI\nO\nN\nA\nR\nY"));
-		text.setFont(*font);
+		sf::Text text;
+		text.setFont(*english_font);
 		text.setColor(sf::Color::Blue);
 		text.setCharacterSize(25);
-		text.setPosition(5, y);
+		text.setPosition(x, y);
+
+		if (is_vertical_) {
+			text.setString(sf::String("D\nI\nC\nT\nI\nO\nN\nA\nR\nY"));
+			x += text.getGlobalBounds().width + padding;
+		} else {
+			text.setString(sf::String("DICTIONARY"));
+			y += text.getGlobalBounds().height + padding;
+		}
 		target->draw(text);
 
 		for (std::map<sf::String, DictionaryEntry>::iterator iter = entries_.begin(); iter != entries_.end(); iter++) {
 			sf::Sprite sprite = iter->second.sprite;
-			sprite.setPosition(padding, y);
+			sprite.setPosition(x, y);
 			target->draw(sprite);
 			sf::FloatRect sprite_bounds = sprite.getGlobalBounds();
 
@@ -85,19 +87,26 @@ namespace sun_magic {
 			text.setFont(*font);
 			text.setColor(iter->second.outline);
 			text.setCharacterSize(50);
-			text.setPosition(2.f * padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
+
+			if (is_vertical_) {
+				text.setPosition(x + padding + sprite_bounds.width, y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
+				y += std::max(sprite_bounds.height, text.getGlobalBounds().height) + padding;
+			} else {
+				text.setPosition(x + sprite_bounds.width/2 - text.getGlobalBounds().width/2, y + padding + sprite_bounds.height);
+				x += std::max(sprite_bounds.width, text.getGlobalBounds().width) + padding;
+			}
+
 			target->draw(text);
-			y += std::max(sprite_bounds.height, text.getLocalBounds().height) + padding;
 		}
 	}
 
 	void Dictionary::ProcessEvent(Event event) {
 		switch (event.type) {
 		case Event::E_MOUSE_ENTERED:
-			target_pos_ = show_pos_;
+			move_animation_.SetEnd(show_pos_);
 			break;
 		case Event::E_MOUSE_EXITED:
-			target_pos_ = hide_pos_;
+			move_animation_.SetEnd(hide_pos_);
 			break;
 		}
 	}
