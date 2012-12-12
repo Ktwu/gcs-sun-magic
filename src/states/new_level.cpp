@@ -13,8 +13,39 @@
 namespace sun_magic {
 
 	NewLevelState::NewLevelState() {
-		start_button_ = UiElement(0, 0, 200, 40, "Start");
+		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
+		sf::Vector2u size = window->getSize();
+
+		float padding = 20;
+		float temp_y = padding;
+		
+		// init ui group
+		UiElement::InitLabel(&intro_display_);
+		intro_display_.SetPosition(sf::Vector2f(size.x * .25f, 0.f));
+		intro_display_.SetSize(sf::Vector2f(size.x * .5f, (float)size.y));
+		intro_display_.GetStyle()->SetNormalColor(sf::Color(100, 100, 100));
+
+		// init label for level
+		UiElement::InitLabel(&level_label_);
+		level_label_.GetStyle()->SetNormalColor(sf::Color::Cyan);
+		level_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
+		level_label_.SetString("Feeding Time Warmup!");
+		intro_display_.UiAdd(&level_label_);
+		temp_y += level_label_.GetSize().y + padding;
+
+		// init character tile for tracing
+		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
+		tile_.GetTileStyle()->SetGuideColor(sf::Color(200, 200, 200))->SetBorderColor(sf::Color(200, 200, 200));
+		tile_.GetStyle()->SetNormalColor(sf::Color::White);
+		intro_display_.UiAdd(&tile_);
+		temp_y += tile_.GetSize().y + padding;
+
 		UiElement::InitButton(&start_button_);
+		start_button_.SetSize(sf::Vector2f(200, 40));
+		start_button_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, 200), temp_y));
+		start_button_.SetString("START!");
+		intro_display_.UiAdd(&start_button_);
+		temp_y += start_button_.GetSize().y + padding;
 
 		/* Treat the vector like a queue and push our levels on backwards */
 		levels_.push_back(L"さしすせそ");
@@ -23,16 +54,24 @@ namespace sun_magic {
 		for (int i = 0; i < GameAssetManager::NUM_SYMBOLS; ++i)
 			hiragana_scores_[GameAssetManager::hiragana_strings[i]] = 0;
 
-		for (int i = 0; i < 5; ++i)
-			intro_display_.UiAdd(UiElement::InitLabel(new UiElement(0, 0, 0, 0, "--")));
-		intro_display_.UiAdd(&start_button_);
+		float temp_padding = 5;
+		float temp_width = (intro_display_.GetSize().x - temp_padding) / NUM_HIRAGANA_LABELS - temp_padding;
+		float temp_x = temp_padding;
+
+		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i) {
+			UiElement* label = &hiragana_labels_[i];
+			UiElement::InitButton(label);
+			label->GetStyle()->SetTextColor(sf::Color::Blue)->SetTextSize(60)->SetNormalColor(sf::Color::White);
+
+			label->SetPosition(sf::Vector2f(temp_x, temp_y));
+			label->SetSize(sf::Vector2f(temp_width, temp_width));
+
+			intro_display_.UiAdd(&hiragana_labels_[i]);
+			temp_x += label->GetSize().x + temp_padding;
+		}
 	}
 
 	NewLevelState::~NewLevelState() {
-		intro_display_.UiRemove(&start_button_);
-		for (int i = 0; i < 5; ++i) {
-			delete intro_display_[i];
-		}
 		intro_display_.UiClear();
 	}
 
@@ -69,46 +108,37 @@ namespace sun_magic {
 
 	void NewLevelState::RegisterState(MachineState<GameState>* previous_state) {
 		state_ = GameState::NEW_LEVEL_LOAD;
-		std::cout << "NewLevelState TIME!\n";
 
+		EventManager* manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
+
 		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
-		// The image might be a little too big, so scale it so it fits in the window
 		tools::ScaleToWindowSize(background_);
 
-		// Load our game's UI
-		//Game::GetInstance()->AddUIElements();
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
-		intro_display_.SetSize(sf::Vector2f(700, 400));
-		sf::Vector2f pos = intro_display_.GetSize();
-		pos.x = (size.x - pos.x)/2;
-		pos.y = (size.y - pos.y)/2;
-		intro_display_.SetPosition(pos);
-		
+		sf::Font* font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::KAORI);
+		sf::Font* english_font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
+
+		// Set the font for common UI elements
+		level_label_.GetStyle()->SetTextFont(*english_font);
+		start_button_.GetStyle()->SetTextFont(*english_font);
+
 		// Load up the hiragana we're going to be teaching for this level.
 		GetNewLevelHiragana();
+		int width = intro_display_.GetSize().x / 5.f;
 
-		float width = intro_display_.GetSize().x / 5.f;
-		sf::Font* font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
-		size_t i;
+		int i;
 		for (i = 0; i < level_hiragana_.getSize(); ++i) {
-			UiElement* label = (UiElement*) intro_display_[i];
-			label->GetStyle()->SetTextFont(*font)->SetTextColor(sf::Color::Blue)->SetTextSize(60)
-				->SetNormalBorderColor(sf::Color::Transparent)->SetNormalColor(sf::Color::Transparent);
-			label->SetPosition(sf::Vector2f(width*i, 0));
-			label->SetSize(sf::Vector2f(width, width));
-			label->SetString(level_hiragana_[i]);
+			hiragana_labels_[i].GetStyle()->SetTextFont(*font)->SetAllowHover(true)->SetAllowPress(true);
+			hiragana_labels_[i].SetString(level_hiragana_[i]);
+			manager->RegisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
 		}
-		for (; i < intro_display_.UiSize()-1; ++i) {
-			UiElement* label = (UiElement*) intro_display_[i];
-			label->SetSize(sf::Vector2f(0,0));
-			label->SetString("");
+		for (; i < NUM_HIRAGANA_LABELS; ++i) {
+			hiragana_labels_[i].GetStyle()->SetTextFont(sf::Font())->SetAllowHover(false)->SetAllowPress(false);
+			hiragana_labels_[i].SetString("");
 		}
 
-		start_button_.SetPosition(sf::Vector2f(0, width));
-		start_button_.GetStyle()->SetAllowPress(true);
-		EventManager* manager = Game::GetInstance()->GetEventManager();
 		manager->AddGameObject(&intro_display_);
 		manager->RegisterListener(Event::E_CLICKED, this, &start_button_);
 	}
@@ -121,6 +151,11 @@ namespace sun_magic {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		manager->RemoveGameObject(&intro_display_);
 		manager->UnregisterListener(Event::E_CLICKED, this, &start_button_);
+
+		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i)
+			manager->UnregisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
+
+		tile_.SetTraceCharacter(NULL);
 	}
 
 	GameState NewLevelState::Update(float elapsed_time) {
@@ -143,7 +178,14 @@ namespace sun_magic {
 				--hiragana_scores_[event.message[0]];
 			break;
 		case Event::E_CLICKED:
-			state_ = GameState::FEEDING;
+			if (event.focus == &start_button_)
+				state_ = GameState::FEEDING;
+			else {
+				GameAssetManager* manager = GameAssetManager::GetInstance();
+				tile_.Clear();
+				tile_.SetTraceCharacter(manager->GetTraceCharacter(event.message[0]));
+				tile_.SetAnimationStroke(0);
+			}
 		}
 		
 	}

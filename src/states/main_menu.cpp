@@ -101,10 +101,10 @@ namespace sun_magic {
 			break;
 		case 1:
 			sf::Color black = sf::Color::Black;
-			float time = animate_timer_.getElapsedTime().asMilliseconds();
+			float time = animate_timer_.getElapsedTime().asSeconds();
 			black.a = sf::Uint8(255 * (time / 1000.f));
 
-			if (time >= 1000.f) {
+			if (time >= 1.f) {
 				animate_state_ = -1;
 				game_state_ = after_state_;
 			}

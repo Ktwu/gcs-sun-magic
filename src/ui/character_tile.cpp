@@ -228,7 +228,7 @@ namespace sun_magic {
 		return trace_unicode_;
 	}
 	void CharacterTile::SetTraceCharacter(zinnia::Character *character) {
-		trace_character_ = tools::Resize(character, rect_.width, rect_.height);
+		trace_character_ = tools::Resize(character, (size_t)rect_.width, (size_t)rect_.height);
 		
 		trace_unicode_ = (character == NULL) ? "" : tools::UTF8ToUTF32(character->value()); 
 		animating_stroke_ = -1;
@@ -356,7 +356,7 @@ namespace sun_magic {
 		if (trace_character_ != NULL) {
 			// Draw trace character up to the currently animated stroke	
 			circle.setFillColor(tilestyle_.animate_color);
-			for (size_t i = 0; i < animating_stroke_; i++) {
+			for (int i = 0; i < animating_stroke_; i++) {
 				circle.setPosition((float)trace_character_->x(i, 0), (float)trace_character_->y(i, 0));
 				target->draw(circle);
 				for (size_t j = 0; j < trace_lines_[i].size(); j++) {

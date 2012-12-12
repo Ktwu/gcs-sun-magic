@@ -88,7 +88,7 @@ namespace sun_magic {
 		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD));
 		float height = tilesprite.getGlobalBounds().height + 20;
 		float width = tilesprite.getGlobalBounds().width;
-		tilelist_ = new CharacterTileList(size.x - width, size.y - height, height, height, width - 200, height - 200, 1);
+		tilelist_ = new CharacterTileList(size.x - width, size.y - height, width, height, width - 200, height - 200, 1);
 		tilelist_->SetZ(10);
 		tilelist_->GetStyle()->SetNormalSprite(tilesprite);
 

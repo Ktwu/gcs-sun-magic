@@ -147,7 +147,7 @@ namespace sun_magic {
 		return trace_characters_[hiragana[0]];
 	}
 
-		sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
+	sf::Sprite GameAssetManager::GetHiraganaSprite(sf::String hiragana, sf::Texture* sprites) {
 		int index = GetHiraganaIndex(hiragana);
 		int pos = symbols_pos[index];
 

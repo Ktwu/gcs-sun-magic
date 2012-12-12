@@ -19,5 +19,7 @@ namespace sun_magic {
 		sf::Color HSVColor(float h, float s, float v);
 
 		zinnia::Character* Resize(zinnia::Character* character, size_t width, size_t height);
+
+		float Center(float range, float local_range);
 	}
 }

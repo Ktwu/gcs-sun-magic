@@ -46,13 +46,13 @@ namespace sun_magic {
 		// Find all intersecting focus objects
 		GameObject::UpdateFocus(x, y, abs_pos);
 
-		x -= GetRect().left;
-		y -= GetRect().top;
+		x -= (int)GetRect().left;
+		y -= (int)GetRect().top;
 
 		std::vector<GameObject*> intersections;
 		for (std::vector<GameObject*>::iterator focus_iter = objects_.begin(); focus_iter != objects_.end(); focus_iter++) {
 			GameObject *object = *focus_iter;
-			if (object->GetRect().contains(x, y)) {
+			if (object->GetRect().contains((float)x, (float)y)) {
 				intersections.push_back(object);
 			}
 		}

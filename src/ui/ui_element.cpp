@@ -97,7 +97,7 @@ namespace sun_magic {
 		}
 
 		text.setPosition(position);
-			target->draw(text);
+		target->draw(text);
 	}
 
 	void UiElement::ProcessEvent(Event event) {
@@ -106,6 +106,7 @@ namespace sun_magic {
 			if (state_ == PRESSED) {
 				// Send a click event to listeners
 				event.type = Event::E_CLICKED;
+				event.message = string_;
 				Game::GetInstance()->GetEventManager()->AddEvent(event);
 			}
 		case Event::E_MOUSE_ENTERED:
@@ -127,13 +128,11 @@ namespace sun_magic {
 			->SetNormalColor(sf::Color(230,230,230))->SetNormalBorderColor(sf::Color(50,50,50))
 			->SetHoverColor(sf::Color(200,200,200))->SetHoverBorderColor(sf::Color(100,100,100))
 			->SetPressColor(sf::Color(150,150,150))->SetPressBorderColor(sf::Color(20,20,20))
-			->SetTextSize(25)->SetTextStyle(sf::Text::Regular);
+			->SetTextSize(25)->SetTextStyle(sf::Text::Style::Regular)->SetTextColor(sf::Color::Black);
 		return button;
 	}
 	UiElement* UiElement::InitLabel(UiElement* label){
-		InitButton(label)->GetStyle()->SetAllowHover(false)->SetAllowPress(false)
-			->SetTextColor(sf::Color::Black)
-			->SetNormalColor(sf::Color::White);
+		InitButton(label)->GetStyle()->SetAllowHover(false)->SetAllowPress(false);
 		return label;
 	}
 

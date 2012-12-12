@@ -191,13 +191,6 @@ namespace sun_magic {
 
 					Game::GetInstance()->GetTileList()->Clear();
 					hiragana.clear();
-				} else {
-					size_t i = 0;
-					for (; i < animons_.size(); i++) {
-						if (animons_[i] == event.source) {
-							Game::GetInstance()->GetTileList()->SetTraceWord(animons_[i]->GetWord());	
-						}
-					}
 				}
 			}
 			break;

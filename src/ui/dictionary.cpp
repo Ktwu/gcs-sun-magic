@@ -37,7 +37,7 @@ namespace sun_magic {
 		entry.sprite = sprite;
 		entry.romanji = GameAssetManager::romaji_strings[index];
 		entry.tile = new CharacterTile(0, 0, 128, 128);
-		entry.tile->SetZ(8.1);
+		entry.tile->SetZ(8.1f);
 		entry.tile->SetWritable(false);
 		entry.tile->SetTraceCharacter(asset_manager->GetTraceCharacter(word));
 		entry.tile->SetAnimatingContinuously(true);

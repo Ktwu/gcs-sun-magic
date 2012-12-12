@@ -124,5 +124,10 @@ namespace sun_magic {
 
 			return new_char;
 		}
+
+		float Center(float range, float local_range) {
+			return (range - local_range) / 2;
+		}
+
 	}
 }
