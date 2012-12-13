@@ -13,7 +13,7 @@
 
 namespace sun_magic {
 	
-	static const float MAX_ERROR = 50.f;
+	static const float MAX_ERROR = 40.f;
 
 	zinnia::Recognizer *CharacterTile::_recognizer = NULL;
 
@@ -170,12 +170,12 @@ namespace sun_magic {
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
 
 		current_stroke_++;
-		Reclassify();
 		if (trace_character_ != NULL) {
 			CalcStrokeError();
 			if (animating_stroke_ == NumStrokes() - 1 && stroke_errors_.back() < MAX_ERROR)
 				SetAnimationStroke(NumStrokes());
 		}
+		Reclassify();
 	}
 	void CharacterTile::UndoStroke() {
 		if (current_stroke_ < 0)
