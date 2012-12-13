@@ -45,7 +45,7 @@ namespace sun_magic {
 
 		// init character tile for tracing
 		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
-		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190));
+		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190))->SetErrorColor(sf::Color::Red);
 		tile_.GetStyle()->SetNormalColor(sf::Color::White);
 		intro_display_.UiAdd(&tile_);
 		temp_y += tile_.GetSize().y + padding;
@@ -235,8 +235,8 @@ namespace sun_magic {
 					hiragana_done_[selected_index_] = true;
 					sf::Color color = manager->symbols_colors[(manager->GetHiraganaIndex(event.message[0]))];
 					label->GetStyle()->SetNormalColor(color)
-						->SetHoverColor(tools::Multiply(color, 0.9f))
-						->SetPressColor(tools::Multiply(color, 0.8f));
+						->SetHoverColor(tools::Multiply(color, 0.8f))
+						->SetPressColor(tools::Multiply(color, 0.6f));
 
 					int i = 0;
 					for (; i < num_hiragana_; i++) {

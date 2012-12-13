@@ -12,6 +12,8 @@
 #include "ui/character_tile_style.h"
 
 namespace sun_magic {
+	
+	static const float MAX_ERROR = 50.f;
 
 	zinnia::Recognizer *CharacterTile::_recognizer = NULL;
 
@@ -171,6 +173,8 @@ namespace sun_magic {
 		Reclassify();
 		if (trace_character_ != NULL) {
 			CalcStrokeError();
+			if (animating_stroke_ == NumStrokes() - 1 && stroke_errors_.back() < MAX_ERROR)
+				SetAnimationStroke(NumStrokes());
 		}
 	}
 	void CharacterTile::UndoStroke() {
@@ -214,6 +218,14 @@ namespace sun_magic {
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
 		stroke_errors_.clear();
 		Reclassify();
+	}
+	float CharacterTile::GetError() {
+		float error = 0;
+		for (size_t i = 0; i < stroke_errors_.size(); i++) {
+			error = std::max(error, stroke_errors_[i]);
+		}
+
+		return error;
 	}
 	float CharacterTile::GetStrokeError(size_t stroke) {
 		if (trace_character_ == NULL)
@@ -352,6 +364,19 @@ namespace sun_magic {
 		rect.setSize(sf::Vector2f(tilestyle_.stroke_thickness, size.y));
 		target->draw(rect);
 
+		// Draw error
+		if (stroke_errors_.size() > 0 && tilestyle_.error_color != sf::Color::Transparent) {
+			sf::Text error_text;
+			error_text.setColor(tilestyle_.error_color);
+			error_text.setCharacterSize(20);
+			char buf[128];
+			std::sprintf(buf, "%.0f", GetError());
+			error_text.setString("Error: " + sf::String(buf));
+			sf::FloatRect error_bounds = error_text.getLocalBounds();
+			error_text.setPosition(0, size.y - error_bounds.height - 5);
+			target->draw(error_text);
+		}
+
 		sf::CircleShape circle(0.5f * tilestyle_.stroke_thickness);
 		circle.setOrigin(0.5f * tilestyle_.stroke_thickness, 0.5f * tilestyle_.stroke_thickness);
 		if (trace_character_ != NULL) {
@@ -445,7 +470,6 @@ namespace sun_magic {
 			if (is_writing_) {
 				is_writing_ = false;
 				EndStroke();
-				SetAnimationStroke(NumStrokes());
 				std::cout << "End Stroke" << std::endl;
 			}
 			break;
@@ -455,8 +479,11 @@ namespace sun_magic {
 	void CharacterTile::Reclassify () {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		Event event;
+
+		float error = GetError();
 		event.type = Event::E_HIRAGANA_DRAWN;
 		event.focus = this;
+		event.hiraganaDrawn.error = error;
 
 		if (current_stroke_ == 0) {
 			unicode_ = sf::String();
@@ -466,7 +493,7 @@ namespace sun_magic {
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
 		if (result) {
-			if (result->score(0) > 0.0f) {
+			if (result->score(0) > 0.0f && error < MAX_ERROR) {
 				unicode_ = tools::UTF8ToUTF32(result->value(0));
 			} else {
 				unicode_ = sf::String();
