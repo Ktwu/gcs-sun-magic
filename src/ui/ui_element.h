@@ -26,6 +26,9 @@ namespace sun_magic {
 		sf::String GetString();
 		void SetString(sf::String string);
 
+		UiElementState GetState();
+		void SetState(UiElementState state);
+
 		void Register();
 		void Unregister();
 
@@ -37,8 +40,7 @@ namespace sun_magic {
 	protected:
 		sf::String string_;
 		Style style_;
-
-		int state_;
+		UiElementState state_;
 	};
 
 }

@@ -38,7 +38,7 @@ namespace sun_magic {
 		float happy_threshold_;
 		float ok_threshold_;
 
-		UiGroup intro_display_;
+		UiElement info_label_;
 
 		sf::Sound sample_;
 	};

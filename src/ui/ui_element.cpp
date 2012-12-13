@@ -31,6 +31,13 @@ namespace sun_magic {
 		string_ = string;
 	}
 
+	UiElement::UiElementState UiElement::GetState() {
+		return state_;
+	}
+	void UiElement::SetState(UiElement::UiElementState state) {
+		state_ = state;
+	}
+
 	void UiElement::Register() {
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_ENTERED, this, this);
 		Game::GetInstance()->GetEventManager()->RegisterListener(Event::E_MOUSE_EXITED, this, this);

@@ -15,6 +15,7 @@ namespace sun_magic {
 		static const int COL_SIZE = 11;
 		static sf::String hiragana_strings[];
 		static std::string romaji_strings[];
+		static sf::String about_strings[];
 		static sf::Color symbols_colors[];
 		static int symbols_pos[];
 

@@ -102,6 +102,10 @@ namespace sun_magic {
 			}
 		}
 
+		sf::Color Multiply(sf::Color color, float m) {
+			return sf::Color(sf::Uint8(m * color.r), sf::Uint8(m * color.g), sf::Uint8(m * color.b), color.a);
+		}
+
 		zinnia::Character* Resize(zinnia::Character* character, size_t width, size_t height) {
 			if (character == NULL ||
 				(character->height() == height && character->width() == width))

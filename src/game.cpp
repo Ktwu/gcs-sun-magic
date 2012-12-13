@@ -86,7 +86,7 @@ namespace sun_magic {
 		// Init UI elements
 		sf::Vector2f size = sf::Vector2f(main_window_.getSize());
 		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD));
-		float height = tilesprite.getGlobalBounds().height + 20;
+		float height = tilesprite.getGlobalBounds().height - 20;
 		float width = tilesprite.getGlobalBounds().width;
 		tilelist_ = new CharacterTileList(size.x - width, size.y - height, width, height, width - 200, height - 200, 1);
 		tilelist_->SetZ(10);
@@ -97,6 +97,7 @@ namespace sun_magic {
 			->SetTextPadding(0.f)->SetTextVerticalAlignment(Style::TextAlignment::SMALLER);
 		listlabel_->SetZ(9);
 
+		height = tilesprite.getGlobalBounds().height + 20;
 		//dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y, true);
 		dict_ = new Dictionary(0, size.y - 20.f, 0, size.y - height, size.x, height, false);
 		dict_->SetZ(8);

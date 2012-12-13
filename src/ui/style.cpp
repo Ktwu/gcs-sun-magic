@@ -28,7 +28,7 @@ namespace sun_magic {
 		normal_sprite = sf::Sprite();
 		hover_sprite = sf::Sprite();
 		press_sprite = sf::Sprite();
-		text_font = sf::Font();
+		text_font = sf::Font::getDefaultFont();
 		return this;
 	}
 

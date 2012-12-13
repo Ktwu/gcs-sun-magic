@@ -31,6 +31,7 @@ namespace sun_magic {
 		sf::String GetNewLevelHiragana();
 		void Hide(UiElement* element);
 		void Show(UiElement* element);
+		void SelectLabel(int index);
 
 		static const int NUM_HIRAGANA_LABELS = 5;
 
@@ -42,11 +43,13 @@ namespace sun_magic {
 
 		UiGroup intro_display_;
 		UiElement level_label_;
+		UiElement tip_label_;
 		CharacterTile tile_;
+		size_t num_hiragana_;
 		UiElement hiragana_labels_[NUM_HIRAGANA_LABELS];
-
-		UiElement* selected_hiragana_;
-		int num_hiragana_left_;
+		bool hiragana_done_[NUM_HIRAGANA_LABELS];
+		int selected_index_;
+		UiElement about_label_;
 
 		std::vector<sf::String> levels_;
 		std::map<sf::String, int> hiragana_scores_;
