@@ -46,6 +46,9 @@ namespace sun_magic {
 
 	void UiElement::Update(float elapsed_time) {}
 	void UiElement::Draw(sf::RenderTarget* target) {
+		if (!style_.is_visible)
+			return;
+
 		sf::Vector2f size(rect_.width, rect_.height);
 		sf::RectangleShape rect(size);
 		sf::Sprite sprite;
@@ -101,6 +104,9 @@ namespace sun_magic {
 	}
 
 	void UiElement::ProcessEvent(Event event) {
+		if (!style_.is_enabled)
+			return;
+
 		switch (event.type) {
 		case Event::E_MOUSE_RELEASED:
 			if (state_ == PRESSED) {

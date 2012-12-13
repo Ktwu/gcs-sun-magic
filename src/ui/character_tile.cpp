@@ -457,10 +457,10 @@ namespace sun_magic {
 		Event event;
 		event.type = Event::E_HIRAGANA_DRAWN;
 		event.focus = this;
-		manager->AddEvent(event);
 
 		if (current_stroke_ == 0) {
 			unicode_ = sf::String();
+			manager->AddEvent(event);
 			return;
 		}
 
@@ -475,6 +475,9 @@ namespace sun_magic {
 			throw "ERROR: " + std::string(_recognizer->what());
 		}
 		delete result;
+
+		event.message = unicode_;
+		manager->AddEvent(event);
 	}
 
 	void CharacterTile::CreateLines(std::vector<std::vector<sf::RectangleShape>>& lines, zinnia::Character *character, sf::Color color, size_t startStroke, size_t endStroke) {
