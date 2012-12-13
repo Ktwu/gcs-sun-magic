@@ -142,7 +142,7 @@ namespace sun_magic {
 		// Set the font for common UI elements
 		level_label_.GetStyle()->SetTextFont(*english_font);
 		tip_label_.GetStyle()->SetTextFont(*english_font);
-		start_button_.GetStyle()->SetTextFont(*english_font)->SetIsVisible(false)->SetIsEnabled(false);
+		start_button_.GetStyle()->SetTextFont(*english_font);//->SetIsVisible(false)->SetIsEnabled(false);
 
 		// Load up the hiragana we're going to be teaching for this level.
 		GetNewLevelHiragana();

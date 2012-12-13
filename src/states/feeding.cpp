@@ -26,13 +26,22 @@ namespace sun_magic {
 		happy_threshold_(0.7f),
 		ok_threshold_(0.4f)
 	{
+		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
+		sf::Vector2u size = window->getSize();
+
+		UiElement::InitLabel(&info_label_);
+		info_label_.GetStyle()->SetTextSize(20);
+		info_label_.SetPosition(sf::Vector2f(0, 0));
+		info_label_.SetSize(sf::Vector2f(size.x, 45));
+		info_label_.SetString("Your animons are hungry! Make sure all of them are happy and well fed!\nFeed them by writing their names then clicking on them.\n");
 	}
 
 	Feeding::~Feeding() {}
 
 	void Feeding::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = FEEDING;
-
+		
+		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
 		tools::ScaleToWindowSize(background_);
@@ -43,16 +52,16 @@ namespace sun_magic {
 		// Load our game's UI
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
-		intro_display_.SetPosition(sf::Vector2f(0, 0));
-		intro_display_.SetSize(sf::Vector2f(700, 400));
-
 		// Load up the hiragana designated by some other state
 		NewLevelState* state = (NewLevelState*) Game::GetInstance()->GetMachine()->GetState(GameState::NEW_LEVEL_LOAD);
 		hiraganas_ = state->GetCurrentLevelHiragana();
+		
+		sf::Font* english_font = GameAssetManager::GetInstance()->GetFont(this, refs::fonts::MSMINCHO);
+		info_label_.GetStyle()->SetTextFont(*english_font);
+		event_manager->AddGameObject(&info_label_);
 
 		// Create animon and initialize the values we'll need to stick them into the dictionary
 		Dictionary *dictionary = Game::GetInstance()->GetDictionary();
-		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RegisterListener(Event::E_HIRAGANA_DRAWN, this);
 		event_manager->RegisterListener(Event::E_GAME_EVENT, this);
 		float y = 240.f;
