@@ -32,6 +32,7 @@ namespace sun_magic {
 		character_(zinnia::Character::create()),
 		unicode_(),
 		current_stroke_(0),
+		animate_continuously_(false),
 		trace_character_(NULL),
 		trace_unicode_(),
 		animating_stroke_(-1),
@@ -367,10 +368,9 @@ namespace sun_magic {
 				}
 			}
 
-			// Draw strokes after animating stroke if animating continuously or no animating stroke
-			size_t maxStroke = (animating_stroke_ < 0 || animate_continuously_) ? trace_lines_.size() : 0;		
+			// Draw strokes after animating stroke
 			circle.setFillColor(tilestyle_.trace_color);
-			for (size_t i = animating_stroke_; i < maxStroke; i++) {
+			for (size_t i = std::max(0, animating_stroke_); i < trace_lines_.size(); i++) {
 				circle.setPosition((float)trace_character_->x(i, 0), (float)trace_character_->y(i, 0));
 				target->draw(circle);
 				for (size_t j = 0; j < trace_lines_[i].size(); j++) {
