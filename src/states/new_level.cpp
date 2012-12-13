@@ -13,27 +13,35 @@
 namespace sun_magic {
 
 	NewLevelState::NewLevelState() :
-		selected_hiragana_(NULL)
+		selected_index_(0)
 	{
 		sf::RenderWindow* window = Game::GetInstance()->GetWindow();
 		sf::Vector2u size = window->getSize();
 
-		float padding = 20;
-		float temp_y = padding;
+		float padding = 10;
+		float temp_y = 0;
 		
 		// init ui group
 		UiElement::InitLabel(&intro_display_);
 		intro_display_.SetPosition(sf::Vector2f(size.x * .25f, 0.f));
-		intro_display_.SetSize(sf::Vector2f(size.x * .5f, (float)size.y));
+		intro_display_.SetSize(sf::Vector2f(size.x * .6f, (float)size.y));
 		intro_display_.GetStyle()->SetNormalColor(sf::Color(100, 100, 100));
 
 		// init label for level
 		UiElement::InitLabel(&level_label_);
 		level_label_.GetStyle()->SetNormalColor(sf::Color::Cyan);
 		level_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
-		level_label_.SetString("New Animons!");
+		level_label_.SetString("Meet Your Animons!");
 		intro_display_.UiAdd(&level_label_);
 		temp_y += level_label_.GetSize().y + padding;
+
+		UiElement::InitLabel(&tip_label_);
+		tip_label_.GetStyle()->SetTextSize(18);
+		tip_label_.SetPosition(sf::Vector2f(0, temp_y));
+		tip_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
+		tip_label_.SetString("Try writing your animons' nicknames! Stroke order matters!\nLeft click and drag to draw. Right click to undo bad strokes.\n");
+		intro_display_.UiAdd(&tip_label_);
+		temp_y += tip_label_.GetSize().y + padding;
 
 		// init character tile for tracing
 		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
@@ -56,8 +64,8 @@ namespace sun_magic {
 		for (int i = 0; i < GameAssetManager::NUM_SYMBOLS; ++i)
 			hiragana_scores_[GameAssetManager::hiragana_strings[i]] = 0;
 
-		float temp_padding = 5;
-		float temp_width = (intro_display_.GetSize().x - temp_padding) / NUM_HIRAGANA_LABELS - temp_padding;
+		float temp_width = 90;
+		float temp_padding = (intro_display_.GetSize().x - temp_width * NUM_HIRAGANA_LABELS) / (NUM_HIRAGANA_LABELS+1);
 		float temp_x = temp_padding;
 
 		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i) {
@@ -72,6 +80,14 @@ namespace sun_magic {
 			intro_display_.UiAdd(&hiragana_labels_[i]);
 			temp_x += label->GetSize().x + temp_padding;
 		}
+		temp_y += hiragana_labels_[0].GetSize().y + padding;
+
+		UiElement::InitLabel(&about_label_);
+		about_label_.SetPosition(sf::Vector2f(0, temp_y));
+		about_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 80));
+		about_label_.GetStyle()->SetTextSize(20);
+		intro_display_.UiAdd(&about_label_);
+		temp_y += about_label_.GetSize().y + padding;
 	}
 
 	NewLevelState::~NewLevelState() {
@@ -125,20 +141,25 @@ namespace sun_magic {
 
 		// Set the font for common UI elements
 		level_label_.GetStyle()->SetTextFont(*english_font);
+		tip_label_.GetStyle()->SetTextFont(*english_font);
 		start_button_.GetStyle()->SetTextFont(*english_font)->SetIsVisible(false)->SetIsEnabled(false);
 
 		// Load up the hiragana we're going to be teaching for this level.
 		GetNewLevelHiragana();
 		int width = intro_display_.GetSize().x / 5.f;
-		num_hiragana_left_ = level_hiragana_.getSize();
+		num_hiragana_ = level_hiragana_.getSize();
 
 		sf::Texture *texture = asset_manager->GetTexture(this, refs::textures::objects::SPRITES_MEH);
 		int i;
-		for (i = 0; i < num_hiragana_left_; ++i) {
+		for (i = 0; i < num_hiragana_; ++i) {
 			sf::Sprite sprite = asset_manager->GetHiraganaSprite(level_hiragana_[i], texture);
-			sprite.setScale(0.7, 0.7);		
-
-			hiragana_labels_[i].GetStyle()->SetTextFont(*font)->SetIsEnabled(true)->SetIsVisible(true)
+			sf::FloatRect sprite_bounds = sprite.getLocalBounds();
+			sf::Vector2f label_size = hiragana_labels_[i].GetSize();
+			sprite.setScale(label_size.x / sprite_bounds.width, label_size.y / sprite_bounds.height);
+			
+			hiragana_done_[i] = false;
+			UiElement::InitButton(hiragana_labels_ + i);
+			hiragana_labels_[i].GetStyle()->SetTextColor(sf::Color::Transparent)->SetTextFont(*font)->SetIsEnabled(true)->SetIsVisible(true)
 				->SetNormalSprite(sprite)->SetHoverSprite(sprite)->SetPressSprite(sprite)
 				->SetNormalColor(sf::Color::White);
 			hiragana_labels_[i].SetString(level_hiragana_[i]);
@@ -150,6 +171,9 @@ namespace sun_magic {
 				->SetNormalColor(sf::Color::White);
 			hiragana_labels_[i].SetString("");
 		}
+		about_label_.GetStyle()->SetTextFont(*english_font);
+		
+		SelectLabel(0);
 
 		// Add Listeners
 		manager->AddGameObject(&intro_display_);
@@ -170,9 +194,6 @@ namespace sun_magic {
 
 		for (int i = 0; i < NUM_HIRAGANA_LABELS; ++i)
 			manager->UnregisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
-
-		selected_hiragana_ = NULL;
-		tile_.SetTraceCharacter(NULL);
 	}
 
 	GameState NewLevelState::Update(float elapsed_time) {
@@ -198,28 +219,60 @@ namespace sun_magic {
 			if (event.focus == &start_button_)
 				state_ = GameState::FEEDING;
 			else {
-				GameAssetManager* manager = GameAssetManager::GetInstance();
-				tile_.Clear();
-				tile_.SetTraceCharacter(manager->GetTraceCharacter(event.message[0]));
-				tile_.SetAnimationStroke(0);
-				selected_hiragana_ = (UiElement*) event.focus;
+				for (int i = 0; i < num_hiragana_; i++) {
+					if (event.focus == hiragana_labels_ + i) {
+						SelectLabel(i);
+					}
+				}
 			}
 			break;
 		case Event::E_HIRAGANA_DRAWN:
-			if (selected_hiragana_ != NULL && event.message == selected_hiragana_->GetString()) {
-				--num_hiragana_left_;
-
+			UiElement *label = hiragana_labels_ + selected_index_;
+			if (event.message == label->GetString()) {
 				GameAssetManager* manager = GameAssetManager::GetInstance();
-				selected_hiragana_->GetStyle()->SetIsEnabled(false)->SetNormalColor(manager->symbols_colors[(manager->GetHiraganaIndex(event.message[0]))]);
 
-				if (num_hiragana_left_ == 0)
-					start_button_.GetStyle()->SetIsVisible(true)->SetIsEnabled(true);
+				if (!hiragana_done_[selected_index_]) {
+					hiragana_done_[selected_index_] = true;
+					sf::Color color = manager->symbols_colors[(manager->GetHiraganaIndex(event.message[0]))];
+					label->GetStyle()->SetNormalColor(color)
+						->SetHoverColor(tools::Multiply(color, 0.9f))
+						->SetPressColor(tools::Multiply(color, 0.8f));
 
-				selected_hiragana_ = NULL;
-				tile_.SetTraceCharacter(NULL);
+					int i = 0;
+					for (; i < num_hiragana_; i++) {
+						if (!hiragana_done_[i]) {
+							break;
+						}
+					}
+					if (i < num_hiragana_) {
+						SelectLabel(i);
+					} else {
+						start_button_.GetStyle()->SetIsVisible(true)->SetIsEnabled(true);
+					}
+				}
 			}
 			break;
 		}	
+	}
+
+	void NewLevelState::SelectLabel(int index) {
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+
+		// Reset old selected hiragana
+		hiragana_labels_[selected_index_].GetStyle()->SetIsEnabled(true);
+		hiragana_labels_[selected_index_].SetState(UiElement::UiElementState::NEUTRAL);
+
+		// Set new selected hiragan
+		hiragana_labels_[index].GetStyle()->SetIsEnabled(false);
+		hiragana_labels_[index].SetState(UiElement::UiElementState::PRESSED);
+		selected_index_ = index;
+
+		int hiragana_index = manager->GetHiraganaIndex(hiragana_labels_[index].GetString());
+		about_label_.SetString(GameAssetManager::about_strings[hiragana_index]);
+
+		tile_.Clear();
+		tile_.SetTraceCharacter(manager->GetTraceCharacter(hiragana_labels_[index].GetString()));
+		tile_.SetAnimationStroke(0);
 	}
 
 };
