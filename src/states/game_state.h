@@ -8,6 +8,7 @@ namespace sun_magic {
 		LOADING,
 		MAIN_MENU,
 		INGAME_MENU,
+		CREDITS,
 		MESSAGE,
 		NEW_LEVEL_LOAD,
 		FEEDING,

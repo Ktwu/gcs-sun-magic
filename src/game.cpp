@@ -11,6 +11,7 @@
 #include "events/event_manager.h"
 #include "references/refs.h"
 #include "states/splash.h"
+#include "states/credits.h"
 #include "states/main_menu.h"
 #include "states/new_level.h"
 #include "states/save_writing.h"
@@ -106,6 +107,7 @@ namespace sun_magic {
 		game_machine_.AddState(RECORDING, new SaveWritingState());
 		game_machine_.AddState(NEW_LEVEL_LOAD, new NewLevelState());
 		game_machine_.AddState(FEEDING, new Feeding());
+		game_machine_.AddState(CREDITS, new CreditsState());
 	}
 
 	void Game::HandleInput() {
