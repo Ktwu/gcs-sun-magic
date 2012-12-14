@@ -93,7 +93,7 @@ namespace sun_magic {
 		tilelist_->GetStyle()->SetNormalSprite(tilesprite);
 
 		listlabel_ = (Card*) UiElement::InitLabel(new Card(size.x - 200.f, size.y - height - 15.f, size.x - 200.f, size.y - height - 55.f, width/2.f, size.y));
-		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::KAORI))->SetTextSize(50)
+		listlabel_->GetStyle()->SetTextFont(*asset_manager->GetFont(this, refs::fonts::MSMINCHO))->SetTextSize(50)
 			->SetTextPadding(0.f)->SetTextVerticalAlignment(Style::TextAlignment::SMALLER);
 		listlabel_->SetZ(9);
 
