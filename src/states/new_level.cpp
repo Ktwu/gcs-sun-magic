@@ -45,7 +45,7 @@ namespace sun_magic {
 
 		// init character tile for tracing
 		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
-		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190))->SetErrorColor(sf::Color::Red);
+		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190));
 		tile_.GetStyle()->SetNormalColor(sf::Color::White);
 		intro_display_.UiAdd(&tile_);
 		temp_y += tile_.GetSize().y + padding;

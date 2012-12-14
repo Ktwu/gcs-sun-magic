@@ -18,7 +18,8 @@ namespace sun_magic {
 		trace_color = sf::Color::Transparent;
 		animate_color = sf::Color::Transparent;
 		stroke_color = sf::Color::Transparent;
-		error_color = sf::Color::Transparent;
+		error_bad_color = sf::Color::Red;
+		error_good_color = sf::Color::Green;
 		return this;
 	}
 
@@ -62,8 +63,13 @@ namespace sun_magic {
 		return this;
 	}
 
-	CharacterTileStyle* CharacterTileStyle::SetErrorColor(sf::Color color) {
-		error_color = color;
+	CharacterTileStyle* CharacterTileStyle::SetErrorBadColor(sf::Color color) {
+		error_bad_color = color;
+		return this;
+	}
+
+	CharacterTileStyle* CharacterTileStyle::SetErrorGoodColor(sf::Color color) {
+		error_good_color = color;
 		return this;
 	}
 
