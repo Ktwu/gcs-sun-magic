@@ -138,8 +138,8 @@ namespace sun_magic {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 
-		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
-		tools::ScaleToWindowSize(background_);
+		background_.setTexture(*asset_manager->GetTexture(this,  refs::textures::backgrounds::POSTER_AWAY));//refs::textures::backgrounds::OFFICE));
+		//tools::ScaleToWindowSize(background_);
 
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 

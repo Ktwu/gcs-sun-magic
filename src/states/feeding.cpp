@@ -43,7 +43,7 @@ namespace sun_magic {
 		
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
-		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
+		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::DESK));//refs::textures::backgrounds::OFFICE));
 		tools::ScaleToWindowSize(background_);
 
 		// Load our game's UI

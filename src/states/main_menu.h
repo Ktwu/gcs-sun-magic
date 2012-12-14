@@ -28,6 +28,7 @@ namespace sun_magic {
 		GameState game_state_;
 		UiElement play_;
 		UiElement record_;
+		UiElement credits_;
 
 		int animate_state_;
 		GameState after_state_;

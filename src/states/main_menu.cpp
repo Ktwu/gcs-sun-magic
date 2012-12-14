@@ -19,16 +19,23 @@ namespace sun_magic {
 
 		/* Go ahead and just stick our UI code in here */
 		float width = 400;
-		play_ = UiElement((window->getSize().x - width) / 2, 500.f, width, 50.f, "Play");
-		record_ = UiElement((window->getSize().x - width) / 2, 600.f, width, 50.f, "Record");
+		play_ = UiElement((window->getSize().x - width) / 2, 400.f, width, 50.f, "Play");
+		record_ = UiElement((window->getSize().x - width) / 2, 500.f, width, 50.f, "Record");
+		credits_ = UiElement((window->getSize().x - width) / 2, 600.f, width, 50.f, "Credits");
+
 		UiElement::InitButton(&play_);
 		UiElement::InitButton(&record_);
+		UiElement::InitButton(&credits_);
 
 		play_.GetStyle()
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
 		record_.GetStyle()
+			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
+			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
+			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
+		credits_.GetStyle()
 			->SetNormalColor(sf::Color::Transparent)->SetNormalBorderColor(sf::Color::Transparent)
 			->SetHoverColor(sf::Color::Transparent)->SetHoverBorderColor(sf::Color::Transparent)
 			->SetPressColor(sf::Color::Transparent)->SetPressBorderColor(sf::Color::Transparent);
@@ -62,13 +69,17 @@ namespace sun_magic {
 
 		play_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)->SetTextFont(*font);
 		record_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)->SetTextFont(*font);
+		credits_.GetStyle()->SetNormalSprite(normal)->SetHoverSprite(hover)->SetPressSprite(press)->SetTextFont(*font);
 
 		game_state_ = MAIN_MENU;
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->AddGameObject(&play_);
 		event_manager->AddGameObject(&record_);
+		event_manager->AddGameObject(&credits_);
+
 		event_manager->RegisterListener(Event::E_CLICKED, this, &play_);
 		event_manager->RegisterListener(Event::E_CLICKED, this, &record_);
+		event_manager->RegisterListener(Event::E_CLICKED, this, &credits_);
 	}
 
 	void MainMenu::UnregisterState(MachineState<GameState>* next_state) {
@@ -79,8 +90,10 @@ namespace sun_magic {
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		event_manager->RemoveGameObject(&play_);
 		event_manager->RemoveGameObject(&record_);
+		event_manager->RemoveGameObject(&credits_);
 		event_manager->UnregisterListener(Event::E_CLICKED, this, &play_);
-		event_manager->RegisterListener(Event::E_CLICKED, this, &record_);
+		event_manager->UnregisterListener(Event::E_CLICKED, this, &record_);
+		event_manager->UnregisterListener(Event::E_CLICKED, this, &credits_);
 	}
 
 	GameState MainMenu::Update(float elapsed_time) {
@@ -128,6 +141,8 @@ namespace sun_magic {
 				//game_state_ = RECORDING;
 				after_state_ = RECORDING;
 				animate_state_ = 0;
+			} else if (event.focus == &credits_) {
+				game_state_ = CREDITS;
 			}
 			break;
 		}

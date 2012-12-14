@@ -19,6 +19,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\objects\animon.cpp" />
     <ClCompile Include="src\objects\progressbar.cpp" />
+    <ClCompile Include="src\states\credits.cpp" />
     <ClCompile Include="src\states\main_menu.cpp" />
     <ClCompile Include="src\states\feeding.cpp" />
     <ClCompile Include="src\states\new_level.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="src\objects\game_object.h" />
     <ClInclude Include="src\objects\progressbar.h" />
     <ClInclude Include="src\references\refs.h" />
+    <ClInclude Include="src\states\credits.h" />
     <ClInclude Include="src\states\game_state.h" />
     <ClInclude Include="src\states\machine.h" />
     <ClInclude Include="src\states\machine_state.h" />
