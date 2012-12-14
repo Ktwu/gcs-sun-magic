@@ -58,7 +58,7 @@ namespace sun_magic {
 
 		void Reclassify();
 		void CreateLines(std::vector<std::vector<sf::RectangleShape>>& lines, zinnia::Character *character, sf::Color color, size_t startStroke, size_t endStroke);
-		void CalcError(zinnia::Character *trace);
+		void CalcError();
 		
 		bool writable_;
 		zinnia::Character *character_;
@@ -80,7 +80,7 @@ namespace sun_magic {
 		std::vector<std::vector<sf::RectangleShape>> stroke_lines_;
 		std::vector<std::vector<sf::RectangleShape>> trace_lines_;
 		std::vector<sf::RectangleShape> animating_lines_;
-		float error_;
+		std::vector<float> stroke_errors_;
 	};
 
 }

@@ -171,6 +171,8 @@ namespace sun_magic {
 				->SetNormalColor(sf::Color::White);
 			hiragana_labels_[i].SetString(level_hiragana_[i]);
 
+			cries_[i].setBuffer(*asset_manager->GetSoundBuffer(this, GameAssetManager::hiragana_sound_refs[asset_manager->GetHiraganaIndex(level_hiragana_[i])]));
+
 			manager->RegisterListener(Event::E_CLICKED, this, &hiragana_labels_[i]);
 		}
 		for (; i < NUM_HIRAGANA_LABELS; ++i) {
@@ -237,6 +239,7 @@ namespace sun_magic {
 			UiElement *label = hiragana_labels_ + selected_index_;
 			if (event.message == label->GetString()) {
 				GameAssetManager* manager = GameAssetManager::GetInstance();
+				cries_[selected_index_].play();
 
 				if (!hiragana_done_[selected_index_]) {
 					hiragana_done_[selected_index_] = true;

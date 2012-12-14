@@ -66,7 +66,12 @@ namespace sun_magic {
 		for (size_t i = 0; i < hiraganas_.getSize(); i++) {
 			sf::String h = hiraganas_[i];
 
-			Animon *animon = new Animon((float)i * width, y, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h);
+			ProgressBar *progressbar = new ProgressBar((i + 0.45f) * width, 0, y + 128, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
+			progressbar->SetZ(-2);
+			progressbars_.push_back(progressbar);
+			event_manager->AddGameObject(progressbar);
+
+			Animon *animon = new Animon((float)i * width, y, GameAssetManager::symbols_colors[asset_manager->GetHiraganaIndex(h[0])], h, progressbar);
 			animon->LoadState(Animon::AnimonState::MEH);
 			sf::Sprite sprite = animon->GetSprite();
 
@@ -74,11 +79,6 @@ namespace sun_magic {
 			animons_.push_back(animon);
 			event_manager->AddGameObject(animon);
 			event_manager->RegisterListener(Event::E_GAME_EVENT, this, animon);
-
-			ProgressBar *progressbar = new ProgressBar((i + 0.45f) * width, 0, y + sprite.getLocalBounds().height, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
-			progressbar->SetZ(-2);
-			progressbars_.push_back(progressbar);
-			event_manager->AddGameObject(progressbar);
 
 			dictionary->AddWord(h);
 		}

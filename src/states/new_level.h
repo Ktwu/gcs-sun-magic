@@ -48,8 +48,10 @@ namespace sun_magic {
 		size_t num_hiragana_;
 		UiElement hiragana_labels_[NUM_HIRAGANA_LABELS];
 		bool hiragana_done_[NUM_HIRAGANA_LABELS];
+		sf::Sound cries_[NUM_HIRAGANA_LABELS];
 		int selected_index_;
 		UiElement about_label_;
+
 
 		std::vector<sf::String> levels_;
 		std::map<sf::String, int> hiragana_scores_;

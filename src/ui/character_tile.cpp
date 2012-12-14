@@ -13,7 +13,7 @@
 
 namespace sun_magic {
 	
-	static const float MIN_CLASSIFY_SCORE = 0.85f;
+	static const float MIN_CLASSIFY_SCORE = 0.8f;
 	static const float MAX_ERROR = 40.f;
 
 	zinnia::Recognizer *CharacterTile::_recognizer = NULL;
@@ -171,10 +171,10 @@ namespace sun_magic {
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
 
 		current_stroke_++;
-		CalcError(trace_character_);
+		CalcError();
 		Reclassify();
 
-		if (trace_character_ != NULL && error_ <= MAX_ERROR) {
+		if (trace_character_ != NULL && GetError() <= MAX_ERROR) {
 			SetAnimationStroke(NumStrokes());
 		}
 
@@ -205,23 +205,27 @@ namespace sun_magic {
 			current_stroke_--;
 			Reclassify();
 			stroke_lines_.pop_back();
-
-			SetAnimationStroke(NumStrokes());
+			if (trace_character_ != NULL) {
+				stroke_errors_.pop_back();
+				if (GetError() <= MAX_ERROR)
+					SetAnimationStroke(NumStrokes());
+			}
 		}
 		stroke_lines_.back().clear();
-
-		Reclassify();
 	}
 	void CharacterTile::Clear() {
 		character_->clear();
 		current_stroke_ = 0;
 		stroke_lines_.clear();
 		stroke_lines_.push_back(std::vector<sf::RectangleShape>());
-		error_ = 0;
+		stroke_errors_.clear();
 		Reclassify();
 	}
 	float CharacterTile::GetError() {
-		return error_;
+		float error = 0;
+		for (int i = 0; i < stroke_errors_.size(); i++)
+			error = std::max(error, stroke_errors_[i]);
+		return error;
 	}
 
 	zinnia::Character * CharacterTile::GetTraceCharacter() {
@@ -355,15 +359,16 @@ namespace sun_magic {
 		target->draw(rect);
 
 		// Draw error
-		if (error_ > 0) {
+		if (stroke_errors_.size() > 0) {
 			sf::Text error_text;
-			if (error_ > MAX_ERROR)
+			float error = GetError();
+			if (error > MAX_ERROR)
 				error_text.setColor(tilestyle_.error_bad_color);
 			else
 				error_text.setColor(tilestyle_.error_good_color);
 			error_text.setCharacterSize(20);
 			char buf[128];
-			std::sprintf(buf, "%.0f", GetError());
+			std::sprintf(buf, "%.0f", error);
 			error_text.setString("Error: " + sf::String(buf));
 			sf::FloatRect error_bounds = error_text.getLocalBounds();
 			error_text.setPosition(0, size.y - error_bounds.height - 5);
@@ -477,7 +482,6 @@ namespace sun_magic {
 		event.focus = this;
 
 		if (current_stroke_ == 0) {
-			error_ = 0;
 			unicode_ = sf::String();
 			manager->AddEvent(event);
 			return;
@@ -485,7 +489,7 @@ namespace sun_magic {
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
 		if (result) {
-			if (result->score(0) > MIN_CLASSIFY_SCORE && error_ <= MAX_ERROR) {
+			if (result->score(0) > MIN_CLASSIFY_SCORE && GetError() <= MAX_ERROR) {
 				unicode_ = tools::UTF8ToUTF32(result->value(0));
 			} else {
 				unicode_ = sf::String();
@@ -517,64 +521,62 @@ namespace sun_magic {
 		}
 	}
 
-	void CharacterTile::CalcError(zinnia::Character *trace_character_) {
-		error_ = 0;
+	void CharacterTile::CalcError() {
 		if (trace_character_ == NULL)
 			return;
 
-		float scalex = (float)character_->width() / trace_character_->width();
-		float scaley = (float)character_->height() / trace_character_->height();
-		size_t num_strokes = std::min(character_->strokes_size(), trace_character_->strokes_size());
-		for (size_t stroke = 0; stroke < num_strokes; stroke++) {
-			size_t points = character_->stroke_size(stroke);
-			size_t trace_points = trace_character_->stroke_size(stroke);
+		size_t stroke = character_->strokes_size() - 1;
+		if (stroke >= trace_character_->strokes_size())
+			return;
 
-			if (points < 2 || trace_points < 2) {
-				// Not enough points to calculate
-				continue;
-			}
+		size_t points = character_->stroke_size(stroke);
+		size_t trace_points = trace_character_->stroke_size(stroke);
 
-			// We calculate the error by finding the area of the polygon that is between the
-			// stroke lines and trace lines
-
-			// The signed area of a planar non-self-intersecting polygon is
-			// 1/2 the sum of the determinants of all neighboring vertices pairs
-			// A = 1/2 (|x1 x2| + |x2 x3| + ... + |xn x1|)
-			//          |y1 y2|   |y2 y3|         |yn y1|
-			// counterclockwise order of verices results in positive area
-
-			float area = 0;
-			float length = 0;
-			sf::Vector2f p1;
-			sf::Vector2f p2 = sf::Vector2f(scalex * trace_character_->x(stroke, 0), scaley * trace_character_->y(stroke, 0));
-			for (size_t i = 1; i < trace_points; i++) {
-				p1 = p2;
-				p2 = sf::Vector2f(scalex * trace_character_->x(stroke, i), scaley * trace_character_->y(stroke, i));
-				area += p1.x * p2.y - p2.x * p1.y;
-				length += sfm::Length(p1 - p2);
-			}
-
-			for (int i = points-1; i >= 0; i--) {
-				p1 = p2;
-				p2 = sf::Vector2f((float)character_->x(stroke, i), (float)character_->y(stroke, i));
-				area += p1.x * p2.y - p2.x * p1.y;
-			}
-
-			// Case for when stroke lines wraps back to start of trace lines
-			p1 = p2;
-			p2 = sf::Vector2f(scalex * trace_character_->x(stroke, 0), scaley * trace_character_->y(stroke, 0));
-			area += p1.x * p2.y - p2.x * p1.y;
-
-			// We average the error by dividing by the total length of the strokes in the trace character
-			float error = abs(area) / length;
-			// We also add in the error for the difference in position of the start and end points
-			error += sfm::Length(p1 - p2);
-			p1 = sf::Vector2f((float)character_->x(stroke, points-1), (float)character_->y(stroke, points-1));
-			p2 = sf::Vector2f(scalex * trace_character_->x(stroke, trace_points-1), scaley * trace_character_->y(stroke, trace_points-1));
-			error += sfm::Length(p1 - p2);
-
-			error_ = std::max(error_, error);
+		if (points < 2 || trace_points < 2) {
+			// Not enough points to calculate
+			return;
 		}
+
+		// We calculate the error by finding the area of the polygon that is between the
+		// stroke lines and trace lines
+
+		// The signed area of a planar non-self-intersecting polygon is
+		// 1/2 the sum of the determinants of all neighboring vertices pairs
+		// A = 1/2 (|x1 x2| + |x2 x3| + ... + |xn x1|)
+		//          |y1 y2|   |y2 y3|         |yn y1|
+		// counterclockwise order of verices results in positive area
+
+		float area = 0;
+		float length = 0;
+		sf::Vector2f p1;
+		sf::Vector2f p2 = sf::Vector2f((float)trace_character_->x(stroke, 0), (float)trace_character_->y(stroke, 0));
+		for (size_t i = 1; i < trace_points; i++) {
+			p1 = p2;
+			p2 = sf::Vector2f((float)trace_character_->x(stroke, i), (float)trace_character_->y(stroke, i));
+			area += p1.x * p2.y - p2.x * p1.y;
+			length += sfm::Length(p1 - p2);
+		}
+
+		for (int i = points-1; i >= 0; i--) {
+			p1 = p2;
+			p2 = sf::Vector2f((float)character_->x(stroke, i), (float)character_->y(stroke, i));
+			area += p1.x * p2.y - p2.x * p1.y;
+		}
+
+		// Case for when stroke lines wraps back to start of trace lines
+		p1 = p2;
+		p2 = sf::Vector2f((float)trace_character_->x(stroke, 0), (float)trace_character_->y(stroke, 0));
+		area += p1.x * p2.y - p2.x * p1.y;
+
+		// We average the error by dividing by the total length of the strokes in the trace character
+		float error = abs(area) / length;
+		// We also add in the error for the difference in position of the start and end points
+		error += sfm::Length(p1 - p2);
+		p1 = sf::Vector2f((float)character_->x(stroke, points-1), (float)character_->y(stroke, points-1));
+		p2 = sf::Vector2f((float)trace_character_->x(stroke, trace_points-1), (float)trace_character_->y(stroke, trace_points-1));
+		error += sfm::Length(p1 - p2);
+
+		stroke_errors_.push_back(error);
 	}
 
 }
