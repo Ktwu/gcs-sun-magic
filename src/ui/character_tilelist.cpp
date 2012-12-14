@@ -77,6 +77,7 @@ namespace sun_magic {
 	}
 
 	void CharacterTileList::ProcessEvent(Event event) {
+		/*
 		// Go through all of our tiles and process their characters into a message
 		sf::String unicode;
 		event.message.clear();
@@ -105,6 +106,7 @@ namespace sun_magic {
 
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		manager->AddEvent(event);
+		*/
 	}
 
 }

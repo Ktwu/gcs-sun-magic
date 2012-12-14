@@ -441,7 +441,7 @@ namespace sun_magic {
 
 				last_mouse_ = sf::Vector2f((float)event.relativeMousePosition.x, (float)event.relativeMousePosition.y);
 				AddStrokePoint(last_mouse_);
-				std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
+				//std::cout << "Start Stroke (" << std::dec << last_mouse_.x << "," << last_mouse_.y << ")" << std::endl;
 			}
 			break;
 			
@@ -470,7 +470,7 @@ namespace sun_magic {
 					EndStroke();
 				else
 					UndoStroke();
-				std::cout << "End Stroke" << std::endl;
+				//std::cout << "End Stroke" << std::endl;
 			}
 			break;
 		}
