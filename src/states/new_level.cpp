@@ -67,7 +67,7 @@ namespace sun_magic {
 		levels_.push_back(L"たちつてと");
 		levels_.push_back(L"さしすせそ");
 		levels_.push_back(L"かきくけこ");
-		//levels_.push_back(L"あいうえお");
+		levels_.push_back(L"あいうえお");
 		for (int i = 0; i < GameAssetManager::NUM_SYMBOLS; ++i)
 			hiragana_scores_[GameAssetManager::hiragana_strings[i]] = 0;
 
