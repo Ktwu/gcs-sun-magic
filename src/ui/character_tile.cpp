@@ -466,7 +466,10 @@ namespace sun_magic {
 		case Event::E_MOUSE_EXITED:
 			if (is_writing_) {
 				is_writing_ = false;
-				EndStroke();
+				if (character_->stroke_size(current_stroke_) > 1)
+					EndStroke();
+				else
+					UndoStroke();
 				std::cout << "End Stroke" << std::endl;
 			}
 			break;
