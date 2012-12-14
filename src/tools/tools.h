@@ -20,6 +20,10 @@ namespace sun_magic {
 
 		sf::Color Multiply(sf::Color Color, float m);
 
+		sf::FloatRect GetBounds (zinnia::Character* character);
+
+		zinnia::Character* Normalize(zinnia::Character* character);
+
 		zinnia::Character* Resize(zinnia::Character* character, size_t width, size_t height);
 
 		float Center(float range, float local_range);

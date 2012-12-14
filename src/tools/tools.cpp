@@ -106,6 +106,58 @@ namespace sun_magic {
 			return sf::Color(sf::Uint8(m * color.r), sf::Uint8(m * color.g), sf::Uint8(m * color.b), color.a);
 		}
 
+		sf::FloatRect GetBounds (zinnia::Character* character) {
+			float minX = 10000.f;
+			float maxX = -100000.f;
+			float minY = minX;
+			float maxY = maxX;
+
+			float x, y;
+
+			for (size_t i = 0; i < character->strokes_size(); i++) {
+				size_t points = character->stroke_size(i);
+				for (size_t j = 0; j < points; j++) {
+					x = character->x(i, j);
+					y = character->y(i, j);
+					minX = std::min(minX, x);
+					maxX = std::max(maxX, x);
+					minY = std::min(minY, y);
+					maxY = std::max(maxY, y);
+				}
+			}
+
+			std::cout << minX << " " << maxX << " " << minY << " " << maxY << "\n";
+
+			return sf::FloatRect(minX, minY, maxX - minX, maxY - minY);
+		}
+
+		zinnia::Character* Normalize(zinnia::Character* character) {
+			sf::FloatRect bounds = GetBounds(character);
+
+			// Create a zinnia character with the strokes centered.
+			zinnia::Character* new_char =  zinnia::createCharacter();
+			new_char->set_height(std::max(bounds.height, bounds.width));
+			new_char->set_width(new_char->height());
+
+			float x_offset = bounds.width < bounds.height ? Center(bounds.height, bounds.width) : 0;
+			float y_offset = bounds.height < bounds.width ? Center(bounds.width, bounds.height) : 0;
+
+			for (size_t i = 0; i < character->strokes_size(); i++) {
+				size_t points = character->stroke_size(i);
+				for (size_t j = 0; j < points; j++) {
+					new_char->add(i, (int)(character->x(i, j) - bounds.left + x_offset), (int)(character->y(i, j) - bounds.top + y_offset));
+				}
+			}
+		
+			char buff[1024];
+			character->toString(buff, 1024);
+			std::cout << "old " << buff << "\n";
+			new_char->toString(buff, 1024);
+			std::cout << "new " << buff << "\n";
+
+			return new_char;
+		}
+
 		zinnia::Character* Resize(zinnia::Character* character, size_t width, size_t height) {
 			if (character == NULL ||
 				(character->height() == height && character->width() == width))

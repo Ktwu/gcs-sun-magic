@@ -85,10 +85,10 @@ namespace sun_magic {
 
 		// Init UI elements
 		sf::Vector2f size = sf::Vector2f(main_window_.getSize());
-		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD));
-		float height = tilesprite.getGlobalBounds().height - 20;
+		sf::Sprite tilesprite = sf::Sprite(*asset_manager->GetTexture(this, refs::textures::ui::NOTE_PAD2));
+		float height = tilesprite.getGlobalBounds().height;
 		float width = tilesprite.getGlobalBounds().width;
-		tilelist_ = new CharacterTileList(size.x - width, size.y - height, width, height, width - 200, height - 200, 1);
+		tilelist_ = new CharacterTileList(size.x - width, size.y - height, width, height, 25, 25, 1);
 		tilelist_->SetZ(10);
 		tilelist_->GetStyle()->SetNormalSprite(tilesprite);
 

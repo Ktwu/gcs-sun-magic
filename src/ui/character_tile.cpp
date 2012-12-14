@@ -488,7 +488,13 @@ namespace sun_magic {
 			return;
 		}
 
-		zinnia::Result *result = _recognizer->classify(*character_, 1);
+		zinnia::Character* normalized = tools::Normalize(character_);
+		zinnia::Character* resized = tools::Resize(normalized, 300, 300);
+		//zinnia::Result *result = _recognizer->classify(*character_, 1);
+		zinnia::Result *result = _recognizer->classify(*resized, 1);
+		delete normalized;
+		delete resized;
+
 		if (!result)
 			return;
 
