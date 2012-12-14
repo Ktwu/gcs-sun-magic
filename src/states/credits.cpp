@@ -14,7 +14,7 @@ namespace sun_magic {
 		"Dan Vu: Designer",
 		"Jessica Cui: Artist",
 		"Xavier Artache: Musician",
-		"Special thanks to everyone involved with the Sun Magic team!"
+		"Special thanks to everyone involved with the Animon team!"
 	};
 
 	CreditsState::CreditsState() {

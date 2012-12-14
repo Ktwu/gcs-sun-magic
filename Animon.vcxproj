@@ -76,6 +76,7 @@
     <ProjectGuid>{86CBD65F-1113-45AB-801E-18F2A5E55FD0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SunMagic</RootNamespace>
+    <ProjectName>Animon</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

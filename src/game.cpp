@@ -73,7 +73,7 @@ namespace sun_magic {
 		asset_manager->Init();
 
 		game_state_ = FEEDING;
-		main_window_.create(sf::VideoMode(1024, 700/*768*/, 32), "Sun Magic!");
+		main_window_.create(sf::VideoMode(1024, 700/*768*/, 32), "Animon!");
 
 		// Init zinnia data
 		CharacterTile::InitRecognizer(refs::zinnia::ZINNIA_MODEL.c_str());
