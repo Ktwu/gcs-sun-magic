@@ -63,7 +63,7 @@ namespace sun_magic {
 		levels_.push_back(L"やゆよ");
 		levels_.push_back(L"まみむめも");
 		levels_.push_back(L"はひふへほ");
-		levels_.push_back("なにぬねの");
+		levels_.push_back(L"なにぬねの");
 		levels_.push_back(L"たちつてと");
 		levels_.push_back(L"さしすせそ");
 		levels_.push_back(L"かきくけこ");

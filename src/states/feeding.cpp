@@ -171,7 +171,7 @@ namespace sun_magic {
 				Game::GetInstance()->GetTileListLabel()->Hide();
 			} else {
 				Game::GetInstance()->GetTileListLabel()->Show();
-				//game_state_ = GameState::NEW_LEVEL_LOAD;
+				// game_state_ = GameState::NEW_LEVEL_LOAD;
 			}
 
 			break;
