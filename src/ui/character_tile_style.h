@@ -22,7 +22,8 @@ namespace sun_magic {
 		CharacterTileStyle* SetTraceColor(sf::Color color);
 		CharacterTileStyle* SetAnimateColor(sf::Color color);
 		CharacterTileStyle* SetStrokeColor(sf::Color color);
-		CharacterTileStyle* SetErrorColor(sf::Color color);
+		CharacterTileStyle* SetErrorBadColor(sf::Color color);
+		CharacterTileStyle* SetErrorGoodColor(sf::Color color);
 
 		float animation_speed;
 		float wait_seconds;
@@ -34,7 +35,8 @@ namespace sun_magic {
 		sf::Color trace_color;
 		sf::Color animate_color;
 		sf::Color stroke_color;
-		sf::Color error_color;
+		sf::Color error_bad_color;
+		sf::Color error_good_color;
 
 	};
 

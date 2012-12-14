@@ -16,10 +16,6 @@ namespace sun_magic {
 	typedef sf::Keyboard Keyboard;
 
 	class GameObject;
-	
-	struct HiraganaDrawn {
-		float error;
-	};
 
 	struct Event {
 		enum EventType {
@@ -67,7 +63,6 @@ namespace sun_magic {
 			MouseMoveEvent      mouseMove;		// E_MOUSE_ENTERED, E_MOUSE_EXITED, E_MOUSE_MOVED
 			MouseButtonEvent    mouseButton;	// E_MOUSE_PRESSED, E_MOUSE_RELEASED, E_CLICKED
 			GameEvent			gameEvent;		// E_GAME_EVENT
-			HiraganaDrawn       hiraganaDrawn;  // E_HIRAGANA_DRAWN
 		};
 	};
 	

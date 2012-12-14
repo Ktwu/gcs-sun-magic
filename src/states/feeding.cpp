@@ -21,7 +21,7 @@ namespace sun_magic {
 		animons_(),
 		progressbars_(),
 		game_state_(),
-		feed_increment_(0.35f),
+		feed_increment_(0.4f),
 		eat_rate_(0.01f),
 		happy_threshold_(0.7f),
 		ok_threshold_(0.4f)
@@ -75,7 +75,7 @@ namespace sun_magic {
 			event_manager->AddGameObject(animon);
 			event_manager->RegisterListener(Event::E_GAME_EVENT, this, animon);
 
-			ProgressBar *progressbar = new ProgressBar((i + 0.3f) * width, 0, y + sprite.getLocalBounds().height, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
+			ProgressBar *progressbar = new ProgressBar((i + 0.45f) * width, 0, y + sprite.getLocalBounds().height, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
 			progressbar->SetZ(-2);
 			progressbars_.push_back(progressbar);
 			event_manager->AddGameObject(progressbar);

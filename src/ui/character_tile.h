@@ -32,7 +32,6 @@ namespace sun_magic {
 		void UndoStroke();
 		void Clear();
 		float GetError();
-		float GetStrokeError(size_t stroke);
 
 		// The trace character is the character the user should be trying to write
 		zinnia::Character * GetTraceCharacter();
@@ -59,7 +58,7 @@ namespace sun_magic {
 
 		void Reclassify();
 		void CreateLines(std::vector<std::vector<sf::RectangleShape>>& lines, zinnia::Character *character, sf::Color color, size_t startStroke, size_t endStroke);
-		void CalcStrokeError();
+		void CalcError(zinnia::Character *trace);
 		
 		bool writable_;
 		zinnia::Character *character_;
@@ -81,7 +80,7 @@ namespace sun_magic {
 		std::vector<std::vector<sf::RectangleShape>> stroke_lines_;
 		std::vector<std::vector<sf::RectangleShape>> trace_lines_;
 		std::vector<sf::RectangleShape> animating_lines_;
-		std::vector<float> stroke_errors_;
+		float error_;
 	};
 
 }
