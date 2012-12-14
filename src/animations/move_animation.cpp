@@ -2,8 +2,8 @@
 
 #include "stdafx.h"
 #include "animations/move_animation.h"
-#include "events/event.h"
 #include "events/event_manager.h"
+#include "objects/game_object.h"
 #include "game.h"
 #include "tools/sfm.h"
 

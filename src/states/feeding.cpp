@@ -21,8 +21,8 @@ namespace sun_magic {
 		animons_(),
 		progressbars_(),
 		game_state_(),
-		feed_increment_(0.4f),
-		eat_rate_(0.007f),
+		feed_increment_(0.6f),
+		eat_rate_(0.006f),
 		happy_threshold_(0.7f),
 		ok_threshold_(0.4f)
 	{

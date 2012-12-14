@@ -151,9 +151,9 @@ namespace sun_magic {
 		
 			char buff[1024];
 			character->toString(buff, 1024);
-			std::cout << "old " << buff << "\n";
+			//std::cout << "old " << buff << "\n";
 			new_char->toString(buff, 1024);
-			std::cout << "new " << buff << "\n";
+			//std::cout << "new " << buff << "\n";
 
 			return new_char;
 		}

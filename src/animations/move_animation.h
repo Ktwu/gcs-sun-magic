@@ -2,10 +2,10 @@
 
 #include "stdafx.h"
 #include "animations/animation.h"
-#include "events/event.h"
-#include "objects/game_object.h"
 
 namespace sun_magic {
+
+	class GameObject;
 
 	class MoveAnimation : public Animation	{
 	public:

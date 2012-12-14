@@ -554,6 +554,8 @@ namespace sun_magic {
 			stroke_errors_.push_back(0);
 			return;
 		}
+		stroke_errors_.push_back(0);
+		return;
 
 		// We calculate the error by finding the area of the polygon that is between the
 		// stroke lines and trace lines
