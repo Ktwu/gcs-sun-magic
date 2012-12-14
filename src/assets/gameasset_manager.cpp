@@ -35,6 +35,63 @@ namespace sun_magic {
 		"wa",                     "wo",
 		"n"
 	};
+	std::string GameAssetManager::hiragana_sound_refs[] = {
+		"assets/sounds/a.au",
+		"assets/sounds/i.au",
+		"assets/sounds/u.au",
+		"assets/sounds/e.au",
+		"assets/sounds/o.au",
+
+		"assets/sounds/ka.au",
+		"assets/sounds/ki.au",
+		"assets/sounds/ku.au",
+		"assets/sounds/ke.au",
+		"assets/sounds/ko.au",
+		
+		"assets/sounds/sa.au",
+		"assets/sounds/shi.au",
+		"assets/sounds/su.au",
+		"assets/sounds/se.au",
+		"assets/sounds/so.au",
+
+		"assets/sounds/ta.au",
+		"assets/sounds/chi.au",
+		"assets/sounds/tsu.au",
+		"assets/sounds/te.au",
+		"assets/sounds/to.au",
+
+		"assets/sounds/na.au",
+		"assets/sounds/ni.au",
+		"assets/sounds/nu.au",
+		"assets/sounds/ne.au",
+		"assets/sounds/no.au",
+
+		"assets/sounds/ha.au",
+		"assets/sounds/hi.au",
+		"assets/sounds/fu.au",
+		"assets/sounds/he.au",
+		"assets/sounds/ho.au",
+
+		"assets/sounds/ma.au",
+		"assets/sounds/mi.au",
+		"assets/sounds/mu.au",
+		"assets/sounds/me.au",
+		"assets/sounds/mo.au",
+
+		"assets/sounds/ya.au",
+		"assets/sounds/yu.au",
+		"assets/sounds/yo.au",
+	
+		"assets/sounds/ra.au",
+		"assets/sounds/ri.au",
+		"assets/sounds/ru.au",
+		"assets/sounds/re.au",
+		"assets/sounds/ro.au",
+
+		"assets/sounds/wa.au",
+		"assets/sounds/wo.au",
+		"assets/sounds/n.au",
+	};
 	sf::String GameAssetManager::about_strings[] = {
 		L"Nickname: あ(a)\nあひる(ahiru) the fluffy duck", 
 		L"Nickname: い(i)\nいぬ(inu) the loyal dog",
@@ -97,18 +154,18 @@ namespace sun_magic {
 		tools::HSVColor(39/46.f,1,1)
 	};
 	int GameAssetManager::symbols_pos[] = {
-			0,  1,  2,  3,  4,
-			5,  6,  7,  8,  9,
-			10, 11, 12, 13, 14,
-			15, 16, 17, 18, 19,
-			20, 21, 22, 23, 24,
-			25, 26, 27, 28, 29,
-			30, 31, 32, 33, 34,
-			35,     37,     39,
-			40, 41, 42, 43, 44,
-			45,             49,
-			50
-		};
+		0,  1,  2,  3,  4,
+		5,  6,  7,  8,  9,
+		10, 11, 12, 13, 14,
+		15, 16, 17, 18, 19,
+		20, 21, 22, 23, 24,
+		25, 26, 27, 28, 29,
+		30, 31, 32, 33, 34,
+		35,     37,     39,
+		40, 41, 42, 43, 44,
+		45,             49,
+		50
+	};
 
 	void GameAssetManager::Init() {
 		std::ifstream trace_characters;

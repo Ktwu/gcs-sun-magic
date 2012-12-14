@@ -25,14 +25,19 @@ namespace sun_magic {
 		angry_texture_(NULL),
 		happy_texture_(NULL)
 	{
-		sf::Texture *texture = GameAssetManager::GetInstance()->GetTexture(this, refs::textures::objects::SPRITES_OUTLINE);
-		sprite_outline_ = GameAssetManager::GetInstance()->GetHiraganaSprite(word_, texture);
+		GameAssetManager* manager = GameAssetManager::GetInstance();
+		sf::Texture *texture = manager->GetTexture(this, refs::textures::objects::SPRITES_OUTLINE);
+		sprite_outline_ = manager->GetHiraganaSprite(word_, texture);
 		sprite_outline_.setColor(outline);
+
+		// Get our animon's sound
+		cry_.setBuffer(*manager->GetSoundBuffer(this, GameAssetManager::hiragana_sound_refs[manager->GetHiraganaIndex(word_)]));
 	}
 
-	Animon::~Animon()
-	{
+	Animon::~Animon() {
+		cry_.stop();
 		GameAssetManager::GetInstance()->ReturnTextures(this);
+		GameAssetManager::GetInstance()->ReturnSoundBuffers(this);
 	}
 
 	void Animon::SetSprite(sf::Sprite sprite) {
@@ -145,6 +150,7 @@ namespace sun_magic {
 				state_ = DEFAULT;
 			break;
 		case Event::E_MOUSE_PRESSED:
+			cry_.play();
 			state_ = ACTIVE;
 			break;
 		case Event::E_MOUSE_RELEASED:

@@ -13,8 +13,10 @@ namespace sun_magic {
 		static const int NUM_SYMBOLS = 46;
 		static const int ROW_SIZE = 5;
 		static const int COL_SIZE = 11;
+
 		static sf::String hiragana_strings[];
 		static std::string romaji_strings[];
+		static std::string hiragana_sound_refs[];
 		static sf::String about_strings[];
 		static sf::Color symbols_colors[];
 		static int symbols_pos[];

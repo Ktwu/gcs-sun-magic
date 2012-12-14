@@ -66,6 +66,8 @@ namespace sun_magic {
 		sf::Color outline_;
 		sf::Texture texture_outline_;
 
+		sf::Sound cry_;
+
 		sf::String word_;
 		bool active_;
 		bool focused_;

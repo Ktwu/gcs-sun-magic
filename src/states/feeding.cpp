@@ -46,9 +46,6 @@ namespace sun_magic {
 		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::OFFICE));
 		tools::ScaleToWindowSize(background_);
 
-		// Load sound
-		sample_.setBuffer(*asset_manager->GetSoundBuffer(this, refs::sounds::SAMPLE));
-
 		// Load our game's UI
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 
@@ -92,13 +89,13 @@ namespace sun_magic {
 
 		// Need to do this last
 		Game::GetInstance()->GetTileListLabel()->SetString("");
+		Game::GetInstance()->GetTileList()->Clear();
 		Game::GetInstance()->AddUIElements();
 	}
 
 	void Feeding::UnregisterState(MachineState<GameState>* next_state) {
 		GameAssetManager* manager = GameAssetManager::GetInstance();
 		manager->ReturnTextures(this);
-		manager->ReturnSoundBuffers(this);
 
 		Game::GetInstance()->RemoveUIElements();
 
@@ -151,7 +148,7 @@ namespace sun_magic {
 		}
 
 		/* Reload */
-		if (all_happy)
+		if (all_happy && game_state_ == GameState::FEEDING)
 			game_state_ = GameState::NEW_LEVEL_LOAD;
 		return game_state_;
 	}
@@ -174,11 +171,12 @@ namespace sun_magic {
 				Game::GetInstance()->GetTileListLabel()->Hide();
 			} else {
 				Game::GetInstance()->GetTileListLabel()->Show();
+				//game_state_ = GameState::NEW_LEVEL_LOAD;
 			}
+
 			break;
 		case Event::E_GAME_EVENT:
 			if (event.gameEvent == GameEvent::KEY_CLICK) {
-				sample_.play();
 				if (hiragana.getSize() > 0) {
 					size_t i = 0;
 					for (; i < animons_.size(); i++) {

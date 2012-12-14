@@ -58,6 +58,13 @@ namespace sun_magic {
 		temp_y += start_button_.GetSize().y + padding;
 
 		/* Treat the vector like a queue and push our levels on backwards */
+		levels_.push_back(L"わをん");
+		levels_.push_back(L"らりるれろ");
+		levels_.push_back(L"やゆよ");
+		levels_.push_back(L"まみむめも");
+		levels_.push_back(L"はひふへほ");
+		levels_.push_back("なにぬねの");
+		levels_.push_back(L"たちつてと");
 		levels_.push_back(L"さしすせそ");
 		levels_.push_back(L"かきくけこ");
 		levels_.push_back(L"あいうえお");
