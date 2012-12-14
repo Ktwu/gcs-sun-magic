@@ -91,6 +91,7 @@ namespace sun_magic {
 		event_manager->AddEvent(load_event);
 
 		// Need to do this last
+		Game::GetInstance()->GetTileListLabel()->SetString("");
 		Game::GetInstance()->AddUIElements();
 	}
 
@@ -104,6 +105,7 @@ namespace sun_magic {
 		NewLevelState* state = (NewLevelState*) Game::GetInstance()->GetMachine()->GetState(GameState::NEW_LEVEL_LOAD);
 
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
+		event_manager->RemoveGameObject(&info_label_);
 		event_manager->UnregisterListener(Event::E_GAME_EVENT, state);
 		event_manager->UnregisterListener(Event::E_HIRAGANA_DRAWN, this);
 		for (size_t i = 0; i < animons_.size(); i++) {

@@ -12,7 +12,7 @@ namespace sun_magic {
 		}
 
 		namespace zinnia {
-			ref_t ZINNIA_MODEL = "assets/models/custom_hiragana.txt";//"assets/models/hiragana.model";
+			ref_t ZINNIA_MODEL = "assets/models/custom_hiragana.txt";
 		}
 
 		namespace fonts {

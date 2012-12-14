@@ -98,7 +98,6 @@ namespace sun_magic {
 		listlabel_->SetZ(9);
 
 		height = tilesprite.getGlobalBounds().height + 20;
-		//dict_ = new Dictionary(size.x - 20.f, 0, 800.f, 0, size.x - 800.f, size.y, true);
 		dict_ = new Dictionary(0, size.y - 20.f, 0, size.y - height, size.x, height, false);
 		dict_->SetZ(8);
 
