@@ -35,7 +35,7 @@ namespace sun_magic {
 		void SetWord(sf::String word);
 		sf::String GetWord();
 
-		sf::Sound GetCry();
+		sf::Sound& GetCry();
 
 		void SetFocused(bool focused);
 		bool IsFocused();

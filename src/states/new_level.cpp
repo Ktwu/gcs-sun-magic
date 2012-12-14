@@ -36,16 +36,16 @@ namespace sun_magic {
 		temp_y += level_label_.GetSize().y + padding;
 
 		UiElement::InitLabel(&tip_label_);
-		tip_label_.GetStyle()->SetTextSize(18);
+		tip_label_.GetStyle()->SetTextSize(18)->SetNormalColor(sf::Color::Magenta);
 		tip_label_.SetPosition(sf::Vector2f(0, temp_y));
-		tip_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 60));
-		tip_label_.SetString("Try writing your animons' nicknames! Stroke order matters!\nLeft click and drag to draw. Right click to undo bad strokes.\n");
+		tip_label_.SetSize(sf::Vector2f(intro_display_.GetSize().x, 80));
+		tip_label_.SetString("If you correctly write your animons' nicknames, they will say them!\nLeft click and drag to draw. Right click to undo bad strokes.\nStroke order matters! When you are done practicing, click Start.");
 		intro_display_.UiAdd(&tip_label_);
 		temp_y += tip_label_.GetSize().y + padding;
 
 		// init character tile for tracing
 		tile_.SetPosition(sf::Vector2f(tools::Center(intro_display_.GetSize().x, tile_.GetSize().x), temp_y));
-		tile_.GetTileStyle()->SetGuideColor(sf::Color(235, 235, 235))->SetBorderColor(sf::Color(190, 190, 190));
+		tile_.GetStyle()->SetNormalBorderColor(sf::Color(190, 190, 190));
 		tile_.GetStyle()->SetNormalColor(sf::Color::White);
 		intro_display_.UiAdd(&tile_);
 		temp_y += tile_.GetSize().y + padding;
@@ -67,7 +67,7 @@ namespace sun_magic {
 		levels_.push_back(L"たちつてと");
 		levels_.push_back(L"さしすせそ");
 		levels_.push_back(L"かきくけこ");
-		levels_.push_back(L"あいうえお");
+		//levels_.push_back(L"あいうえお");
 		for (int i = 0; i < GameAssetManager::NUM_SYMBOLS; ++i)
 			hiragana_scores_[GameAssetManager::hiragana_strings[i]] = 0;
 
@@ -236,6 +236,9 @@ namespace sun_magic {
 			}
 			break;
 		case Event::E_HIRAGANA_DRAWN:
+			if (event.hiraganaEvent.accuracy < CharacterTile::MIN_ACCURACY)
+				break;
+
 			UiElement *label = hiragana_labels_ + selected_index_;
 			if (event.message == label->GetString()) {
 				GameAssetManager* manager = GameAssetManager::GetInstance();

@@ -13,11 +13,10 @@ namespace sun_magic {
 		animation_speed = 0;
 		wait_seconds = 0;
 		stroke_thickness = 0;
-		border_color = sf::Color::Transparent;
-		guide_color = sf::Color::Transparent;
-		trace_color = sf::Color::Transparent;
-		animate_color = sf::Color::Transparent;
-		stroke_color = sf::Color::Transparent;
+		guide_color = sf::Color(235, 235, 235);
+		trace_color = sf::Color(150, 150, 150);
+		animate_color = sf::Color(100, 100, 100);
+		stroke_color = sf::Color::Black;
 		error_bad_color = sf::Color::Red;
 		error_good_color = sf::Color::Green;
 		return this;
@@ -35,11 +34,6 @@ namespace sun_magic {
 
 	CharacterTileStyle* CharacterTileStyle::SetStrokeThickness(float thickness) {
 		stroke_thickness = thickness;
-		return this;
-	}
-
-	CharacterTileStyle* CharacterTileStyle::SetBorderColor(sf::Color color) {
-		border_color = color;
 		return this;
 	}
 

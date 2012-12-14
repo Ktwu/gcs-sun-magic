@@ -65,7 +65,7 @@ namespace sun_magic {
 		return word_;
 	}
 
-	sf::Sound Animon::GetCry() {
+	sf::Sound& Animon::GetCry() {
 		return cry_;
 	}
 

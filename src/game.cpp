@@ -97,7 +97,7 @@ namespace sun_magic {
 			->SetTextPadding(0.f)->SetTextVerticalAlignment(Style::TextAlignment::SMALLER);
 		listlabel_->SetZ(9);
 
-		height = tilesprite.getGlobalBounds().height + 20;
+		height = tilesprite.getGlobalBounds().height + 30;
 		dict_ = new Dictionary(0, size.y - 20.f, 0, size.y - height, size.x, height, false);
 		dict_->SetZ(8);
 

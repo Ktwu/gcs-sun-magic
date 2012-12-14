@@ -16,7 +16,9 @@ namespace sun_magic {
 		float tile_width = (width-start_x) / num_tiles;
 		
 		for (int i = 0; i < num_tiles; ++i) {
-			tiles_.push_back(new CharacterTile(start_x + i*tile_width, start_y, tile_width, height-start_y));
+			CharacterTile *tile = new CharacterTile(start_x + i*tile_width, start_y, tile_width, height-start_y);
+			tile->GetTileStyle()->SetGuideColor(sf::Color::Transparent);
+			tiles_.push_back(tile);
 			tiles_[i]->SetZ(0);
 			UiAdd(tiles_[i]);
 		}

@@ -41,6 +41,7 @@ namespace sun_magic {
 		entry.tile->SetWritable(false);
 		entry.tile->SetTraceCharacter(asset_manager->GetTraceCharacter(word));
 		entry.tile->SetAnimatingContinuously(true);
+		entry.tile->GetStyle()->SetNormalBorderColor(sf::Color(190, 190, 190));
 		entries_.push_back(entry);
 	}
 
@@ -79,8 +80,8 @@ namespace sun_magic {
 		rect.setOutlineThickness(1);
 		target->draw(rect);
 
-		const float padding = 8;
-		const float packing_ratio = 0.82f;
+		const float padding = 10;
+		const float packing_ratio = 0.9f;
 		float x = padding;
 		float y = padding;
 
@@ -115,12 +116,12 @@ namespace sun_magic {
 				tile->SetPosition(pos + sf::Vector2f(x + padding + packing_ratio * sprite_bounds.width, y));
 
 				text.setPosition(x + padding + packing_ratio * (sprite_bounds.width + tile->GetSize().x), y + sprite_bounds.height/2 - text.getLocalBounds().height/2);
-				y += std::max(sprite_bounds.height, text.getGlobalBounds().height) + padding;
+				y += std::max(std::max(sprite_bounds.height, tile->GetSize().y), text.getGlobalBounds().height) + padding;
 			} else {
 				tile->SetPosition(pos + sf::Vector2f(x, y + padding + packing_ratio * sprite_bounds.height));
 
 				text.setPosition(x + sprite_bounds.width/2 - text.getGlobalBounds().width/2, y + padding + packing_ratio * (sprite_bounds.height + tile->GetSize().y));
-				x += std::max(sprite_bounds.width, text.getGlobalBounds().width) + padding;
+				x += std::max((sprite_bounds.width, tile->GetSize().x), text.getGlobalBounds().width) + padding;
 			}
 
 			target->draw(text);

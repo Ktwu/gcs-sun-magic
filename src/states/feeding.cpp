@@ -21,8 +21,8 @@ namespace sun_magic {
 		animons_(),
 		progressbars_(),
 		game_state_(),
-		feed_increment_(0.38f),
-		eat_rate_(0.008f),
+		feed_increment_(0.4f),
+		eat_rate_(0.007f),
 		happy_threshold_(0.7f),
 		ok_threshold_(0.4f)
 	{
@@ -30,10 +30,10 @@ namespace sun_magic {
 		sf::Vector2u size = window->getSize();
 
 		UiElement::InitLabel(&info_label_);
-		info_label_.GetStyle()->SetTextSize(20);
+		info_label_.GetStyle()->SetTextSize(20)->SetNormalColor(sf::Color::Magenta);
 		info_label_.SetPosition(sf::Vector2f(0, 0));
-		info_label_.SetSize(sf::Vector2f(size.x, 45));
-		info_label_.SetString("Your animons are hungry! Make sure all of them are happy and well fed!\nFeed them by writing their names then clicking on them.\n");
+		info_label_.SetSize(sf::Vector2f(size.x, 70));
+		info_label_.SetString("Your animons are hungry! Make sure all of them are happy and well fed!\nFeed them by writing their names in the notebook then clicking on them.\nAnimons gain a glow around their head when they are well fed!");
 	}
 
 	Feeding::~Feeding() {}
@@ -165,13 +165,13 @@ namespace sun_magic {
 
 		switch (event.type) {
 		case Event::E_HIRAGANA_DRAWN:
-			hiragana = event.message;
-
-			if (hiragana.isEmpty()) {
+			if (event.message.isEmpty()) {
 				Game::GetInstance()->GetTileListLabel()->Hide();
 			} else {
 				Game::GetInstance()->GetTileListLabel()->Show();
-				// game_state_ = GameState::NEW_LEVEL_LOAD;
+			}
+			if (event.hiraganaEvent.accuracy >= CharacterTile::MIN_ACCURACY) {
+				hiragana = event.message;
 			}
 
 			break;
@@ -186,18 +186,14 @@ namespace sun_magic {
 					if (i == animons_.size())
 						break;
 
-					/* Check if we got the hiragana right.  Create an event for whether we were right or wrong */
+					/* Check if we got the hiragana right. */
 					if (event.message == hiragana) {
 						ProgressBar *progressbar = progressbars_[i];
 						progressbar->SetProgress(progressbar->GetProgress() + feed_increment_);
 						animons_[i]->GetCry().play();
 						event.gameEvent = GameEvent::ANIMON_RIGHT;
-					} else {
-						ProgressBar *progressbar = progressbars_[i];
-						progressbar->SetProgress(progressbar->GetProgress() - feed_increment_);
-						event.gameEvent = GameEvent::ANIMON_WRONG;
+						Game::GetInstance()->GetEventManager()->AddEvent(event);
 					}
-					Game::GetInstance()->GetEventManager()->AddEvent(event);
 
 					Game::GetInstance()->GetTileList()->Clear();
 					hiragana.clear();

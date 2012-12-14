@@ -17,7 +17,6 @@ namespace sun_magic {
 
 		CharacterTileStyle* SetStrokeThickness(float thickness);
 
-		CharacterTileStyle* SetBorderColor(sf::Color color);
 		CharacterTileStyle* SetGuideColor(sf::Color color);
 		CharacterTileStyle* SetTraceColor(sf::Color color);
 		CharacterTileStyle* SetAnimateColor(sf::Color color);
@@ -30,7 +29,6 @@ namespace sun_magic {
 
 		float stroke_thickness;
 
-		sf::Color border_color;
 		sf::Color guide_color;
 		sf::Color trace_color;
 		sf::Color animate_color;

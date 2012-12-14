@@ -14,6 +14,9 @@ namespace sun_magic {
 		static zinnia::Recognizer* GetRecognizer();
 		static sf::String UTF8ToUTF32(const char* utf8str);
 
+		static const float MAX_ERROR;
+		static const float MIN_ACCURACY;
+
 		CharacterTile(float x = 0, float y = 0, float width = 300, float height = 300);
 		~CharacterTile();
 
@@ -81,6 +84,7 @@ namespace sun_magic {
 		std::vector<std::vector<sf::RectangleShape>> trace_lines_;
 		std::vector<sf::RectangleShape> animating_lines_;
 		std::vector<float> stroke_errors_;
+		float score_;
 	};
 
 }

@@ -13,8 +13,8 @@
 
 namespace sun_magic {
 	
-	static const float MIN_CLASSIFY_SCORE = 0.75f;
-	static const float MAX_ERROR = 40.f;
+	const float CharacterTile::MAX_ERROR = 50.f;
+	const float CharacterTile::MIN_ACCURACY = 50.f;
 
 	zinnia::Recognizer *CharacterTile::_recognizer = NULL;
 
@@ -358,23 +358,6 @@ namespace sun_magic {
 		rect.setSize(sf::Vector2f(tilestyle_.stroke_thickness, size.y));
 		target->draw(rect);
 
-		// Draw error
-		if (stroke_errors_.size() > 0) {
-			sf::Text error_text;
-			float error = GetError();
-			if (error > MAX_ERROR)
-				error_text.setColor(tilestyle_.error_bad_color);
-			else
-				error_text.setColor(tilestyle_.error_good_color);
-			error_text.setCharacterSize(20);
-			char buf[128];
-			std::sprintf(buf, "%.0f", error);
-			error_text.setString("Error: " + sf::String(buf));
-			sf::FloatRect error_bounds = error_text.getLocalBounds();
-			error_text.setPosition(0, size.y - error_bounds.height - 5);
-			target->draw(error_text);
-		}
-
 		sf::CircleShape circle(0.5f * tilestyle_.stroke_thickness);
 		circle.setOrigin(0.5f * tilestyle_.stroke_thickness, 0.5f * tilestyle_.stroke_thickness);
 		if (trace_character_ != NULL) {
@@ -428,6 +411,22 @@ namespace sun_magic {
 				circle.setPosition((float)character_->x(i, j+1), (float)character_->y(i, j+1));
 				target->draw(circle);
 			}
+		}
+
+		// Draw error
+		if (unicode_.getSize() > 0) {
+			sf::Text error_text;
+			if (score_ < MIN_ACCURACY)
+				error_text.setColor(tilestyle_.error_bad_color);
+			else
+				error_text.setColor(tilestyle_.error_good_color);
+			error_text.setCharacterSize(18);
+			char buf[128];
+			std::sprintf(buf, "Accuracy: %.0f%%", score_);
+			error_text.setString(buf);
+			sf::FloatRect error_bounds = error_text.getLocalBounds();
+			error_text.setPosition(0, size.y - error_bounds.height - 5);
+			target->draw(error_text);
 		}
 	}
 
@@ -483,22 +482,29 @@ namespace sun_magic {
 
 		if (current_stroke_ == 0) {
 			unicode_ = sf::String();
+			event.hiraganaEvent.accuracy = 0;
+			event.message = sf::String();
 			manager->AddEvent(event);
 			return;
 		}
 
 		zinnia::Result *result = _recognizer->classify(*character_, 1);
-		if (result) {
-			if (result->score(0) > MIN_CLASSIFY_SCORE && GetError() <= MAX_ERROR) {
-				unicode_ = tools::UTF8ToUTF32(result->value(0));
-			} else {
-				unicode_ = sf::String();
-			}
-		} else {
-			throw "ERROR: " + std::string(_recognizer->what());
-		}
+		if (!result)
+			return;
+
+		score_ = std::max(0.f, std::min(100.f, 100.f * result->score(0)));
+		sf::String value = tools::UTF8ToUTF32(result->value(0));
 		delete result;
 
+		if ((trace_character_ == NULL || value == trace_unicode_) &&
+				(value.getSize() > 0 && character_->strokes_size() == GameAssetManager::GetInstance()->GetTraceCharacter(value)->strokes_size())
+				&& score_ > 0) {
+			unicode_ = value;
+		} else {
+			unicode_ = sf::String();
+		}
+
+		event.hiraganaEvent.accuracy = score_;
 		event.message = unicode_;
 		manager->AddEvent(event);
 	}
