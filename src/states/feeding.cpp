@@ -10,6 +10,7 @@
 #include "references/refs.h"
 #include "states/new_level.h"
 #include "tools/tools.h"
+#include "ui/card.h"
 
 namespace sun_magic {
 
@@ -165,15 +166,21 @@ namespace sun_magic {
 
 		switch (event.type) {
 		case Event::E_HIRAGANA_DRAWN:
-			if (event.message.isEmpty()) {
-				Game::GetInstance()->GetTileListLabel()->Hide();
-			} else {
-				Game::GetInstance()->GetTileListLabel()->Show();
+			{
+				Card *card = Game::GetInstance()->GetTileListLabel();
+				if (event.message.isEmpty()) {
+					card->Hide();
+					card->GetStyle()->SetNormalColor(sf::Color::White);
+				} else {
+					card->Show();
+					if (event.hiraganaEvent.accuracy >= CharacterTile::MIN_ACCURACY) {
+						hiragana = event.message;
+						card->GetStyle()->SetNormalColor(sf::Color::Green);
+					} else {
+						card->GetStyle()->SetNormalColor(sf::Color::Red);
+					}
+				}
 			}
-			if (event.hiraganaEvent.accuracy >= CharacterTile::MIN_ACCURACY) {
-				hiragana = event.message;
-			}
-
 			break;
 		case Event::E_GAME_EVENT:
 			if (event.gameEvent == GameEvent::KEY_CLICK) {
