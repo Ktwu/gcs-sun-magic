@@ -65,6 +65,10 @@ namespace sun_magic {
 		return word_;
 	}
 
+	sf::Sound Animon::GetCry() {
+		return cry_;
+	}
+
 	void Animon::SetFocused(bool focused) {
 		focused_ = focused;
 	}
@@ -150,7 +154,6 @@ namespace sun_magic {
 				state_ = DEFAULT;
 			break;
 		case Event::E_MOUSE_PRESSED:
-			cry_.play();
 			state_ = ACTIVE;
 			break;
 		case Event::E_MOUSE_RELEASED:

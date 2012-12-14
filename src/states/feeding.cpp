@@ -21,8 +21,8 @@ namespace sun_magic {
 		animons_(),
 		progressbars_(),
 		game_state_(),
-		feed_increment_(0.4f),
-		eat_rate_(0.01f),
+		feed_increment_(0.38f),
+		eat_rate_(0.008f),
 		happy_threshold_(0.7f),
 		ok_threshold_(0.4f)
 	{
@@ -190,6 +190,7 @@ namespace sun_magic {
 					if (event.message == hiragana) {
 						ProgressBar *progressbar = progressbars_[i];
 						progressbar->SetProgress(progressbar->GetProgress() + feed_increment_);
+						animons_[i]->GetCry().play();
 						event.gameEvent = GameEvent::ANIMON_RIGHT;
 					} else {
 						ProgressBar *progressbar = progressbars_[i];

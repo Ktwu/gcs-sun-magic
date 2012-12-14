@@ -13,7 +13,7 @@
 
 namespace sun_magic {
 	
-	static const float MIN_CLASSIFY_SCORE = 0.8f;
+	static const float MIN_CLASSIFY_SCORE = 0.75f;
 	static const float MAX_ERROR = 40.f;
 
 	zinnia::Recognizer *CharacterTile::_recognizer = NULL;
@@ -526,14 +526,17 @@ namespace sun_magic {
 			return;
 
 		size_t stroke = character_->strokes_size() - 1;
-		if (stroke >= trace_character_->strokes_size())
+		if (stroke >= trace_character_->strokes_size()) {
+			stroke_errors_.push_back(0);
 			return;
+		}
 
 		size_t points = character_->stroke_size(stroke);
 		size_t trace_points = trace_character_->stroke_size(stroke);
 
 		if (points < 2 || trace_points < 2) {
 			// Not enough points to calculate
+			stroke_errors_.push_back(0);
 			return;
 		}
 
