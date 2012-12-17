@@ -25,12 +25,12 @@ namespace sun_magic {
 
 	Splash::~Splash() {}
 	
-	DWORD WINAPI MyThreadFunction( LPVOID lpParam ) 
+	/*DWORD WINAPI MyThreadFunction( LPVOID lpParam ) 
 	{
 		Splash *splash = (Splash *)lpParam;
 		splash->LoadAssets();
 		return 0; 
-	} 
+	} */
 
 	void Splash::RegisterState(MachineState<GameState>* previous_state) {
 		game_state_ = LOADING;
@@ -40,7 +40,7 @@ namespace sun_magic {
 		tools::ScaleToWindowSize(background_);
 
 		// Start a thread to load assets in the background
-		CreateThread(NULL, 0, &MyThreadFunction, this, 0, 0);
+		//CreateThread(NULL, 0, &MyThreadFunction, this, 0, 0);
 	}
 
 	void Splash::UnregisterState(MachineState<GameState>* next_state) {
