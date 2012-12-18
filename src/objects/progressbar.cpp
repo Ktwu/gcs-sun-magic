@@ -7,27 +7,15 @@
 
 namespace sun_magic {
 
-	ProgressBar::ProgressBar(float x, float y, float height, sf::Sprite base, sf::Sprite increment) :
-		GameObject(x, y, 0, height),
-		base_(),
-		increment_(),
-		progress_()
-	{
-		SetBaseSprite(base);
-		SetIncrementSprite(increment);
-	}
-
-	ProgressBar::ProgressBar(float x, float y, float height, sf::String base_name, sf::String increment_name) :
+	ProgressBar::ProgressBar(float x, float y, float height, std::string base_name, std::string increment_name) :
 		GameObject(x, y, 0, height),
 		base_(),
 		increment_(),
 		progress_()
 	{
 		GameAssetManager* manager = GameAssetManager::GetInstance();
-		sf::Texture* texture = manager->GetTexture(this, base_name);
-		SetBaseSprite(sf::Sprite(*texture));
-		texture = manager->GetTexture(this, increment_name);
-		SetIncrementSprite(sf::Sprite(*texture));
+		SetBaseSprite(sf::Sprite(*manager->GetTexture(this, base_name)));
+		SetIncrementSprite(sf::Sprite(*manager->GetTexture(this, increment_name)));
 	}
 
 	ProgressBar::~ProgressBar()	{

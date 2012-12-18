@@ -41,16 +41,8 @@ namespace sun_magic {
 			}
 
 			namespace objects {
-				ref_t AHIRU = "assets/objects/ahiru.png";
-				ref_t EBI = "assets/objects/ebi.png";
 				ref_t FOODBOWL = "assets/objects/foodbowl.png";
-				ref_t INU = "assets/objects/inu.png";
-				ref_t NEKO = "assets/objects/neko.png";
-				ref_t NEKO_HAPPY = "assets/objects/neko-happy.png";
-				ref_t OBAKE = "assets/objects/obake.png";
-				ref_t STUPID_LOVE = "assets/objects/stupid-love.png";
 				ref_t SUSHI = "assets/objects/sushi.png";
-				ref_t USAGI = "assets/objects/usagi.png";
 
 				ref_t SPRITES_MEH = "assets/objects/hiragana-meh.png";
 				ref_t SPRITES_HAPPY = "assets/objects/hiragana-happy.png";

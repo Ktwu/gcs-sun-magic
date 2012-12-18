@@ -10,8 +10,7 @@ namespace sun_magic {
 	class ProgressBar : public GameObject
 	{
 	public:
-		ProgressBar(float x, float y, float height, sf::Sprite base, sf::Sprite increment);
-		ProgressBar(float x, float y, float height, sf::String base_name, sf::String increment_name);
+		ProgressBar(float x, float y, float height, std::string base_name, std::string increment_name);
 		~ProgressBar();
 
 		void SetBaseSprite(sf::Sprite sprite);

@@ -92,6 +92,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='asdsa|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -157,23 +158,29 @@ xcopy /s /y "$(ProjectDir)assets" "$(OutDir)assets\"</Command>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Full</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>SFML-2.0-rc/Include/;zinnia-0.06/Include/</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>SFML-2.0-rc/lib/;zinnia-0.06/lib/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;sfml-system-d.lib;sfml-main-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-network-d.lib;sfml-window-d.lib;libzinnia.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;sfml-system.lib;sfml-main.lib;sfml-graphics.lib;sfml-audio.lib;sfml-network.lib;sfml-window.lib;libzinnia.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\*-d-2.dll" "$(OutDir)"
+      <Command>xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-audio-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-graphics-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-window-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-network-2.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-system-2.dll" "$(OutDir)""
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\libsndfile-1.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\openal32.dll" "$(OutDir)"
-xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-d-2.lib" "$(OutDir)"
+xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-2.lib" "$(OutDir)"
 xcopy /y "$(ProjectDir)zinnia-0.06\lib\libzinnia.dll" "$(OutDir)"
 xcopy /s /y "$(ProjectDir)assets" "$(OutDir)assets\"</Command>
     </PostBuildEvent>

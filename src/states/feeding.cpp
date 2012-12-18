@@ -44,7 +44,7 @@ namespace sun_magic {
 		
 		EventManager* event_manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
-		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::DESK));//refs::textures::backgrounds::OFFICE));
+		background_.setTexture(*asset_manager->GetTexture(this, refs::textures::backgrounds::DESK));
 		tools::ScaleToWindowSize(background_);
 
 		// Load our game's UI
@@ -66,7 +66,7 @@ namespace sun_magic {
 		float width = (size.x - 50.f) / 5.f;
 		for (size_t i = 0; i < hiraganas_.getSize(); i++) {
 			sf::String h = hiraganas_[i];
-
+			
 			ProgressBar *progressbar = new ProgressBar((i + 0.45f) * width, 0, y + 128, refs::textures::objects::FOODBOWL, refs::textures::objects::SUSHI);
 			progressbar->SetZ(-2);
 			progressbars_.push_back(progressbar);

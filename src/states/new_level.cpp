@@ -57,7 +57,7 @@ namespace sun_magic {
 		intro_display_.UiAdd(&start_button_);
 		temp_y += start_button_.GetSize().y + padding;
 
-		/* Treat the vector like a queue and push our levels on backwards */
+		// Treat the vector like a queue and push our levels on backwards
 		levels_.push_back(L"わをん");
 		levels_.push_back(L"らりるれろ");
 		levels_.push_back(L"やゆよ");
@@ -111,7 +111,7 @@ namespace sun_magic {
 			level_hiragana_ = levels_[levels_.size() - 1];
 			levels_.pop_back();
 		} else {
-			/* Explore our map and find the 5 weakest hiragana */
+			// Explore our map and find the 5 weakest hiragana
 			std::vector<std::pair<sf::String, int>> sorted_map(hiragana_scores_.size());
 			std::map<sf::String, int>::iterator i;
 			int j;
@@ -138,8 +138,7 @@ namespace sun_magic {
 		EventManager* manager = Game::GetInstance()->GetEventManager();
 		GameAssetManager* asset_manager = GameAssetManager::GetInstance();
 
-		background_.setTexture(*asset_manager->GetTexture(this,  refs::textures::backgrounds::POSTER_AWAY));//refs::textures::backgrounds::OFFICE));
-		//tools::ScaleToWindowSize(background_);
+		background_.setTexture(*asset_manager->GetTexture(this,  refs::textures::backgrounds::POSTER_AWAY));
 
 		sf::Vector2u size = Game::GetInstance()->GetWindow()->getSize();
 

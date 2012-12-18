@@ -201,7 +201,7 @@ namespace sun_magic {
 
 	// Textures
 	sf::Texture* GameAssetManager::GetTexture(void* key, std::string file) {
-		return GetAsset(key, file, &GameAssetManager::GetTextures);
+		return GetAsset(key, std::string(file), &GameAssetManager::GetTextures);
 	}
 	void GameAssetManager::GetTextures(void* key, const std::vector<std::string>& texture_keys, std::vector<sf::Texture*>& textures) {
 		GetAssets(key, texture_keys, textures, this->textures_, this->texture_holders_, this->LoadTexture);
