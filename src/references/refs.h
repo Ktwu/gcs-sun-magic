@@ -55,7 +55,6 @@ namespace sun_magic {
 				ref_t BUTTON_HOVER = "assets/ui/button_hover.png";
 				ref_t BUTTON_PRESS = "assets/ui/button_pressed.png";
 				ref_t NOTE_PAD = "assets/ui/notepad.png";
-				ref_t NOTE_PAD2 = "assets/ui/notepad2.png";
 			}
 
 		}

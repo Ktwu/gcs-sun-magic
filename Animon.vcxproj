@@ -177,7 +177,7 @@ xcopy /s /y "$(ProjectDir)assets" "$(OutDir)assets\"</Command>
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-graphics-2.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-window-2.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-network-2.dll" "$(OutDir)"
-xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-system-2.dll" "$(OutDir)""
+xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\sfml-system-2.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\libsndfile-1.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\bin\openal32.dll" "$(OutDir)"
 xcopy /y "$(ProjectDir)SFML-2.0-rc\lib\sfml-main-2.lib" "$(OutDir)"
